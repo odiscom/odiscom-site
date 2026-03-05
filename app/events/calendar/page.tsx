@@ -10,11 +10,14 @@ import {
   formatTimeRange,
 } from "@/lib/events";
 
-type Props = {
-  searchParams?: { month?: string; view?: "month" | "list" };
-};
+type SearchParams = Record<string, string | string[] | undefined>;
+type Props = { searchParams?: SearchParams };
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function one(v: string | string[] | undefined) {
+  return Array.isArray(v) ? v[0] : v;
+}
 
 function buildCalendarGrid(year: number, monthIndex: number) {
   const firstOfMonth = new Date(year, monthIndex, 1);
@@ -36,20 +39,14 @@ function dayKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function formatDayLabel(d: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(d);
-}
-
 export default function Page({ searchParams }: Props) {
-  const { year, monthIndex } = parseMonthParam(searchParams?.month);
-  const view =
-  searchParams?.view === "list" || searchParams?.view === "month"
-    ? searchParams.view
-    : "month"; // default month
+  // Normalize query params (handles string[] cases)
+  const monthParam = one(searchParams?.month);
+  const viewParam = one(searchParams?.view);
+
+  const { year, monthIndex } = parseMonthParam(monthParam);
+  const view: "month" | "list" = viewParam === "list" ? "list" : "month";
+
   const title = formatMonthTitle(year, monthIndex);
 
   const evts = eventsForMonth(year, monthIndex);
@@ -61,8 +58,7 @@ export default function Page({ searchParams }: Props) {
 
   const baseMonth = monthKey(year, monthIndex);
 
-  const monthHref = (m: string) => `/events/calendar?month=${m}&view=${view}`;
-  const setViewHref = (v: "month" | "list") => `/events/calendar?month=${baseMonth}&view=${v}`;
+  const hrefWith = (m: string, v: "month" | "list") => `/events/calendar?month=${m}&view=${v}`;
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
@@ -80,7 +76,7 @@ export default function Page({ searchParams }: Props) {
             {/* View toggle */}
             <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
               <Link
-                href={setViewHref("month")}
+                href={hrefWith(baseMonth, "month")}
                 className={[
                   "rounded-lg px-3 py-1.5 text-sm font-semibold",
                   view === "month"
@@ -91,7 +87,7 @@ export default function Page({ searchParams }: Props) {
                 Month
               </Link>
               <Link
-                href={setViewHref("list")}
+                href={hrefWith(baseMonth, "list")}
                 className={[
                   "rounded-lg px-3 py-1.5 text-sm font-semibold",
                   view === "list"
@@ -106,16 +102,18 @@ export default function Page({ searchParams }: Props) {
             {/* Month navigation */}
             <div className="flex items-center gap-2">
               <Link
-                href={monthHref(monthKey(prev.year, prev.monthIndex))}
+                href={hrefWith(monthKey(prev.year, prev.monthIndex), view)}
                 className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
               >
                 ← Prev
               </Link>
 
-              <div className="min-w-[220px] text-center text-sm font-semibold text-slate-900">{title}</div>
+              <div className="min-w-[220px] text-center text-sm font-semibold text-slate-900">
+                {title}
+              </div>
 
               <Link
-                href={monthHref(monthKey(next.year, next.monthIndex))}
+                href={hrefWith(monthKey(next.year, next.monthIndex), view)}
                 className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
               >
                 Next →
@@ -174,15 +172,8 @@ function MonthGrid({
                 !inMonth ? "bg-slate-50/60" : "bg-white",
               ].join(" ")}
             >
-              <div className="flex items-start justify-between">
-                <div
-                  className={[
-                    "text-sm font-semibold",
-                    inMonth ? "text-slate-900" : "text-slate-400",
-                  ].join(" ")}
-                >
-                  {d.getDate()}
-                </div>
+              <div className="text-sm font-semibold">
+                <span className={inMonth ? "text-slate-900" : "text-slate-400"}>{d.getDate()}</span>
               </div>
 
               <div className="mt-2 space-y-2">
@@ -227,7 +218,7 @@ function ListView({
 }) {
   const fmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" });
 
-  // group by day
+  // group by day (start date)
   const groups = new Map<string, typeof evts>();
   for (const e of evts) {
     const d = new Date(e.startsAt);
@@ -237,7 +228,6 @@ function ListView({
     groups.set(key, arr);
   }
 
-  // order days
   const orderedDays = Array.from(groups.keys()).sort((a, b) => +new Date(a) - +new Date(b));
 
   return (
@@ -287,10 +277,7 @@ function ListView({
                       </div>
 
                       <div className="pt-1">
-                        <Link
-                          href={`/events/${e.slug}`}
-                          className="text-xs font-semibold text-slate-900 hover:underline"
-                        >
+                        <Link href={`/events/${e.slug}`} className="text-xs font-semibold text-slate-900 hover:underline">
                           View details →
                         </Link>
                       </div>
