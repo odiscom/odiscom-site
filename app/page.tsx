@@ -35,6 +35,8 @@ export default function Page() {
         }
       `}</style>
 
+      {/* IMPORTANT: Do NOT render <Header /> here if app/layout.tsx already renders it */}
+
       <main className="bg-white">
         {/* HERO (no image) */}
         <section className="mx-auto max-w-7xl px-6 pt-10 pb-8">
@@ -120,16 +122,16 @@ export default function Page() {
               </Link>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-              <div className="relative overflow-hidden rounded-2xl marquee">
-                {/* Edge fades (match bg-slate-50) */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-50 to-transparent" />
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-50 to-transparent" />
+            {/* Light gray card */}
+            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+              {/* Force marquee area bg too (so it doesn't look white) */}
+              <div className="relative overflow-hidden rounded-2xl bg-slate-100 marquee">
+                {/* Edge fades match the background */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent" />
 
-                <div className="marquee-track flex w-[200%] items-center py-7">
-                  {/* First pass */}
+                <div className="marquee-track flex w-[200%] items-center py-6">
                   <LogoRow logos={clientLogos} />
-                  {/* Second pass (duplicate for seamless loop) */}
                   <LogoRow logos={clientLogos} />
                 </div>
               </div>
@@ -141,12 +143,12 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Next sections */}
+        {/* Next sections can go here... */}
         <section className="mx-auto max-w-7xl px-6 py-14">
           <h3 className="text-xl font-bold text-slate-900">What we do</h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-            Add services, project highlights, certifications, safety culture, and government
-            capabilities next.
+            Add services, project highlights, certifications, safety culture, and your government
+            capabilities section next.
           </p>
         </section>
       </main>
@@ -171,8 +173,8 @@ function LogoRow({ logos }: { logos: { src: string; alt: string }[] }) {
           <Image
             src={logo.src}
             alt={logo.alt}
-            width={200}
-            height={70}
+            width={180}
+            height={60}
             className="h-10 w-auto object-contain"
           />
         </div>
