@@ -1,4 +1,5 @@
 // lib/events-data.ts
+
 export type EventItem = {
   slug: string;
   title: string;
@@ -22,5 +23,10 @@ export const EVENTS: EventItem[] = [
     url: "https://natehome.com/events/calendar/",
     description: "Industry conference and events.",
   },
-  // Add your own events here...
+
+  // Add more events here
 ];
+
+export function getEventBySlug(slug: string) {
+  return EVENTS.find((e) => e.slug === slug);
+}
