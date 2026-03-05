@@ -1,10 +1,9 @@
 // lib/events-data.ts
-
 export type EventItem = {
   slug: string;
   title: string;
-  startsAt: string; // ISO string with timezone offset if known
-  endsAt: string;   // ISO string
+  startsAt: string; // ISO string (timezone offset if known)
+  endsAt: string; // ISO string
   timezone?: string;
   location?: string;
   cityState?: string;
@@ -23,8 +22,7 @@ export const EVENTS: EventItem[] = [
     url: "https://natehome.com/events/calendar/",
     description: "Industry conference and events.",
   },
-
-  // Add more events here
+  // Add your own events here...
 ];
 
 export function getEventBySlug(slug: string) {

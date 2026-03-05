@@ -2,6 +2,10 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug } from "@/lib/events-data";
 
+type RouteContext = {
+  params: Promise<{ slug: string }>;
+};
+
 function escapeICSText(input: string) {
   // Basic escaping per iCalendar text rules
   return input
@@ -12,7 +16,6 @@ function escapeICSText(input: string) {
 }
 
 function toICSDate(iso: string) {
-  // If you pass an ISO with timezone offset, Date() normalizes to UTC.
   // ICS format: YYYYMMDDTHHMMSSZ (UTC)
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -28,11 +31,9 @@ function toICSDate(iso: string) {
   );
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { slug: string } }
-) {
-  const slug = params?.slug;
+export async function GET(_request: Request, context: RouteContext) {
+  const { slug } = await context.params;
+
   const event = slug ? getEventBySlug(slug) : undefined;
 
   if (!event) {
@@ -49,7 +50,7 @@ export async function GET(
   const locationParts = [event.location, event.cityState].filter(Boolean);
   const location = escapeICSText(locationParts.join(" — "));
 
-  const url = event.url ? `\nURL:${escapeICSText(event.url)}` : "";
+  const urlLine = event.url ? `URL:${escapeICSText(event.url)}` : "";
 
   const ics = [
     "BEGIN:VCALENDAR",
@@ -65,7 +66,7 @@ export async function GET(
     `SUMMARY:${summary}`,
     description ? `DESCRIPTION:${description}` : "",
     location ? `LOCATION:${location}` : "",
-    url.trim(),
+    urlLine,
     "END:VEVENT",
     "END:VCALENDAR",
   ]
