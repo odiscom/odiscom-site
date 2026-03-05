@@ -66,11 +66,9 @@ export default function Page() {
           </div>
 
           {/* SCROLLING LOGOS */}
-          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-6 py-8 shadow-sm">
-            {/* fade edges */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent" />
-
+<div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 px-6 py-8 shadow-sm">            {/* fade edges */}
+<div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent" />
+<div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent" />
             <div className="logo-marquee flex items-center gap-16">
               <img src="/logos/att.png" className="h-10 w-auto" alt="AT&T" />
               <img src="/logos/Verizon.png" className="h-10 w-auto" alt="Verizon" />
