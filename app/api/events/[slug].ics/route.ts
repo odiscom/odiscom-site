@@ -2,12 +2,7 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug } from "@/lib/events-data";
 
-type RouteContext = {
-  params: Promise<{ slug: string }>;
-};
-
 function escapeICSText(input: string) {
-  // Basic escaping per iCalendar text rules
   return input
     .replace(/\\/g, "\\\\")
     .replace(/\n/g, "\\n")
@@ -16,7 +11,6 @@ function escapeICSText(input: string) {
 }
 
 function toICSDate(iso: string) {
-  // ICS format: YYYYMMDDTHHMMSSZ (UTC)
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
@@ -31,8 +25,13 @@ function toICSDate(iso: string) {
   );
 }
 
-export async function GET(_request: Request, context: RouteContext) {
-  const { slug } = await context.params;
+export async function GET(_request: Request, context: { params: Promise<unknown> }) {
+  const raw = await context.params;
+
+  // With `[slug].ics`, Next/Vercel may type params as Promise<{}>.
+  // So we extract defensively at runtime.
+  const slug =
+    raw && typeof raw === "object" && "slug" in raw ? String((raw as any).slug) : "";
 
   const event = slug ? getEventBySlug(slug) : undefined;
 
@@ -49,7 +48,6 @@ export async function GET(_request: Request, context: RouteContext) {
   const description = escapeICSText(event.description || "");
   const locationParts = [event.location, event.cityState].filter(Boolean);
   const location = escapeICSText(locationParts.join(" — "));
-
   const urlLine = event.url ? `URL:${escapeICSText(event.url)}` : "";
 
   const ics = [
