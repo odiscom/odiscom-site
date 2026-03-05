@@ -2,79 +2,81 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug } from "@/lib/events-data";
 
-type RouteContext = {
-  params: { slug: string };
-};
-
-function pad(n: number) {
-  return String(n).padStart(2, "0");
-}
-
-// ICS wants UTC in YYYYMMDDTHHMMSSZ
-function toIcsUtc(dt: Date) {
-  return (
-    dt.getUTCFullYear() +
-    pad(dt.getUTCMonth() + 1) +
-    pad(dt.getUTCDate()) +
-    "T" +
-    pad(dt.getUTCHours()) +
-    pad(dt.getUTCMinutes()) +
-    pad(dt.getUTCSeconds()) +
-    "Z"
-  );
-}
-
-function escapeIcsText(value: string) {
-  return value
+function escapeICSText(input: string) {
+  // Basic escaping per iCalendar text rules
+  return input
     .replace(/\\/g, "\\\\")
     .replace(/\n/g, "\\n")
     .replace(/,/g, "\\,")
     .replace(/;/g, "\\;");
 }
 
-export async function GET(_req: Request, { params }: RouteContext) {
-  const slug = params.slug;
+function toICSDate(iso: string) {
+  // If you pass an ISO with timezone offset, Date() normalizes to UTC.
+  // ICS format: YYYYMMDDTHHMMSSZ (UTC)
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return (
+    d.getUTCFullYear() +
+    pad(d.getUTCMonth() + 1) +
+    pad(d.getUTCDate()) +
+    "T" +
+    pad(d.getUTCHours()) +
+    pad(d.getUTCMinutes()) +
+    pad(d.getUTCSeconds()) +
+    "Z"
+  );
+}
 
-  const event = getEventBySlug(slug);
+export async function GET(
+  _request: Request,
+  { params }: { params: { slug: string } }
+) {
+  const slug = params?.slug;
+  const event = slug ? getEventBySlug(slug) : undefined;
 
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  // Expecting your event shape to include:
-  // title, description?, location?, url?, start (ISO), end (ISO)
-  const start = new Date(event.start);
-  const end = new Date(event.end);
+  const uid = `${event.slug}@odiscom.com`;
+  const dtstamp = toICSDate(new Date().toISOString());
+  const dtstart = toICSDate(event.startsAt);
+  const dtend = toICSDate(event.endsAt);
 
-  const uid = `${slug}@odiscom.com`;
-  const dtstamp = toIcsUtc(new Date());
+  const summary = escapeICSText(event.title);
+  const description = escapeICSText(event.description || "");
+  const locationParts = [event.location, event.cityState].filter(Boolean);
+  const location = escapeICSText(locationParts.join(" — "));
 
-  const lines = [
+  const url = event.url ? `\nURL:${escapeICSText(event.url)}` : "";
+
+  const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//ODISCOM//Industry Calendar//EN",
+    "PRODID:-//Odiscom//Industry Calendar//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${uid}`,
     `DTSTAMP:${dtstamp}`,
-    `DTSTART:${toIcsUtc(start)}`,
-    `DTEND:${toIcsUtc(end)}`,
-    `SUMMARY:${escapeIcsText(event.title)}`,
-    event.location ? `LOCATION:${escapeIcsText(event.location)}` : "",
-    event.description ? `DESCRIPTION:${escapeIcsText(event.description)}` : "",
-    event.url ? `URL:${escapeIcsText(event.url)}` : "",
+    `DTSTART:${dtstart}`,
+    `DTEND:${dtend}`,
+    `SUMMARY:${summary}`,
+    description ? `DESCRIPTION:${description}` : "",
+    location ? `LOCATION:${location}` : "",
+    url.trim(),
     "END:VEVENT",
     "END:VCALENDAR",
-  ].filter(Boolean);
-
-  const ics = lines.join("\r\n");
+  ]
+    .filter(Boolean)
+    .join("\r\n");
 
   return new NextResponse(ics, {
     status: 200,
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `inline; filename="${slug}.ics"`,
+      "Content-Disposition": `inline; filename="${event.slug}.ics"`,
       "Cache-Control": "public, max-age=300",
     },
   });
