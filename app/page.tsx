@@ -1,65 +1,282 @@
+import Link from "next/link";
 import Image from "next/image";
+
+const clients = [
+  { name: "AT&T", logo: "/logos/att.png" },
+  { name: "Verizon", logo: "/logos/verizon.png" },
+  { name: "TDS Telecom", logo: "/logos/tds.png" },
+  { name: "Vertical Bridge", logo: "/logos/vertical-bridge-logo.svg" },
+  { name: "Zayo", logo: "/logos/zayo.svg" },
+  { name: "EBI Consulting", logo: "/logos/EBI.svg" },
+  { name: "Smartlink", logo: "/logos/smartlink.png" },
+  { name: "SONIC", logo: "/logos/sonic.png" },
+];
+
+const services = [
+  {
+    title: "Telecom Engineering",
+    desc: "OSP engineering, fielding, permitting, and construction-ready design packages.",
+  },
+  {
+    title: "Fiber Infrastructure",
+    desc: "Metro and long-haul deployment support from plan through closeout.",
+  },
+  {
+    title: "Tower Services",
+    desc: "Inspections, maintenance support, repairs, and structural coordination.",
+  },
+  {
+    title: "Construction Management",
+    desc: "Schedule, QA/QC, safety coordination, and deployment execution.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="bg-white text-slate-900">
+      {/* HERO */}
+      <section className="relative border-b bg-gradient-to-b from-slate-50 to-white">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581091870622-1e7c2f9d1f5c')] bg-cover bg-center opacity-10" />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 md:py-20">
+          <p className="text-sm font-medium text-slate-600">
+            Telecommunications • Fiber • Towers • Construction
           </p>
+
+          <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">
+            Engineering America’s Digital Infrastructure
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-lg text-slate-600">
+            Odiscom provides telecommunications engineering, fiber infrastructure
+            development, and tower services supporting nationwide network
+            deployment.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/request-proposal"
+              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white hover:bg-slate-800"
+            >
+              Request Proposal
+            </Link>
+
+            <Link
+              href="/services"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-900 hover:bg-slate-50"
+            >
+              View Services
+            </Link>
+          </div>
+
+          {/* Credibility strip */}
+          <div className="mt-10 grid gap-4 rounded-2xl border bg-white p-5 shadow-sm md:grid-cols-4">
+            <Stat label="Founded" value="2015" />
+            <Stat label="Coverage" value="Nationwide" />
+            <Stat label="Delivery" value="Engineering + Construction" />
+            <Stat label="Response" value="Rapid mobilization" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </section>
+
+      {/* TRUSTED BY */}
+      <section className="mx-auto max-w-7xl px-6 py-14">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Trusted by telecommunications operators and infrastructure owners
+            </h2>
+            <p className="mt-2 text-slate-600">
+              Selected clients and partners.
+            </p>
+          </div>
+
+          <Link
+            href="/clients"
+            className="text-sm font-medium text-slate-900 hover:underline"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            View Clients →
+          </Link>
         </div>
-      </main>
+
+        {/* Logos grid */}
+        <div className="mt-8 grid items-center gap-6 sm:grid-cols-2 md:grid-cols-4">
+          {clients.map((client) => (
+            <div
+              key={client.name}
+              className="flex items-center justify-center rounded-xl border bg-white p-6 shadow-sm"
+            >
+              <Image
+                src={client.logo}
+                alt={client.name}
+                width={180}
+                height={70}
+                className="h-[48px] w-auto object-contain grayscale hover:grayscale-0 transition"
+                priority={false}
+              />
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 text-xs text-slate-500">
+          Logos are displayed for recognition; additional references available upon request.
+        </p>
+      </section>
+
+      {/* SERVICES */}
+      <section className="border-y bg-slate-50">
+        <div className="mx-auto max-w-7xl px-6 py-14">
+          <h2 className="text-2xl font-semibold tracking-tight">Services</h2>
+          <p className="mt-2 max-w-2xl text-slate-600">
+            From engineering and permitting to construction execution and closeout,
+            Odiscom supports full lifecycle deployment.
+          </p>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {services.map((s) => (
+              <div
+                key={s.title}
+                className="rounded-2xl border bg-white p-6 shadow-sm"
+              >
+                <div className="text-lg font-semibold text-slate-900">
+                  {s.title}
+                </div>
+                <p className="mt-2 text-slate-600">{s.desc}</p>
+                <div className="mt-4">
+                  <Link
+                    href="/services"
+                    className="text-sm font-medium text-slate-900 hover:underline"
+                  >
+                    Learn more →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED WORK */}
+      <section className="mx-auto max-w-7xl px-6 py-14">
+        <h2 className="text-2xl font-semibold tracking-tight">Featured work</h2>
+        <p className="mt-2 max-w-2xl text-slate-600">
+          Representative examples of the type of work we support. Project details
+          and references available upon request.
+        </p>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <FeatureCard
+            title="Tower rehabilitation support"
+            desc="Structural coordination, field documentation, repair scope development, and closeout packages."
+          />
+          <FeatureCard
+            title="Multi-state fiber route engineering"
+            desc="Design support, permitting coordination, constructability review, and deployment documentation."
+          />
+          <FeatureCard
+            title="Metro fiber build support"
+            desc="Fielding, OSP plan sets, make-ready coordination, and QA/QC for construction execution."
+          />
+        </div>
+      </section>
+
+      {/* GOVERNMENT */}
+      <section className="mx-auto max-w-7xl px-6 pb-16">
+        <div className="grid gap-8 rounded-3xl border bg-white p-8 shadow-sm md:grid-cols-2 md:items-center">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Government & public sector support
+            </h2>
+            <p className="mt-2 text-slate-600">
+              Capability-aligned delivery for telecom modernization, broadband
+              expansion, and infrastructure programs.
+            </p>
+
+            <ul className="mt-5 grid gap-2 text-sm text-slate-700">
+              <li>• Documentation-first engineering and closeout packages</li>
+              <li>• Multi-market coordination and rapid mobilization</li>
+              <li>• Safety-minded execution and QA/QC discipline</li>
+            </ul>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/government"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-900 hover:bg-slate-50"
+              >
+                Government capabilities
+              </Link>
+              <Link
+                href="/request-proposal"
+                className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white hover:bg-slate-800"
+              >
+                Request proposal
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-slate-50 p-6">
+            <div className="text-sm font-semibold text-slate-900">
+              What we deliver
+            </div>
+            <div className="mt-4 grid gap-3 text-sm text-slate-700">
+              <Pill text="Telecom engineering support packages" />
+              <Pill text="Fiber deployment coordination" />
+              <Pill text="Tower services and maintenance support" />
+              <Pill text="Construction management and closeout" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="bg-slate-950">
+        <div className="mx-auto max-w-7xl px-6 py-14 text-white">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Let’s build what’s next.
+          </h2>
+          <p className="mt-2 max-w-2xl text-white/70">
+            Tell us what market you’re working in and what you need
+            deployed—engineering, construction support, or full lifecycle
+            delivery.
+          </p>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/request-proposal"
+              className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-medium text-slate-950 hover:bg-white/90"
+            >
+              Request Proposal
+            </Link>
+            <Link
+              href="/careers"
+              className="inline-flex items-center justify-center rounded-lg border border-white/20 px-6 py-3 text-sm font-medium hover:bg-white/10"
+            >
+              Join Our Team
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-slate-50 p-4">
+      <div className="text-xs font-medium text-slate-600">{label}</div>
+      <div className="mt-1 text-lg font-semibold text-slate-900">{value}</div>
     </div>
   );
+}
+
+function FeatureCard({ title, desc }: { title: string; desc: string }) {
+  return (
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="text-lg font-semibold text-slate-900">{title}</div>
+      <p className="mt-2 text-slate-600">{desc}</p>
+    </div>
+  );
+}
+
+function Pill({ text }: { text: string }) {
+  return <div className="rounded-xl border bg-white px-4 py-3">{text}</div>;
 }
