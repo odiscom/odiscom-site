@@ -36,4 +36,36 @@ body {
   to {
     transform: translateX(-50%);
   }
+}/* Odiscom logo marquee (App Router safe) */
+.odiscom-marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.odiscom-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  animation: odiscom-marquee 26s linear infinite;
+  will-change: transform;
+}
+
+.odiscom-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes odiscom-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .odiscom-marquee-track {
+    animation: none;
+  }
 }
