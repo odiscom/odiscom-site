@@ -1,51 +1,81 @@
 // app/api/events/[slug].ics/route.ts
-import { getEventBySlug } from "@/lib/events";
+import { NextResponse } from "next/server";
+import { getEventBySlug } from "@/lib/events-data";
 
-function toICSDate(dt: string) {
-  // Convert to UTC-ish ICS format: YYYYMMDDTHHMMSSZ
-  const d = new Date(dt);
-  const pad = (n: number) => String(n).padStart(2, "0");
+type RouteContext = {
+  params: { slug: string };
+};
+
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+// ICS wants UTC in YYYYMMDDTHHMMSSZ
+function toIcsUtc(dt: Date) {
   return (
-    d.getUTCFullYear() +
-    pad(d.getUTCMonth() + 1) +
-    pad(d.getUTCDate()) +
+    dt.getUTCFullYear() +
+    pad(dt.getUTCMonth() + 1) +
+    pad(dt.getUTCDate()) +
     "T" +
-    pad(d.getUTCHours()) +
-    pad(d.getUTCMinutes()) +
-    pad(d.getUTCSeconds()) +
+    pad(dt.getUTCHours()) +
+    pad(dt.getUTCMinutes()) +
+    pad(dt.getUTCSeconds()) +
     "Z"
   );
 }
 
-export async function GET(_: Request, { params }: { params: { slug: string } }) {
-  const e = getEventBySlug(params.slug);
-  if (!e) return new Response("Not found", { status: 404 });
+function escapeIcsText(value: string) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;");
+}
 
-  const uid = `${e.slug}@odiscom.com`;
-  const dtStart = toICSDate(e.startsAt);
-  const dtEnd = toICSDate(e.endsAt);
+export async function GET(_req: Request, { params }: RouteContext) {
+  const slug = params.slug;
 
-  const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Odiscom//Events//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${toICSDate(new Date().toISOString())}
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:${e.title}
-LOCATION:${(e.location ?? "")}${e.cityState ? `, ${e.cityState}` : ""}
-DESCRIPTION:${(e.description ?? "").replace(/\n/g, "\\n")}
-END:VEVENT
-END:VCALENDAR`;
+  const event = getEventBySlug(slug);
 
-  return new Response(ics, {
+  if (!event) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  // Expecting your event shape to include:
+  // title, description?, location?, url?, start (ISO), end (ISO)
+  const start = new Date(event.start);
+  const end = new Date(event.end);
+
+  const uid = `${slug}@odiscom.com`;
+  const dtstamp = toIcsUtc(new Date());
+
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//ODISCOM//Industry Calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${dtstamp}`,
+    `DTSTART:${toIcsUtc(start)}`,
+    `DTEND:${toIcsUtc(end)}`,
+    `SUMMARY:${escapeIcsText(event.title)}`,
+    event.location ? `LOCATION:${escapeIcsText(event.location)}` : "",
+    event.description ? `DESCRIPTION:${escapeIcsText(event.description)}` : "",
+    event.url ? `URL:${escapeIcsText(event.url)}` : "",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean);
+
+  const ics = lines.join("\r\n");
+
+  return new NextResponse(ics, {
+    status: 200,
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${e.slug}.ics"`,
+      "Content-Disposition": `inline; filename="${slug}.ics"`,
+      "Cache-Control": "public, max-age=300",
     },
   });
 }
