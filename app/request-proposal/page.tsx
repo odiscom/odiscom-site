@@ -1,69 +1,111 @@
-export default function RequestProposal() {
+export default function Page() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-4xl font-bold tracking-tight">
-        Request a Proposal
-      </h1>
+    <main className="bg-white">
 
-      <p className="mt-4 text-slate-600">
-        Tell us about your project and our team will respond shortly.
-      </p>
+      <section className="mx-auto max-w-3xl px-6 pt-12 pb-16">
 
-      <form className="mt-10 grid gap-6">
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+          Request a Proposal
+        </h1>
 
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            type="text"
-            className="mt-1 w-full rounded-lg border px-4 py-2"
-            placeholder="Your name"
-          />
-        </div>
+        <p className="mt-4 text-slate-600">
+          Tell us about your telecommunications infrastructure project and
+          our team will follow up to discuss scope, timeline, and support.
+        </p>
 
-        <div>
-          <label className="block text-sm font-medium">Company</label>
-          <input
-            type="text"
-            className="mt-1 w-full rounded-lg border px-4 py-2"
-            placeholder="Company name"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="mt-1 w-full rounded-lg border px-4 py-2"
-            placeholder="you@company.com"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Service Needed</label>
-          <select className="mt-1 w-full rounded-lg border px-4 py-2">
-            <option>Telecom Engineering</option>
-            <option>Fiber Infrastructure</option>
-            <option>Tower Services</option>
-            <option>Construction Support</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Project Description</label>
-          <textarea
-            rows={5}
-            className="mt-1 w-full rounded-lg border px-4 py-2"
-            placeholder="Tell us about the project..."
-          />
-        </div>
-
-        <button
-          className="w-fit rounded-lg bg-black px-6 py-3 text-white hover:bg-gray-800"
+        <form
+          action="mailto:owners@odiscom.com"
+          method="post"
+          encType="text/plain"
+          className="mt-8 space-y-6"
         >
-          Submit Request
-        </button>
 
-      </form>
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Company
+            </label>
+            <input
+              type="text"
+              name="company"
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Phone
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Project Type
+            </label>
+
+            <select
+              name="project"
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            >
+              <option>Fiber Engineering</option>
+              <option>Tower Engineering</option>
+              <option>Telecom Construction</option>
+              <option>Program Management</option>
+              <option>Infrastructure Consulting</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-900">
+              Project Details
+            </label>
+
+            <textarea
+              name="message"
+              rows={5}
+              className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+          >
+            Submit Request
+          </button>
+
+        </form>
+
+      </section>
+
     </main>
   );
 }
