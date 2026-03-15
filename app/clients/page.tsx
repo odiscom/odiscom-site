@@ -11,7 +11,7 @@ const clients = [
   { name: "Harmoni Towers", logo: "/logos/harmoni.png" },
   { name: "Nextlink", logo: "/logos/nextlink.png" },
   { name: "Foresight Communications", logo: "/logos/foresight.png" },
-  { name: "EBI", logo: "/logos/ebi.svg" },
+  { name: "EBI", logo: "/logos/ebi.jpeg" },
   { name: "Smartlink", logo: "/logos/smartlink.png" },
   { name: "SONIC", logo: "/logos/sonic.png" },
 ]

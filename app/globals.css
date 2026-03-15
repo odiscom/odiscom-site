@@ -2,70 +2,49 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
-.logo-marquee {
-  animation: scrollLogos 35s linear infinite;
-  width: max-content;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes scrollLogos {
-  from {
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes marquee-scroll {
+  0% {
     transform: translateX(0);
   }
-  to {
+  100% {
     transform: translateX(-50%);
   }
-}/* Odiscom logo marquee (App Router safe) */
-.odiscom-marquee {
-  width: 100%;
-  overflow: hidden;
 }
 
-.odiscom-marquee-track {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: max-content;
-  animation: odiscom-marquee 26s linear infinite;
-  will-change: transform;
+.marquee-track {
+  animation: marquee-scroll 38s linear infinite;
 }
 
-.odiscom-marquee-track:hover {
+.marquee-track:hover {
   animation-play-state: paused;
-}
-
-@keyframes odiscom-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .odiscom-marquee-track {
-    animation: none;
-  }
 }
