@@ -1,11 +1,22 @@
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
 
-const stats = [
-  { label: "Founded", value: "2015" },
-  { label: "Coverage", value: "Nationwide" },
-  { label: "Delivery", value: "Engineering + Construction" },
-  { label: "Response", value: "Rapid mobilization" },
+const services = [
+  {
+    title: "Wireless Engineering",
+    description:
+      "Full A&E services including site design, construction drawings, structural analysis coordination, and permitting for wireless infrastructure.",
+  },
+  {
+    title: "Fiber Engineering",
+    description:
+      "OSP engineering, route design, make-ready coordination, and construction support for long-haul and metro fiber networks.",
+  },
+  {
+    title: "Construction Services",
+    description:
+      "Tower and fiber construction services supporting carriers, utilities, and infrastructure developers across the United States.",
+  },
 ]
 
 const clients = [
@@ -19,122 +30,138 @@ const clients = [
 
 export default function Home() {
   return (
-    <main className="bg-[#f5f7f8] text-slate-900">
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.35fr_0.9fr] lg:items-start">
-          <div>
-            <p className="mb-6 text-[15px] font-medium text-slate-600">
-              Telecommunications • Fiber • Towers • Construction
-            </p>
+    <main className="flex flex-col">
 
-            <h1 className="max-w-4xl text-5xl font-extrabold leading-[0.95] tracking-tight text-[#0b1638] md:text-7xl">
-              Engineering America’s Digital Infrastructure
-            </h1>
+      {/* HERO */}
 
-            <p className="mt-8 max-w-4xl text-xl leading-10 text-slate-600">
-              Odiscom provides telecommunications engineering, fiber
-              infrastructure development, and tower services supporting
-              nationwide network deployment.
-            </p>
+      <section className="bg-[#1f8a84] text-white py-28">
+        <div className="max-w-6xl mx-auto px-6 text-center">
 
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/contact"
-                className="rounded-2xl bg-[#0b1638] px-7 py-4 text-lg font-semibold text-white shadow-sm transition hover:bg-[#148a84]"
-              >
-                Request Proposal
-              </Link>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Telecom Engineering & Infrastructure Construction
+          </h1>
 
-              <Link
-                href="/services"
-                className="rounded-2xl border border-slate-300 bg-white px-7 py-4 text-lg font-semibold text-[#0b1638] shadow-sm transition hover:border-[#148a84] hover:text-[#148a84]"
-              >
-                View Services
-              </Link>
-            </div>
+          <p className="text-lg text-white/90 max-w-3xl mx-auto mb-10">
+            Odiscom provides professional engineering, fielding, and
+            construction services for wireless and fiber networks
+            across the United States.
+          </p>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-                >
-                  <p className="text-sm font-medium text-slate-500">
-                    {stat.label}
-                  </p>
-                  <p className="mt-3 text-2xl font-semibold leading-tight text-[#0b1638]">
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-[#0b1638]">
-              Fiber + Tower delivery, under one roof
-            </h2>
-
-            <p className="mt-6 text-lg leading-9 text-slate-600">
-              Practical design. Field-ready plans. Clean documentation. Safe
-              execution.
-            </p>
-
-            <div className="mt-8 space-y-5 text-lg text-slate-700">
-              <p>• OSP / OSP Engineering</p>
-              <p>• Pole loading + make-ready support</p>
-              <p>• Tower A&amp;E + construction support</p>
-              <p>• Program and vendor coordination</p>
-            </div>
+          <div className="flex justify-center gap-4">
 
             <Link
               href="/contact"
-              className="mt-10 inline-block text-2xl font-semibold text-[#0b1638] transition hover:text-[#148a84]"
+              className="bg-white text-[#1f8a84] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
             >
-              Talk to us →
+              Request a Quote
             </Link>
+
+            <Link
+              href="/services"
+              className="border border-white px-6 py-3 rounded-lg hover:bg-white/10 transition"
+            >
+              View Services
+            </Link>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* SERVICES */}
+
+      <section className="py-20 bg-[#e6f3f2]">
+        <div className="max-w-6xl mx-auto px-6">
+
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Our Services
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-10">
+
+            {services.map((service) => (
+              <div
+                key={service.title}
+                className="p-8 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  {service.title}
+                </h3>
+
+                <p className="text-gray-700 leading-relaxed">
+                  {service.description}
+                </p>
+              </div>
+            ))}
+
           </div>
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight text-[#0b1638] md:text-5xl">
-                Trusted by telecommunications operators and infrastructure owners
-              </h2>
-              <p className="mt-4 text-xl text-slate-600">
-                Selected clients and partners.
-              </p>
-            </div>
 
-            <Link
-              href="/clients"
-              className="text-xl font-semibold text-[#0b1638] transition hover:text-[#148a84]"
-            >
-              View Clients →
-            </Link>
-          </div>
+      {/* CLIENTS */}
 
-          <div className="grid grid-cols-2 gap-8 border-t border-slate-200 pt-10 md:grid-cols-3 lg:grid-cols-6">
+      <section className="py-20 bg-white">
+
+        <div className="max-w-6xl mx-auto px-6">
+
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+            Trusted By Industry Leaders
+          </h2>
+
+          <p className="text-center text-gray-600 mb-12">
+            Selected clients and infrastructure partners.
+          </p>
+
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-10 items-center">
+
             {clients.map((client) => (
-              <div
-                key={client.alt}
-                className="flex min-h-[80px] items-center justify-center"
-              >
+              <div key={client.alt} className="flex justify-center">
+
                 <Image
                   src={client.src}
                   alt={client.alt}
-                  width={150}
-                  height={70}
-                  className="h-auto max-h-[52px] w-auto object-contain opacity-80 transition hover:opacity-100"
+                  width={140}
+                  height={60}
+                  className="object-contain opacity-80 hover:opacity-100 transition"
                 />
+
               </div>
             ))}
+
           </div>
+
         </div>
       </section>
+
+
+      {/* CTA */}
+
+      <section className="bg-[#0b1638] text-white py-20">
+
+        <div className="max-w-5xl mx-auto text-center px-6">
+
+          <h2 className="text-3xl font-bold mb-6">
+            Ready to Build Your Next Telecom Project?
+          </h2>
+
+          <p className="text-lg text-white/90 mb-8">
+            Our engineering and construction teams support telecom
+            operators, utilities, and infrastructure developers nationwide.
+          </p>
+
+          <Link
+            href="/contact"
+            className="bg-white text-[#0b1638] font-semibold px-8 py-4 rounded-lg hover:bg-gray-100 transition"
+          >
+            Contact Odiscom
+          </Link>
+
+        </div>
+
+      </section>
+
     </main>
   )
 }
