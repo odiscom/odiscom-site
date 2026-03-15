@@ -19,7 +19,6 @@ const clients = [
 export default function ClientsPage() {
   return (
     <main className="bg-white text-slate-900">
-      {/* HERO */}
       <section className="relative h-[520px] w-full overflow-hidden">
         <Image
           src="/images/Towers/South_Tower.jpg"
@@ -57,7 +56,6 @@ export default function ClientsPage() {
         </div>
       </section>
 
-      {/* CLIENT LOGO GRID */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
           <div className="mb-12 max-w-3xl">
@@ -94,7 +92,6 @@ export default function ClientsPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
