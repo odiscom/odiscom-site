@@ -22,11 +22,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-
-        {/* LOGO */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logos/odiscom-logo.png"
+            src="/logos/odiscom.png"
             alt="Odiscom"
             width={170}
             height={40}
@@ -34,7 +32,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* NAVIGATION */}
         <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => {
             const active = pathname === item.href
@@ -55,9 +52,7 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* CTA */}
         <div className="flex items-center gap-4">
-
           <a
             href={`tel:${COMPANY.phoneLink}`}
             className="hidden text-sm font-medium text-slate-700 hover:text-[#1f8a84] md:block"
@@ -71,9 +66,7 @@ export default function Navbar() {
           >
             Request Proposal
           </Link>
-
         </div>
-
       </div>
     </header>
   )

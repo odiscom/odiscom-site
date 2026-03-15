@@ -6,7 +6,6 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-[#0f6f6a] text-white">
       <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Company */}
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">
               Odiscom
@@ -21,7 +20,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Navigation */}
           <div>
             <h4 className="text-lg font-semibold">Quick Links</h4>
 
@@ -31,31 +29,26 @@ export default function Footer() {
                   Home
                 </Link>
               </div>
-
               <div>
                 <Link href="/services" className="transition hover:text-white">
                   Services
                 </Link>
               </div>
-
               <div>
                 <Link href="/projects" className="transition hover:text-white">
                   Projects
                 </Link>
               </div>
-
               <div>
                 <Link href="/clients" className="transition hover:text-white">
                   Clients
                 </Link>
               </div>
-
               <div>
                 <Link href="/events" className="transition hover:text-white">
                   Events
                 </Link>
               </div>
-
               <div>
                 <Link href="/contact" className="transition hover:text-white">
                   Contact
@@ -64,7 +57,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="text-lg font-semibold">Contact</h4>
 
@@ -106,7 +98,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Social */}
           <div>
             <h4 className="text-lg font-semibold">Connect</h4>
 
@@ -139,7 +130,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="mt-12 border-t border-white/15 pt-5 text-sm text-white/65">
           © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
         </div>
