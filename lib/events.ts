@@ -1,5 +1,5 @@
-import { getSupabaseClient } from "@/lib/supabase"
-import type { EventItem } from "@/types/event"
+import { getSupabaseClient } from "./supabase"
+import type { EventItem } from "../types/event"
 
 export async function getFeaturedEvents(): Promise<EventItem[]> {
   try {
