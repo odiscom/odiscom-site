@@ -1,294 +1,196 @@
-// app/events/calendar/page.tsx
-import Link from "next/link";
-import {
-  eventsByDayMap,
-  eventsForMonth,
-  formatMonthTitle,
-  parseMonthParam,
-  addMonths,
-  monthKey,
-  formatTimeRange,
-} from "@/lib/events";
+import Link from "next/link"
+import { getUpcomingEvents } from "@/lib/events"
 
-type SearchParams = Record<string, string | string[] | undefined>;
-type Props = { searchParams?: SearchParams };
+export const dynamic = "force-dynamic"
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+type SearchParams = Promise<{
+  month?: string
+}>
 
-function one(v: string | string[] | undefined) {
-  return Array.isArray(v) ? v[0] : v;
+function monthKeyFromDate(date: Date) {
+  const year = date.getUTCFullYear()
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+  return `${year}-${month}`
 }
 
-function buildCalendarGrid(year: number, monthIndex: number) {
-  const firstOfMonth = new Date(year, monthIndex, 1);
-  const startDay = firstOfMonth.getDay(); // 0 Sun..6 Sat
-
-  // grid starts on Sunday
-  const gridStart = new Date(year, monthIndex, 1 - startDay);
-
-  const days: Date[] = [];
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(gridStart);
-    d.setDate(gridStart.getDate() + i);
-    days.push(d);
+function parseMonthOrDefault(raw?: string) {
+  if (raw && /^\d{4}-\d{2}$/.test(raw)) {
+    const [year, month] = raw.split("-").map(Number)
+    if (month >= 1 && month <= 12) {
+      return new Date(Date.UTC(year, month - 1, 1))
+    }
   }
-  return days;
+
+  const now = new Date()
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
 }
 
-function dayKey(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+function addMonths(date: Date, amount: number) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + amount, 1))
 }
 
-export default function Page({ searchParams }: Props) {
-  // Normalize query params (handles string[] cases)
-  const monthParam = one(searchParams?.month);
-  const viewParam = one(searchParams?.view);
+function formatMonthTitle(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  })
+}
 
-  const { year, monthIndex } = parseMonthParam(monthParam);
-  const view: "month" | "list" = viewParam === "list" ? "list" : "month";
+function formatDateRange(start: string, end: string | null) {
+  const startDate = new Date(`${start}T00:00:00Z`)
+  const endDate = end ? new Date(`${end}T00:00:00Z`) : null
 
-  const title = formatMonthTitle(year, monthIndex);
+  const startText = startDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  })
 
-  const evts = eventsForMonth(year, monthIndex);
-  const byDay = eventsByDayMap(evts);
+  if (!endDate) return startText
 
-  const grid = buildCalendarGrid(year, monthIndex);
-  const prev = addMonths(year, monthIndex, -1);
-  const next = addMonths(year, monthIndex, 1);
+  const endText = endDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  })
 
-  const baseMonth = monthKey(year, monthIndex);
+  return `${startText} – ${endText}`
+}
 
-  const hrefWith = (m: string, v: "month" | "list") => `/events/calendar?month=${m}&view=${v}`;
+function formatLocation(
+  venue: string | null,
+  city: string | null,
+  state: string | null
+) {
+  const place = [city, state].filter(Boolean).join(", ")
+  if (venue && place) return `${venue} • ${place}`
+  return venue || place || "Location TBA"
+}
+
+export default async function EventsCalendarPage({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
+  const resolvedSearchParams = await searchParams
+  const selectedMonth = parseMonthOrDefault(resolvedSearchParams.month)
+  const prevMonth = addMonths(selectedMonth, -1)
+  const nextMonth = addMonths(selectedMonth, 1)
+
+  const allEvents = await getUpcomingEvents()
+
+  const selectedKey = monthKeyFromDate(selectedMonth)
+
+  const monthEvents = allEvents.filter((event) => {
+    const eventDate = new Date(`${event.start_date}T00:00:00Z`)
+    return monthKeyFromDate(eventDate) === selectedKey
+  })
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-10">
-      <div className="flex flex-col gap-6">
-        {/* Header row */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Events Calendar</h1>
-            <p className="mt-1 text-sm text-slate-600">
-              {view === "month" ? "Month view" : "List view"} • Click an event for details
-            </p>
-          </div>
+    <main className="bg-white text-slate-900">
+      <section className="border-b border-slate-200 bg-[#f7fbfb]">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+            Events Calendar
+          </p>
 
-          <div className="flex flex-wrap items-center gap-3">
-            {/* View toggle */}
-            <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
-              <Link
-                href={hrefWith(baseMonth, "month")}
-                className={[
-                  "rounded-lg px-3 py-1.5 text-sm font-semibold",
-                  view === "month"
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-700 hover:bg-slate-50",
-                ].join(" ")}
-              >
-                Month
-              </Link>
-              <Link
-                href={hrefWith(baseMonth, "list")}
-                className={[
-                  "rounded-lg px-3 py-1.5 text-sm font-semibold",
-                  view === "list"
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-700 hover:bg-slate-50",
-                ].join(" ")}
-              >
-                List
-              </Link>
+          <div className="mt-4 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
+                {formatMonthTitle(selectedMonth)}
+              </h1>
+
+              <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+                Browse telecom, fiber, wireless, tower, and broadband events for
+                this month.
+              </p>
             </div>
 
-            {/* Month navigation */}
-            <div className="flex items-center gap-2">
+            <div className="flex gap-3">
               <Link
-                href={hrefWith(monthKey(prev.year, prev.monthIndex), view)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                href={`/events/calendar?month=${monthKeyFromDate(prevMonth)}`}
+                className="rounded-full border border-slate-300 px-5 py-3 font-semibold text-slate-900 transition hover:border-[#1f8a84] hover:text-[#1f8a84]"
               >
-                ← Prev
+                ← Previous
               </Link>
 
-              <div className="min-w-[220px] text-center text-sm font-semibold text-slate-900">
-                {title}
-              </div>
-
               <Link
-                href={hrefWith(monthKey(next.year, next.monthIndex), view)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                href={`/events/calendar?month=${monthKeyFromDate(nextMonth)}`}
+                className="rounded-full border border-slate-300 px-5 py-3 font-semibold text-slate-900 transition hover:border-[#1f8a84] hover:text-[#1f8a84]"
               >
                 Next →
               </Link>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Content */}
-        {view === "month" ? (
-          <MonthGrid monthIndex={monthIndex} grid={grid} byDay={byDay} />
-        ) : (
-          <ListView year={year} monthIndex={monthIndex} evts={evts} />
-        )}
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        {monthEvents.length > 0 ? (
+          <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+            {monthEvents.map((event, index) => (
+              <div
+                key={event.id}
+                className={`grid gap-4 px-6 py-6 md:grid-cols-[180px_1fr_220px] md:items-center ${
+                  index !== monthEvents.length - 1 ? "border-b border-slate-200" : ""
+                }`}
+              >
+                <div className="font-semibold text-[#1f8a84]">
+                  {formatDateRange(event.start_date, event.end_date)}
+                </div>
 
-        <div className="text-center text-xs text-slate-500">
-          Want your calendar syndicated? We can add an iCal feed and publish it.
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function MonthGrid({
-  monthIndex,
-  grid,
-  byDay,
-}: {
-  monthIndex: number;
-  grid: Date[];
-  byDay: Map<string, { slug: string; title: string }[]>;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      {/* Weekday header */}
-      <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
-        {WEEKDAYS.map((d) => (
-          <div key={d} className="px-3 py-2 text-xs font-semibold text-slate-600">
-            {d}
-          </div>
-        ))}
-      </div>
-
-      {/* Day cells */}
-      <div className="grid grid-cols-7">
-        {grid.map((d) => {
-          const inMonth = d.getMonth() === monthIndex;
-          const key = dayKey(d);
-          const dayEvents = byDay.get(key) ?? [];
-
-          return (
-            <div
-              key={key}
-              className={[
-                "min-h-[120px] border-b border-r border-slate-200 p-3",
-                !inMonth ? "bg-slate-50/60" : "bg-white",
-              ].join(" ")}
-            >
-              <div className="text-sm font-semibold">
-                <span className={inMonth ? "text-slate-900" : "text-slate-400"}>{d.getDate()}</span>
-              </div>
-
-              <div className="mt-2 space-y-2">
-                {dayEvents.slice(0, 3).map((e) => (
+                <div>
                   <Link
-                    key={e.slug}
-                    href={`/events/${e.slug}`}
-                    className="block rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-900 hover:bg-slate-100"
-                    title={e.title}
+                    href={`/events/${event.slug}`}
+                    className="text-lg font-semibold hover:text-[#1f8a84]"
                   >
-                    {e.title}
+                    {event.title}
                   </Link>
-                ))}
 
-                {dayEvents.length > 3 && (
-                  <div className="text-xs font-medium text-slate-500">+{dayEvents.length - 3} more</div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+                  <p className="mt-1 text-slate-600">
+                    {formatLocation(event.venue, event.city, event.state)}
+                  </p>
+                </div>
 
-function ListView({
-  year,
-  monthIndex,
-  evts,
-}: {
-  year: number;
-  monthIndex: number;
-  evts: {
-    slug: string;
-    title: string;
-    startsAt: string;
-    endsAt: string;
-    location?: string;
-    cityState?: string;
-  }[];
-}) {
-  const fmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" });
+                <div className="md:text-right">
+                  <p className="text-sm font-medium text-slate-500">
+                    {event.category}
+                  </p>
 
-  // group by day (start date)
-  const groups = new Map<string, typeof evts>();
-  for (const e of evts) {
-    const d = new Date(e.startsAt);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    const arr = groups.get(key) ?? [];
-    arr.push(e);
-    groups.set(key, arr);
-  }
-
-  const orderedDays = Array.from(groups.keys()).sort((a, b) => +new Date(a) - +new Date(b));
-
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
-        <div className="text-sm font-semibold text-slate-900">
-          Events in {formatMonthTitle(year, monthIndex)}
-        </div>
-        <div className="mt-1 text-xs text-slate-600">
-          {evts.length === 0 ? "No events scheduled." : `${evts.length} event${evts.length === 1 ? "" : "s"}`}
-        </div>
-      </div>
-
-      <div className="divide-y divide-slate-200">
-        {orderedDays.length === 0 ? (
-          <div className="px-5 py-8 text-sm text-slate-600">No events scheduled for this month.</div>
-        ) : (
-          orderedDays.map((day) => {
-            const dayDate = new Date(day + "T00:00:00");
-            const label = fmt.format(dayDate);
-            const dayEvents = (groups.get(day) ?? []).slice().sort((a, b) => +new Date(a.startsAt) - +new Date(b.startsAt));
-
-            return (
-              <div key={day} className="px-5 py-5">
-                <div className="text-sm font-bold text-slate-900">{label}</div>
-
-                <div className="mt-3 space-y-3">
-                  {dayEvents.map((e) => (
-                    <div
-                      key={e.slug}
-                      className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white p-4 hover:bg-slate-50"
-                    >
-                      <Link href={`/events/${e.slug}`} className="text-sm font-semibold text-slate-900 hover:underline">
-                        {e.title}
-                      </Link>
-
-                      <div className="text-xs text-slate-600">
-                        {formatTimeRange(e.startsAt, e.endsAt)}
-                        {(e.location || e.cityState) && (
-                          <>
-                            {" • "}
-                            {e.location ? e.location : ""}
-                            {e.location && e.cityState ? " — " : ""}
-                            {e.cityState ? e.cityState : ""}
-                          </>
-                        )}
-                      </div>
-
-                      <div className="pt-1">
-                        <Link href={`/events/${e.slug}`} className="text-xs font-semibold text-slate-900 hover:underline">
-                          View details →
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
+                  <a
+                    href={event.official_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block text-sm font-semibold text-[#1f8a84] hover:text-[#18716c]"
+                  >
+                    Official Site ↗
+                  </a>
                 </div>
               </div>
-            );
-          })
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
+            <h2 className="text-2xl font-semibold">
+              No events found for {formatMonthTitle(selectedMonth)}
+            </h2>
+
+            <p className="mt-4 text-slate-600">
+              Try the previous or next month, or return to the full events page.
+            </p>
+
+            <div className="mt-8">
+              <Link
+                href="/events"
+                className="rounded-full bg-[#1f8a84] px-6 py-3 font-semibold text-white transition hover:bg-[#18716c]"
+              >
+                Back to Events
+              </Link>
+            </div>
+          </div>
         )}
-      </div>
-    </div>
-  );
+      </section>
+    </main>
+  )
 }
