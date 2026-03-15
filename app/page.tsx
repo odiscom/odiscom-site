@@ -21,9 +21,9 @@ const services = [
 
 const clients = [
   { src: "/logos/att.png", alt: "AT&T" },
-  { src: "/logos/Verizon.png", alt: "Verizon" },
-  { src: "/logos/Zayo.svg", alt: "Zayo" },
-  { src: "/logos/EBI.svg", alt: "EBI" },
+  { src: "/logos/verizon.png", alt: "Verizon" },
+  { src: "/logos/zayo.svg", alt: "Zayo" },
+  { src: "/logos/ebi.svg", alt: "EBI" },
   { src: "/logos/smartlink.png", alt: "Smartlink" },
   { src: "/logos/sonic.png", alt: "SONIC" },
 ]
@@ -42,23 +42,22 @@ export default function Home() {
           </h1>
 
           <p className="text-lg text-white/90 max-w-3xl mx-auto mb-10">
-            Odiscom provides professional engineering, fielding, and
-            construction services for wireless and fiber networks
-            across the United States.
+            Odiscom provides professional engineering, fielding, and construction
+            services for wireless and fiber networks across the United States.
           </p>
 
           <div className="flex justify-center gap-4">
 
             <Link
               href="/contact"
-              className="bg-white text-[#1f8a84] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+              className="bg-white text-[#1f8a84] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100"
             >
               Request a Quote
             </Link>
 
             <Link
               href="/services"
-              className="border border-white px-6 py-3 rounded-lg hover:bg-white/10 transition"
+              className="border border-white px-6 py-3 rounded-lg hover:bg-white/10"
             >
               View Services
             </Link>
@@ -83,13 +82,13 @@ export default function Home() {
             {services.map((service) => (
               <div
                 key={service.title}
-                className="p-8 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
+                className="p-8 bg-white border rounded-xl shadow-sm hover:shadow-md transition"
               >
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   {service.title}
                 </h3>
 
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700">
                   {service.description}
                 </p>
               </div>
@@ -147,13 +146,13 @@ export default function Home() {
           </h2>
 
           <p className="text-lg text-white/90 mb-8">
-            Our engineering and construction teams support telecom
-            operators, utilities, and infrastructure developers nationwide.
+            Our engineering and construction teams support telecom operators,
+            utilities, and infrastructure developers nationwide.
           </p>
 
           <Link
             href="/contact"
-            className="bg-white text-[#0b1638] font-semibold px-8 py-4 rounded-lg hover:bg-gray-100 transition"
+            className="bg-white text-[#0b1638] font-semibold px-8 py-4 rounded-lg hover:bg-gray-100"
           >
             Contact Odiscom
           </Link>
