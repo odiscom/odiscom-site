@@ -1,48 +1,52 @@
-import Link from "next/link";
+import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-slate-100">
-      <div className="mx-auto max-w-7xl px-6 py-10">
+    <footer className="bg-[#1f8a84] text-white">
 
-        <div className="grid gap-8 md:grid-cols-3">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-3">
 
-          <div>
-            <h3 className="text-lg font-semibold">ODISCOM</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Telecommunications engineering and infrastructure support
-              serving operators, tower owners, and broadband programs
-              nationwide.
-            </p>
-          </div>
+        <div>
+          <h3 className="text-2xl font-bold">ODISCOM</h3>
 
-          <div>
-            <h4 className="font-semibold">Company</h4>
-            <ul className="mt-2 space-y-2 text-sm text-slate-600">
-              <li><Link href="/services">Services</Link></li>
-              <li><Link href="/clients">Clients</Link></li>
-              <li><Link href="/careers">Careers</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold">Headquarters</h4>
-            <p className="mt-2 text-sm text-slate-600">
-              League City, Texas
-            </p>
-            <p className="text-sm text-slate-600">
-              AT&T Vendor ID: 6345PBB
-            </p>
-          </div>
-
+          <p className="mt-4 max-w-sm text-white/90">
+            Telecommunications engineering, fiber infrastructure development,
+            tower services, and construction support nationwide.
+          </p>
         </div>
 
-        <div className="mt-8 border-t pt-6 text-sm text-slate-500">
-          © {new Date().getFullYear()} Odiscom. All rights reserved.
+        <div>
+          <h4 className="text-lg font-semibold">Quick Links</h4>
+
+          <div className="mt-4 space-y-3 text-white/90">
+            <div><Link href="/services">Services</Link></div>
+            <div><Link href="/projects">Projects</Link></div>
+            <div><Link href="/clients">Clients</Link></div>
+            <div><Link href="/contact">Contact</Link></div>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-lg font-semibold">Contact</h4>
+
+          <div className="mt-4 space-y-3 text-white/90">
+            <p>
+              2600 S Shore Blvd, Suite 300<br/>
+              League City, TX 77573
+            </p>
+
+            <p>214-392-3490</p>
+
+            <p>owners@odiscom.com</p>
+          </div>
         </div>
 
       </div>
+
+      <div className="border-t border-white/20 px-6 py-4 text-center text-sm text-white/80">
+        © {new Date().getFullYear()} Odiscom LLC. All rights reserved.
+      </div>
+
     </footer>
-  );
+  )
 }

@@ -1,159 +1,126 @@
-import Image from "next/image"
-import Link from "next/link"
-
-const services = [
-  {
-    title: "Wireless Engineering",
-    description:
-      "Full A&E services including site design, construction drawings, structural analysis coordination, and permitting for wireless infrastructure.",
-  },
-  {
-    title: "Fiber Engineering",
-    description:
-      "OSP engineering, route design, make-ready coordination, and construction support for long-haul and metro fiber networks.",
-  },
-  {
-    title: "Construction Services",
-    description:
-      "Tower and fiber construction services supporting carriers, utilities, and infrastructure developers across the United States.",
-  },
-]
-
-const clients = [
-  { src: "/logos/att.png", alt: "AT&T" },
-  { src: "/logos/Verizon.png", alt: "Verizon" },
-  { src: "/logos/Zayo.svg", alt: "Zayo" },
-  { src: "/logos/EBI.svg", alt: "EBI" },
-  { src: "/logos/smartlink.png", alt: "Smartlink" },
-  { src: "/logos/sonic.png", alt: "SONIC" },
-]
-
-export default function Home() {
+export default function ContactPage() {
   return (
-    <main className="flex flex-col">
-
-      {/* HERO */}
-
-      <section className="bg-[#148a84] text-white py-24">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Telecom Engineering & Infrastructure Construction
+    <main className="bg-[#e6f3f2] py-20">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mb-14 text-center">
+          <h1 className="text-4xl font-bold text-[#0b1638] md:text-5xl">
+            Contact Odiscom
           </h1>
-
-          <p className="text-lg text-white/90 max-w-3xl mx-auto mb-8">
-            Odiscom provides professional engineering, fielding, and construction
-            services for wireless and fiber networks across the United States.
+          <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-700">
+            Speak with our team about wireless engineering, fiber infrastructure,
+            tower work, permitting, fielding, or construction support.
           </p>
-
-          <div className="flex justify-center gap-4">
-
-            <Link
-              href="/contact"
-              className="bg-white text-[#148a84] hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold"
-            >
-              Request a Quote
-            </Link>
-
-            <Link
-              href="/services"
-              className="border border-white px-6 py-3 rounded-lg"
-            >
-              View Services
-            </Link>
-
-          </div>
         </div>
-      </section>
 
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <h2 className="text-2xl font-semibold text-[#0b1638]">
+              Get in Touch
+            </h2>
 
-      {/* SERVICES */}
+            <p className="mt-4 leading-8 text-slate-700">
+              Odiscom supports telecommunications operators, utilities,
+              infrastructure owners, and program partners across the United
+              States.
+            </p>
 
-      <section className="py-20 bg-[#e8f5f3]">
-        <div className="max-w-6xl mx-auto px-6">
-
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Our Services
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-10">
-
-            {services.map((service) => (
-              <div
-                key={service.title}
-                className="p-8 bg-white border rounded-xl shadow-sm hover:shadow-md transition"
-              >
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  {service.title}
-                </h3>
-
-                <p className="text-gray-700">
-                  {service.description}
+            <div className="mt-8 space-y-6 text-slate-800">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Company
+                </p>
+                <p className="mt-1 text-lg font-medium text-[#0b1638]">
+                  Odiscom LLC
                 </p>
               </div>
-            ))}
 
-          </div>
-        </div>
-      </section>
-
-
-      {/* CLIENTS */}
-
-      <section className="py-20 bg-[#148a84]">
-
-        <div className="max-w-6xl mx-auto px-6">
-
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
-            Trusted By Industry Leaders
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 items-center">
-
-            {clients.map((client) => (
-              <div key={client.alt} className="flex justify-center">
-
-                <Image
-                  src={client.src}
-                  alt={client.alt}
-                  width={140}
-                  height={60}
-                  className="object-contain brightness-0 invert opacity-90"
-                />
-
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Headquarters
+                </p>
+                <p className="mt-1 text-lg text-[#0b1638]">
+                  2600 S Shore Blvd, Suite 300
+                  <br />
+                  League City, TX 77573
+                </p>
               </div>
-            ))}
 
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Phone
+                </p>
+                <p className="mt-1 text-lg font-medium text-[#0b1638]">
+                  214-392-3490
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Email
+                </p>
+                <p className="mt-1 text-lg font-medium text-[#0b1638]">
+                  owners@odiscom.com
+                </p>
+              </div>
+            </div>
           </div>
+
+          <form className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="grid gap-6">
+              <div>
+                <label className="mb-2 block font-medium text-[#0b1638]">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-[#1f8a84] focus:outline-none focus:ring-2 focus:ring-[#1f8a84]/20"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-medium text-[#0b1638]">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-[#1f8a84] focus:outline-none focus:ring-2 focus:ring-[#1f8a84]/20"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-medium text-[#0b1638]">
+                  Company
+                </label>
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-[#1f8a84] focus:outline-none focus:ring-2 focus:ring-[#1f8a84]/20"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-medium text-[#0b1638]">
+                  Message
+                </label>
+                <textarea
+                  rows={6}
+                  placeholder="Tell us about your project"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-[#1f8a84] focus:outline-none focus:ring-2 focus:ring-[#1f8a84]/20"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="rounded-xl bg-[#0b1638] px-6 py-3 font-semibold text-white transition hover:bg-[#1f8a84]"
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
-      </section>
-
-
-      {/* CTA */}
-
-      <section className="bg-[#0f3d44] text-white py-20">
-
-        <div className="max-w-5xl mx-auto text-center px-6">
-
-          <h2 className="text-3xl font-bold mb-6">
-            Ready to Build Your Next Telecom Project?
-          </h2>
-
-          <p className="mb-8 text-lg text-white/90">
-            Our team supports telecom operators, utilities, and infrastructure
-            developers with engineering and construction services nationwide.
-          </p>
-
-          <Link
-            href="/contact"
-            className="bg-white text-[#0f3d44] font-semibold px-8 py-4 rounded-lg"
-          >
-            Contact Odiscom
-          </Link>
-
-        </div>
-      </section>
-
+      </div>
     </main>
   )
 }

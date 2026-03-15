@@ -1,157 +1,127 @@
-import Link from "next/link";
+import Link from "next/link"
 
-export default function Page() {
+const serviceGroups = [
+  {
+    title: "Wireless Engineering",
+    intro:
+      "Design and engineering support for macro, small cell, and related wireless infrastructure projects.",
+    items: [
+      "Site design and construction drawings",
+      "Equipment layouts and mount details",
+      "Structural coordination and drawing support",
+      "Permitting and jurisdictional support",
+      "Utility coordination and field verification",
+    ],
+  },
+  {
+    title: "Fiber Engineering",
+    intro:
+      "OSP engineering and field-ready documentation supporting metro, middle-mile, and long-haul deployments.",
+    items: [
+      "Route design and engineered plan sets",
+      "Pole loading and make-ready support",
+      "Aerial and underground design packages",
+      "Fielding and constructability review",
+      "Permit packages and utility coordination",
+    ],
+  },
+  {
+    title: "Tower & Infrastructure",
+    intro:
+      "Practical support for tower modifications, telecom upgrades, and infrastructure modernization work.",
+    items: [
+      "Tower A&E drawing packages",
+      "Equipment replacement and upgrade support",
+      "Power, grounding, and site coordination",
+      "Site walks and conditions validation",
+      "Construction documentation support",
+    ],
+  },
+  {
+    title: "Construction Services",
+    intro:
+      "Execution support for telecom construction scopes with a focus on safety, documentation, and delivery.",
+    items: [
+      "Tower construction and modification support",
+      "Fiber construction coordination",
+      "Field supervision and vendor coordination",
+      "Project mobilization and schedule alignment",
+      "Closeout documentation and as-builts",
+    ],
+  },
+]
+
+export default function ServicesPage() {
   return (
-    <main className="bg-white">
-
-      {/* HERO */}
-      <section className="mx-auto max-w-7xl px-6 pt-12 pb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-          Telecommunications Infrastructure Services
-        </h1>
-
-        <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          Odiscom provides engineering, infrastructure development, and construction
-          support services for telecommunications networks across the United States.
-          Our teams support carriers, tower companies, ISPs, utilities, and public
-          sector infrastructure programs.
-        </p>
-      </section>
+    <main className="bg-[#f5f7f8] text-slate-900">
 
       {/* SERVICES GRID */}
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
-          <ServiceCard
-            title="Fiber Engineering"
-            description="OSP route design, permitting support, make-ready engineering, and construction drawing packages for metro and long-haul fiber networks."
-            items={[
-              "OSP route design",
-              "Pole loading analysis",
-              "Make-ready engineering",
-              "Permit and utility coordination",
-              "Construction plan sets",
-            ]}
-          />
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-8 md:grid-cols-2">
 
-          <ServiceCard
-            title="Tower Engineering"
-            description="Engineering and structural coordination services supporting tower modifications, equipment installations, and infrastructure upgrades."
-            items={[
-              "Structural analysis",
-              "Mount design",
-              "Equipment upgrades",
-              "A&E services",
-              "Construction drawings",
-            ]}
-          />
+          {serviceGroups.map((group) => (
+            <div
+              key={group.title}
+              className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+            >
+              <h3 className="text-2xl font-bold text-[#1f8a84]">
+                {group.title}
+              </h3>
 
-          <ServiceCard
-            title="Telecom Construction"
-            description="Field execution support for telecommunications infrastructure deployments including fiber builds, tower upgrades, and network expansions."
-            items={[
-              "Fiber deployment",
-              "Tower modifications",
-              "Equipment installation",
-              "Field supervision",
-              "Construction coordination",
-            ]}
-          />
+              <p className="mt-4 text-slate-600 leading-8">
+                {group.intro}
+              </p>
 
-          <ServiceCard
-            title="Program Management"
-            description="Coordination of complex telecommunications infrastructure deployments across multiple markets and vendors."
-            items={[
-              "Deployment scheduling",
-              "Vendor coordination",
-              "Budget tracking",
-              "QA/QC oversight",
-              "Project reporting",
-            ]}
-          />
-
-          <ServiceCard
-            title="Infrastructure Consulting"
-            description="Strategic planning and advisory services for telecommunications operators, infrastructure investors, and network builders."
-            items={[
-              "Network expansion planning",
-              "Infrastructure strategy",
-              "Program development",
-              "Vendor evaluation",
-              "Deployment planning",
-            ]}
-          />
-
-          <ServiceCard
-            title="Government Infrastructure Support"
-            description="Engineering and infrastructure services supporting broadband expansion, federal infrastructure programs, and public-sector telecommunications initiatives."
-            items={[
-              "Broadband program support",
-              "Infrastructure engineering",
-              "Federal project coordination",
-              "Grant-funded deployment support",
-              "Program compliance",
-            ]}
-          />
+              <ul className="mt-6 space-y-3">
+                {group.items.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#1f8a84]" />
+                    <span className="text-slate-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="border-t bg-slate-50">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+      {/* CTA SECTION */}
 
-          <h2 className="text-2xl font-bold text-slate-900">
-            Ready to start a project?
+      <section className="bg-[#1f8a84] text-white">
+        <div className="mx-auto max-w-5xl px-6 py-16 text-center">
+
+          <h2 className="text-3xl font-bold md:text-4xl">
+            Need a telecom engineering or construction partner?
           </h2>
 
-          <p className="mt-2 text-slate-600">
-            Contact Odiscom to discuss your telecommunications infrastructure needs.
+          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/90">
+            Tell us about your market, scope, and timeline. We'll help define
+            the right delivery approach for your project.
           </p>
 
-          <div className="mt-6 flex justify-center gap-4">
-            <Link
-              href="/request-proposal"
-              className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-            >
-              Request Proposal
-            </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
 
             <Link
               href="/contact"
-              className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              className="rounded-xl bg-white px-6 py-3 font-semibold text-[#1f8a84] hover:bg-gray-100"
             >
-              Contact Us
+              Contact Odiscom
             </Link>
+
+            <Link
+              href="/clients"
+              className="rounded-xl border border-white px-6 py-3 font-semibold text-white hover:bg-white/10"
+            >
+              View Clients
+            </Link>
+
           </div>
 
         </div>
       </section>
 
     </main>
-  );
-}
-
-function ServiceCard({
-  title,
-  description,
-  items,
-}: {
-  title: string;
-  description: string;
-  items: string[];
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-
-      <p className="mt-2 text-sm text-slate-600">{description}</p>
-
-      <ul className="mt-4 space-y-1 text-sm text-slate-700">
-        {items.map((item) => (
-          <li key={item}>• {item}</li>
-        ))}
-      </ul>
-    </div>
-  );
+  )
 }
