@@ -4,7 +4,7 @@ import Link from "next/link"
 const trustedLogos = [
   { name: "AT&T", logo: "/logos/att.png" },
   { name: "Verizon", logo: "/logos/Verizon.png" },
-  { name: "Zayo", logo: "/logos/Zayo.svg" },
+  { name: "Zayo", logo: "/logos/zayo.png" },
   { name: "TDS Telecommunications", logo: "/logos/TDS.png" },
   { name: "ADB-US", logo: "/logos/adb.png" },
   { name: "Squan", logo: "/logos/squan.png" },
@@ -16,7 +16,7 @@ const trustedLogos = [
   { name: "SONIC", logo: "/logos/sonic.png" },
 ]
 
-export default function Home() {
+export default function HomePage() {
   const marqueeLogos = [...trustedLogos, ...trustedLogos]
 
   return (
@@ -66,14 +66,14 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="rounded-full bg-[#1f8a84] px-7 py-4 text-lg font-semibold text-white hover:bg-[#18716c]"
+                className="rounded-full bg-[#1f8a84] px-7 py-4 text-lg font-semibold text-white transition hover:bg-[#18716c]"
               >
                 Request Proposal
               </Link>
 
               <Link
                 href="/services"
-                className="rounded-full border border-white/80 px-7 py-4 text-lg font-semibold text-white hover:bg-white/10"
+                className="rounded-full border border-white/80 px-7 py-4 text-lg font-semibold text-white transition hover:bg-white/10"
               >
                 View Services
               </Link>
@@ -98,26 +98,26 @@ export default function Home() {
 
             <Link
               href="/clients"
-              className="hidden text-sm font-semibold text-[#1f8a84] hover:text-[#18716c] md:block"
+              className="hidden text-sm font-semibold text-[#1f8a84] transition hover:text-[#18716c] md:block"
             >
               View All Clients →
             </Link>
           </div>
 
           <div className="relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-gradient-to-r from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-white to-transparent" />
 
             <div className="marquee-track flex w-max items-center gap-4">
               {marqueeLogos.map((client, index) => (
                 <div
                   key={`${client.name}-${index}`}
-                  className="flex h-36 w-[450px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-[#edf8f7] px-6"
+                  className="flex h-24 w-[280px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-[#edf8f7] px-6"
                 >
                   <img
                     src={client.logo}
                     alt={client.name}
-                    className="block max-h-[54px] max-w-[280px] object-contain"
+                    className="block max-h-[42px] max-w-[180px] object-contain"
                   />
                 </div>
               ))}
@@ -141,7 +141,8 @@ export default function Home() {
 
             <p className="mt-5 text-lg leading-8 text-slate-600">
               Odiscom delivers engineering, fielding, and construction support
-              built for real-world deployment across telecommunications programs.
+              built for real-world deployment across telecommunications
+              programs.
             </p>
           </div>
 
@@ -157,7 +158,7 @@ export default function Home() {
 
               <p className="mt-4 leading-8 text-slate-600">
                 Route development, utility coordination, make-ready support,
-                fielding, and plan production.
+                fielding, and plan production aligned with deployment needs.
               </p>
             </div>
 
@@ -172,7 +173,8 @@ export default function Home() {
 
               <p className="mt-4 leading-8 text-slate-600">
                 A&amp;E coordination, site documentation, upgrade support, and
-                deployment coordination.
+                project delivery tailored to carrier and infrastructure
+                programs.
               </p>
             </div>
 
@@ -186,8 +188,8 @@ export default function Home() {
               </h3>
 
               <p className="mt-4 leading-8 text-slate-600">
-                Documentation and coordination designed to support field crews,
-                mobilization, and execution.
+                Documentation and coordination built to support field teams,
+                mobilization, vendor alignment, and real-world execution.
               </p>
             </div>
           </div>
@@ -196,27 +198,27 @@ export default function Home() {
 
       {/* CTA */}
       <section className="bg-[#1f8a84] text-white">
-        <div className="mx-auto max-w-5xl px-6 py-16 text-center">
+        <div className="mx-auto max-w-5xl px-6 py-16 text-center lg:px-8">
           <h2 className="text-3xl font-semibold md:text-4xl">
             Need support on a fiber, tower, or telecom infrastructure project?
           </h2>
 
-          <p className="mx-auto mt-5 max-w-3xl text-lg text-white/90">
+          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/90">
             Tell us what you&apos;re building, where you need support, and how
             quickly you need to move.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/contact"
-              className="rounded-full bg-white px-6 py-3 font-semibold text-[#1f8a84] hover:bg-slate-100"
+              className="rounded-full bg-white px-6 py-3 font-semibold text-[#1f8a84] transition hover:bg-slate-100"
             >
               Contact Odiscom
             </Link>
 
             <Link
               href="/services"
-              className="rounded-full border border-white/70 px-6 py-3 font-semibold text-white hover:bg-white/10"
+              className="rounded-full border border-white/70 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
             >
               Explore Services
             </Link>
