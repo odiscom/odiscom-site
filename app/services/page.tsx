@@ -1,125 +1,270 @@
+import Image from "next/image"
 import Link from "next/link"
 
-const serviceGroups = [
+const services = [
   {
     title: "Wireless Engineering",
-    intro:
-      "Design and engineering support for macro, small cell, and related wireless infrastructure projects.",
+    text: "Design and engineering support for macro, small cell, and related wireless infrastructure projects.",
     items: [
       "Site design and construction drawings",
       "Equipment layouts and mount details",
-      "Structural coordination and drawing support",
-      "Permitting and jurisdictional support",
-      "Utility coordination and field verification",
+      "Structural coordination",
+      "Permitting and jurisdiction support",
+      "Field verification and documentation",
     ],
   },
   {
     title: "Fiber Engineering",
-    intro:
-      "OSP engineering and field-ready documentation supporting metro, middle-mile, and long-haul deployments.",
+    text: "OSP engineering and field-ready documentation supporting metro, middle-mile, and long-haul deployments.",
     items: [
-      "Route design and engineered plan sets",
-      "Pole loading and make-ready support",
-      "Aerial and underground design packages",
+      "Route design and engineered plans",
+      "Pole loading analysis",
+      "Aerial and underground design",
       "Fielding and constructability review",
       "Permit packages and utility coordination",
     ],
   },
   {
-    title: "Tower & Infrastructure",
-    intro:
-      "Practical support for tower modifications, telecom upgrades, and infrastructure modernization work.",
+    title: "Tower Infrastructure",
+    text: "Practical support for tower modifications, telecom upgrades, and infrastructure modernization.",
     items: [
       "Tower A&E drawing packages",
-      "Equipment replacement and upgrade support",
-      "Power, grounding, and site coordination",
-      "Site walks and conditions validation",
-      "Construction documentation support",
+      "Equipment replacement and upgrades",
+      "Grounding and power coordination",
+      "Site walks and documentation",
+      "Construction support packages",
     ],
   },
   {
     title: "Construction Services",
-    intro:
-      "Execution support for telecom construction scopes with a focus on safety, documentation, and delivery.",
+    text: "Execution support for telecom construction scopes focused on safety and delivery.",
     items: [
-      "Tower construction and modification support",
-      "Fiber construction coordination",
-      "Field supervision and vendor coordination",
-      "Project mobilization and schedule alignment",
-      "Closeout documentation and as-builts",
+      "Tower construction coordination",
+      "Fiber deployment oversight",
+      "Vendor coordination",
+      "Mobilization and scheduling",
+      "Closeout documentation",
     ],
   },
 ]
 
 export default function ServicesPage() {
   return (
-    <main className="bg-[#f5f7f8] text-slate-900">
+    <main className="bg-white text-slate-900">
+
+      {/* HERO */}
+      <section className="relative h-[650px] w-full overflow-hidden">
+
+        <Image
+          src="/images/Fiber/trenching_pic.jpg"
+          alt="Fiber trenching and conduit installation"
+          fill
+          priority
+          className="object-cover"
+        />
+
+        {/* overlay for text readability */}
+        <div className="absolute inset-0 bg-black/35" />
+
+        {/* fade into page */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-white" />
+
+        {/* hero content */}
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
+
+          <div className="max-w-3xl text-white">
+
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
+              Services
+            </p>
+
+            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+              Telecom Engineering and Infrastructure Services
+            </h1>
+
+            <p className="mt-6 text-lg leading-8 text-white/90">
+              Odiscom delivers engineering, fielding, and construction
+              support for fiber networks, wireless infrastructure, and
+              telecom deployment programs across the United States.
+            </p>
+
+            <Link
+              href="/contact"
+              className="mt-8 inline-block rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white transition hover:bg-[#18716c]"
+            >
+              Request Proposal
+            </Link>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* INTRO */}
+      <section className="border-b border-slate-200">
+
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+
+          <div className="max-w-3xl">
+
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+              What we do
+            </p>
+
+            <h2 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl">
+              Practical support for fiber, tower, and telecom infrastructure projects
+            </h2>
+
+            <p className="mt-6 text-lg leading-8 text-slate-600">
+              Our work is built around deployment realities, clean
+              documentation, field coordination, and support that helps projects
+              move from concept to construction.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
 
       {/* SERVICES GRID */}
+      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-8 md:grid-cols-2">
 
-          {serviceGroups.map((group) => (
+          {services.map((service) => (
+
             <div
-              key={group.title}
-              className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+              key={service.title}
+              className="group rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-              <h3 className="text-2xl font-bold text-[#1f8a84]">
-                {group.title}
-              </h3>
+
+              <div className="mb-6 h-1 w-14 rounded bg-[#1f8a84]" />
+
+              <h2 className="text-2xl font-semibold">
+                {service.title}
+              </h2>
 
               <p className="mt-4 text-slate-600 leading-8">
-                {group.intro}
+                {service.text}
               </p>
 
               <ul className="mt-6 space-y-3">
-                {group.items.map((item) => (
+
+                {service.items.map((item) => (
+
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#1f8a84]" />
-                    <span className="text-slate-700">{item}</span>
+
+                    <span className="mt-2 h-2 w-2 rounded-full bg-[#1f8a84]" />
+
+                    <span>{item}</span>
+
                   </li>
+
                 ))}
+
               </ul>
+
             </div>
+
           ))}
 
         </div>
+
       </section>
 
-      {/* CTA SECTION */}
 
-      <section className="bg-[#1f8a84] text-white">
-        <div className="mx-auto max-w-5xl px-6 py-16 text-center">
+      {/* PROCESS */}
+      <section className="bg-[#f5f7f8]">
 
-          <h2 className="text-3xl font-bold md:text-4xl">
-            Need a telecom engineering or construction partner?
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+
+          <div className="max-w-3xl">
+
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+              How we support deployment
+            </p>
+
+            <h2 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl">
+              Built for real-world project delivery
+            </h2>
+
+          </div>
+
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
+
+            <div className="rounded-2xl bg-white p-7 shadow-sm">
+              <div className="mb-4 h-1 w-12 rounded bg-[#1f8a84]" />
+              <h3 className="text-lg font-semibold">Plan</h3>
+              <p className="mt-3 text-slate-600 leading-7">
+                Define scope, field conditions, stakeholders, and documentation requirements early.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-white p-7 shadow-sm">
+              <div className="mb-4 h-1 w-12 rounded bg-[#1f8a84]" />
+              <h3 className="text-lg font-semibold">Design</h3>
+              <p className="mt-3 text-slate-600 leading-7">
+                Develop practical engineering packages and field-ready plans aligned with deployment needs.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-white p-7 shadow-sm">
+              <div className="mb-4 h-1 w-12 rounded bg-[#1f8a84]" />
+              <h3 className="text-lg font-semibold">Deliver</h3>
+              <p className="mt-3 text-slate-600 leading-7">
+                Support construction and closeout with coordinated documentation and communication.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* CTA */}
+      <section className="border-t border-slate-200 bg-white">
+
+        <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
+
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+            Start the conversation
+          </p>
+
+          <h2 className="mt-4 text-3xl font-semibold md:text-4xl">
+            Need telecom engineering support?
           </h2>
 
-          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/90">
-            Tell us about your market, scope, and timeline. We'll help define
-            the right delivery approach for your project.
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+            Tell us about your project and we’ll help determine the right
+            support model for your market, scope, and timeline.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
 
             <Link
               href="/contact"
-              className="rounded-xl bg-white px-6 py-3 font-semibold text-[#1f8a84] hover:bg-gray-100"
+              className="rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white transition hover:bg-[#18716c]"
             >
               Contact Odiscom
             </Link>
 
             <Link
-              href="/clients"
-              className="rounded-xl border border-white px-6 py-3 font-semibold text-white hover:bg-white/10"
+              href="/projects"
+              className="rounded-full border border-slate-300 px-7 py-4 font-semibold text-slate-900 transition hover:border-[#1f8a84] hover:text-[#1f8a84]"
             >
-              View Clients
+              View Projects
             </Link>
 
           </div>
 
         </div>
+
       </section>
 
     </main>

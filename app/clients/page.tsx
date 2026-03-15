@@ -1,117 +1,159 @@
-import Link from "next/link";
-import Image from "next/image";
+import Image from "next/image"
+import Link from "next/link"
 
 const clients = [
   { name: "AT&T", logo: "/logos/att.png" },
-  { name: "Verizon", logo: "/logos/Verizon.png" },
-  { name: "TDS", logo: "/logos/TDS.png" },
-  { name: "Vertical Bridge", logo: "/logos/vertical-bridge-logo.svg" },
-  { name: "Zayo", logo: "/logos/Zayo.svg" },
-  { name: "EBI", logo: "/logos/EBI.svg" },
+  { name: "Verizon", logo: "/logos/verizon.png" },
+  { name: "Zayo", logo: "/logos/zayo.svg" },
+  { name: "TDS Telecommunications", logo: "/logos/tds.png" },
+  { name: "ADB-US", logo: "/logos/adb.png" },
+  { name: "Squan", logo: "/logos/squan.png" },
+  { name: "Harmoni Towers", logo: "/logos/harmoni.png" },
+  { name: "Nextlink", logo: "/logos/nextlink.png" },
+  { name: "Foresight Communications", logo: "/logos/foresight.png" },
+  { name: "EBI", logo: "/logos/ebi.svg" },
   { name: "Smartlink", logo: "/logos/smartlink.png" },
   { name: "SONIC", logo: "/logos/sonic.png" },
-  { name: "Nextlink", logo: "/logos/Nextlink.png" },
-  { name: "Crown Castle", logo: "/logos/crowncastle-logo.png" },
-  { name: "Ericsson", logo: "/logos/Ericsson-Symbol.png" },
-  { name: "Nokia", logo: "/logos/nokia.png" },
-  { name: "American Tower", logo: "/logos/ATC.png" },
-  { name: "SBA Communications", logo: "/logos/SBA.png" },
-];
+]
 
-export default function Page() {
+export default function ClientsPage() {
   return (
-    <main className="bg-white">
-      <section className="mx-auto max-w-7xl px-6 pt-12 pb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-          Clients and Industry Partners
-        </h1>
+    <main className="bg-white text-slate-900">
 
-        <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          Odiscom supports telecommunications carriers, tower owners,
-          infrastructure operators, equipment providers, and deployment
-          partners across the United States.
-        </p>
+      {/* HERO */}
+      <section className="relative h-[520px] w-full overflow-hidden">
+
+        <Image
+          src="/images/Towers/South_Tower.jpg"
+          alt="Telecommunications infrastructure"
+          fill
+          priority
+          className="object-cover"
+        />
+
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-white" />
+
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
+          <div className="max-w-3xl text-white">
+
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
+              Clients
+            </p>
+
+            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+              Telecommunications operators and infrastructure partners
+            </h1>
+
+            <p className="mt-6 text-lg leading-8 text-white/90">
+              Odiscom supports telecommunications infrastructure programs
+              across wireless, fiber, and broadband deployment environments.
+            </p>
+
+            <Link
+              href="/contact"
+              className="mt-8 inline-block rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white hover:bg-[#18716c]"
+            >
+              Work With Odiscom
+            </Link>
+
+          </div>
+        </div>
+
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 shadow-sm">
-          <div className="grid grid-cols-2 gap-x-10 gap-y-10 md:grid-cols-4 lg:grid-cols-5">
+
+      {/* CLIENT LOGO GRID */}
+      <section className="bg-white">
+
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+
+          <div className="mb-12 max-w-3xl">
+
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+              Trusted By
+            </p>
+
+            <h2 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl">
+              Telecommunications clients and partners
+            </h2>
+
+            <p className="mt-6 text-lg leading-8 text-slate-600">
+              Odiscom works with carriers, infrastructure contractors,
+              tower operators, and broadband providers across the United States.
+            </p>
+
+          </div>
+
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
+
             {clients.map((client) => (
+
               <div
                 key={client.name}
-                className="flex items-center justify-center rounded-xl bg-white px-4 py-6 shadow-sm"
+                className="group flex items-center justify-center rounded-2xl border border-slate-200 bg-[#d2eeea] p-8 transition hover:bg-[#c3e7e2] hover:shadow-md"
               >
+
                 <Image
                   src={client.logo}
                   alt={client.name}
-                  width={180}
-                  height={70}
-                  className="h-10 w-auto object-contain"
+                  width={200}
+                  height={80}
+                  className="h-[60px] w-auto object-contain"
                 />
+
               </div>
+
             ))}
+
           </div>
 
-          <p className="mt-8 text-center text-xs text-slate-500">
-            Logos are trademarks of their respective owners.
+        </div>
+
+      </section>
+
+
+      {/* CTA */}
+      <section className="border-t border-slate-200 bg-white">
+
+        <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
+
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+            Start the conversation
           </p>
-        </div>
-      </section>
 
-      <section className="border-t bg-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-3">
-          <InfoCard
-            title="Carrier Support"
-            text="Engineering and deployment support for carrier-led network upgrades, expansions, and infrastructure programs."
-          />
-          <InfoCard
-            title="Tower and Infrastructure Owners"
-            text="Support for tower modifications, structural coordination, and modernization initiatives."
-          />
-          <InfoCard
-            title="Technology and Delivery Partners"
-            text="Coordination with OEMs, field vendors, and program stakeholders across complex multi-market deployments."
-          />
-        </div>
-      </section>
-
-      <section className="border-t bg-slate-50">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Looking for a reliable infrastructure partner?
+          <h2 className="mt-4 text-3xl font-semibold md:text-4xl">
+            Looking for a telecom delivery partner?
           </h2>
 
-          <p className="mt-2 text-slate-600">
-            Odiscom supports engineering, construction, and program execution
-            for telecommunications infrastructure projects nationwide.
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+            If your program needs dependable engineering support,
+            coordinated infrastructure delivery, or field execution,
+            we’d be glad to talk.
           </p>
 
-          <div className="mt-6 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+
             <Link
-              href="/request-proposal"
-              className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+              href="/contact"
+              className="rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white hover:bg-[#18716c]"
             >
-              Request Proposal
+              Contact Odiscom
             </Link>
 
             <Link
-              href="/services"
-              className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              href="/projects"
+              className="rounded-full border border-slate-300 px-7 py-4 font-semibold text-slate-900 hover:border-[#1f8a84] hover:text-[#1f8a84]"
             >
-              View Services
+              View Projects
             </Link>
+
           </div>
-        </div>
-      </section>
-    </main>
-  );
-}
 
-function InfoCard({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <p className="mt-3 text-sm text-slate-600">{text}</p>
-    </div>
-  );
+        </div>
+
+      </section>
+
+    </main>
+  )
 }
