@@ -2,9 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const navItems = [
+  { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
   { href: "/clients", label: "Clients" },
@@ -15,6 +17,7 @@ const navItems = [
 ]
 
 export default function Navbar() {
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -51,18 +54,34 @@ export default function Navbar() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`font-medium text-slate-700 transition-all duration-300 hover:text-[#1f8a84] ${
-                scrolled ? "text-[15px]" : "text-base"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-7 md:flex">
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname === item.href || pathname.startsWith(`${item.href}/`)
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative font-medium transition-all duration-300 ${
+                  scrolled ? "text-[15px]" : "text-base"
+                } ${
+                  isActive
+                    ? "text-[#1f8a84]"
+                    : "text-slate-700 hover:text-[#1f8a84]"
+                }`}
+              >
+                {item.label}
+                <span
+                  className={`absolute left-0 top-full mt-1 h-0.5 rounded-full bg-[#1f8a84] transition-all duration-300 ${
+                    isActive ? "w-full opacity-100" : "w-0 opacity-0"
+                  }`}
+                />
+              </Link>
+            )
+          })}
 
           <Link
             href="/contact"
