@@ -34,14 +34,14 @@ export default function Home() {
 
       {/* HERO */}
 
-      <section className="bg-gray-900 text-white py-24">
+      <section className="bg-[#148a84] text-white py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
 
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Telecom Engineering & Infrastructure Construction
           </h1>
 
-          <p className="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-white/90 max-w-3xl mx-auto mb-8">
             Odiscom provides professional engineering, fielding, and construction
             services for wireless and fiber networks across the United States.
           </p>
@@ -50,7 +50,7 @@ export default function Home() {
 
             <Link
               href="/contact"
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold"
+              className="bg-white text-[#148a84] hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold"
             >
               Request a Quote
             </Link>
@@ -69,10 +69,10 @@ export default function Home() {
 
       {/* SERVICES */}
 
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#e8f5f3]">
         <div className="max-w-6xl mx-auto px-6">
 
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Our Services
           </h2>
 
@@ -81,13 +81,13 @@ export default function Home() {
             {services.map((service) => (
               <div
                 key={service.title}
-                className="p-8 border rounded-xl shadow-sm hover:shadow-md transition"
+                className="p-8 bg-white border rounded-xl shadow-sm hover:shadow-md transition"
               >
-                <h3 className="text-xl font-semibold mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   {service.title}
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-700">
                   {service.description}
                 </p>
               </div>
@@ -100,11 +100,11 @@ export default function Home() {
 
       {/* CLIENTS */}
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-[#148a84]">
 
         <div className="max-w-6xl mx-auto px-6">
 
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">
             Trusted By Industry Leaders
           </h2>
 
@@ -118,7 +118,7 @@ export default function Home() {
                   alt={client.alt}
                   width={140}
                   height={60}
-                  className="object-contain grayscale hover:grayscale-0 transition"
+                  className="object-contain brightness-0 invert opacity-90"
                 />
 
               </div>
@@ -131,7 +131,7 @@ export default function Home() {
 
       {/* CTA */}
 
-      <section className="bg-blue-600 text-white py-20">
+      <section className="bg-[#0f3d44] text-white py-20">
 
         <div className="max-w-5xl mx-auto text-center px-6">
 
@@ -139,14 +139,14 @@ export default function Home() {
             Ready to Build Your Next Telecom Project?
           </h2>
 
-          <p className="mb-8 text-lg">
+          <p className="mb-8 text-lg text-white/90">
             Our team supports telecom operators, utilities, and infrastructure
             developers with engineering and construction services nationwide.
           </p>
 
           <Link
             href="/contact"
-            className="bg-white text-blue-600 font-semibold px-8 py-4 rounded-lg"
+            className="bg-white text-[#0f3d44] font-semibold px-8 py-4 rounded-lg"
           >
             Contact Odiscom
           </Link>
