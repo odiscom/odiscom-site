@@ -1,128 +1,94 @@
-"use client";
-// app/events/[slug]/page.tsx
-import Link from "next/link";
-import { getEventBySlug, formatTimeRange } from "@/lib/events";
+import { notFound } from "next/navigation"
+import { getEventBySlug } from "@/lib/events"
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const event = getEventBySlug(params.slug);
+function formatDateRange(start: string, end: string | null) {
+  const startDate = new Date(`${start}T00:00:00Z`)
+  const endDate = end ? new Date(`${end}T00:00:00Z`) : null
 
-  if (!event) {
-    return (
-      <main className="mx-auto max-w-3xl px-6 py-16">
-        <h1 className="text-2xl font-bold text-slate-900">Event not found</h1>
-        <Link
-          href="/events/calendar"
-          className="mt-4 inline-block text-sm font-semibold text-slate-900 hover:underline"
-        >
-          ← Back to calendar
-        </Link>
-      </main>
-    );
-  }
-
-  const dateFmt = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
+  const startText = startDate.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
-  });
+    timeZone: "UTC",
+  })
 
-  const start = new Date(event.startsAt);
-  const icsHref = `/api/events/${event.slug}.ics`;
+  if (!endDate) return startText
+
+  const endText = endDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  })
+
+  return `${startText} – ${endText}`
+}
+
+function formatLocation(
+  venue: string | null,
+  city: string | null,
+  state: string | null
+) {
+  return [venue, city, state].filter(Boolean).join(", ")
+}
+
+export default async function EventDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const event = await getEventBySlug(slug)
+
+  if (!event) {
+    notFound()
+  }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <Link
-        href="/events/calendar"
-        className="text-sm font-semibold text-slate-900 hover:underline"
-      >
-        ← Back to calendar
-      </Link>
+    <main className="bg-white text-slate-900">
+      <section className="border-b border-slate-200 bg-[#f7fbfb]">
+        <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+            {event.category}
+          </p>
 
-      <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
-        {event.title}
-      </h1>
+          <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+            {event.title}
+          </h1>
 
-      <div className="mt-3 space-y-1 text-sm text-slate-600">
-        <div>{dateFmt.format(start)}</div>
-        <div>
-          {formatTimeRange(event.startsAt, event.endsAt)}{" "}
-          {event.timezone ? `(${event.timezone})` : ""}
-        </div>
-        {event.location && (
-          <div>
-            {event.location}
-            {event.cityState ? ` — ${event.cityState}` : ""}
-          </div>
-        )}
-      </div>
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+            {formatDateRange(event.start_date, event.end_date)}
+          </p>
 
-      {event.description && (
-        <p className="mt-6 text-sm leading-6 text-slate-700">
-          {event.description}
-        </p>
-      )}
+          <p className="mt-2 text-lg leading-8 text-slate-600">
+            {formatLocation(event.venue, event.city, event.state) ||
+              "Location TBA"}
+          </p>
 
-      {/* Highlight actions */}
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm ring-1 ring-slate-200">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Use Link so Next handles this route cleanly */}
-          <Link
-            href={icsHref}
-            className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            Add to Calendar (.ics)
-          </Link>
-
-          {event.url && (
+          <div className="mt-8">
             <a
-              href={event.url}
+              href={event.official_url}
               target="_blank"
-              rel="noreferrer"
-              className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              rel="noopener noreferrer"
+              className="rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white hover:bg-[#18716c]"
             >
-              Event Website
+              Visit Official Event Website
             </a>
-          )}
-
-          {/* Copy ICS link */}
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                const fullUrl = `${window.location.origin}${icsHref}`;
-                await navigator.clipboard.writeText(fullUrl);
-                // tiny, no-library feedback
-                const el = document.getElementById("copy-ics-status");
-                if (el) {
-                  el.textContent = "Copied!";
-                  setTimeout(() => (el.textContent = ""), 1200);
-                }
-              } catch {
-                const el = document.getElementById("copy-ics-status");
-                if (el) {
-                  el.textContent = "Copy failed";
-                  setTimeout(() => (el.textContent = ""), 1200);
-                }
-              }
-            }}
-            className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
-          >
-            Copy .ics Link
-          </button>
-
-          <span
-            id="copy-ics-status"
-            className="text-xs font-medium text-slate-600"
-            aria-live="polite"
-          />
+          </div>
         </div>
+      </section>
 
-        <p className="mt-3 text-xs text-slate-600">
-          Tip: On iPhone/Outlook, if the calendar doesn’t auto-add, download the
-          file and open it to import.
-        </p>
+      <section className="mx-auto max-w-5xl px-6 py-16 lg:px-8">
+        <div className="max-w-3xl">
+          <h2 className="text-2xl font-semibold">About this event</h2>
+
+          <p className="mt-6 text-lg leading-8 text-slate-600">
+            {event.description ||
+              event.short_description ||
+              "No description available."}
+          </p>
+        </div>
       </section>
     </main>
-  );
+  )
 }
