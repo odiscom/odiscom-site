@@ -1,58 +1,85 @@
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabase"
 import type { EventItem } from "@/types/event"
 
 export async function getFeaturedEvents(): Promise<EventItem[]> {
-  const today = new Date().toISOString().slice(0, 10)
+  try {
+    const supabase = getSupabaseClient()
+    if (!supabase) return []
 
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("is_active", true)
-    .eq("is_featured", true)
-    .gte("start_date", today)
-    .order("start_date", { ascending: true })
-    .limit(3)
+    const today = new Date().toISOString().slice(0, 10)
 
-  if (error) {
-    throw new Error(`Failed to fetch featured events: ${error.message}`)
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("is_active", true)
+      .eq("is_featured", true)
+      .gte("start_date", today)
+      .order("start_date", { ascending: true })
+      .limit(3)
+
+    if (error) {
+      console.error("Failed to fetch featured events:", error.message)
+      return []
+    }
+
+    return (data ?? []) as EventItem[]
+  } catch (err) {
+    console.error("Unexpected error fetching featured events:", err)
+    return []
   }
-
-  return (data ?? []) as EventItem[]
 }
 
 export async function getUpcomingEvents(): Promise<EventItem[]> {
-  const start = new Date()
-  const end = new Date()
-  end.setFullYear(end.getFullYear() + 1)
+  try {
+    const supabase = getSupabaseClient()
+    if (!supabase) return []
 
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("is_active", true)
-    .gte("start_date", start.toISOString().slice(0, 10))
-    .lte("start_date", end.toISOString().slice(0, 10))
-    .order("start_date", { ascending: true })
+    const start = new Date()
+    const end = new Date()
+    end.setFullYear(end.getFullYear() + 1)
 
-  if (error) {
-    throw new Error(`Failed to fetch upcoming events: ${error.message}`)
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("is_active", true)
+      .gte("start_date", start.toISOString().slice(0, 10))
+      .lte("start_date", end.toISOString().slice(0, 10))
+      .order("start_date", { ascending: true })
+
+    if (error) {
+      console.error("Failed to fetch upcoming events:", error.message)
+      return []
+    }
+
+    return (data ?? []) as EventItem[]
+  } catch (err) {
+    console.error("Unexpected error fetching upcoming events:", err)
+    return []
   }
-
-  return (data ?? []) as EventItem[]
 }
 
 export async function getEventBySlug(slug: string): Promise<EventItem | null> {
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("slug", slug)
-    .eq("is_active", true)
-    .maybeSingle()
+  try {
+    const supabase = getSupabaseClient()
+    if (!supabase) return null
 
-  if (error) {
-    throw new Error(`Failed to fetch event by slug: ${error.message}`)
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_active", true)
+      .maybeSingle()
+
+    if (error) {
+      console.error(`Failed to fetch event "${slug}":`, error.message)
+      return null
+    }
+
+    return (data as EventItem | null) ?? null
+  } catch (err) {
+    console.error(`Unexpected error fetching event "${slug}":`, err)
+    return null
   }
-
-  return (data as EventItem | null) ?? null
 }
 
 export function groupEventsByMonth(events: EventItem[]) {
