@@ -1,10 +1,11 @@
 import "./globals.css"
-import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 
 export const metadata = {
-  title: "ODISCOM — Fiber & Tower",
-  description: "Telecom engineering and infrastructure construction services.",
+  title: "Odiscom — Fiber & Tower Infrastructure",
+  description:
+    "Engineering, fielding, and construction support for fiber, telecom, and tower infrastructure.",
 }
 
 export default function RootLayout({
@@ -14,8 +15,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Navbar />
+      <body className="bg-white text-[#0f3f3b]">
+        <Header />
         {children}
         <Footer />
       </body>
