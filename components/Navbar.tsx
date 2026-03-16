@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -21,19 +20,14 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-[84px] max-w-7xl items-center justify-between px-6 lg:px-8">
-        {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center">
-          <Image
+          <img
             src="/logos/odiscom.png"
             alt="Odiscom"
-            width={260}
-            height={60}
-            priority
             className="h-auto w-[190px] object-contain"
           />
         </Link>
 
-        {/* Desktop Nav */}
         <nav className="hidden items-center gap-9 md:flex">
           {navItems.map((item) => {
             const isActive = pathname === item.href
@@ -54,7 +48,6 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Side */}
         <div className="flex items-center gap-5">
           <a
             href="tel:+14695311176"
@@ -65,7 +58,8 @@ export default function Navbar() {
 
           <Link
             href="/contact"
-            className="rounded-full bg-[#1f8a84] px-7 py-3 text-[17px] font-semibold text-white transition hover:bg-[#18716c]"
+            className="rounded-full bg-[#1f8a84] px-7 py-3 text-[17px] font-semibold transition hover:bg-[#18716c]"
+            style={{ color: "#ffffff" }}
           >
             Request Proposal
           </Link>
