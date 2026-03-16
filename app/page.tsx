@@ -211,7 +211,7 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/contact"
-              className="rounded-full bg-white px-6 py-3 font-semibold text-[#1f8a84] transition hover:bg-slate-100"
+              className="rounded-full bg-white px-6 py-3 font-semibold text-[#1f8a84] transition hover:bg-[#e8f5f4]"
             >
               Contact Odiscom
             </Link>
