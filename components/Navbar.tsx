@@ -18,12 +18,12 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
       <div className="mx-auto flex h-[86px] max-w-7xl items-center justify-between px-6 lg:px-8">
 
         {/* LEFT SIDE */}
-        <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center">
+        <div className="flex items-center gap-12">
+          <Link href="/">
             <img
               src="/logos/odiscom.png"
               alt="Odiscom"
@@ -31,7 +31,7 @@ export default function Navbar() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => {
               const active = pathname === item.href
 
@@ -53,17 +53,17 @@ export default function Navbar() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-8">
 
           {/* PHONE */}
           <a
             href="tel:+14695311176"
-            className="hidden whitespace-nowrap text-[15px] font-medium text-[#0f3f3b] xl:block"
+            className="hidden xl:block text-[15px] font-medium text-[#0f3f3b] whitespace-nowrap"
           >
             (469) 531-1176
           </a>
 
-          {/* BUTTON */}
+          {/* CTA BUTTON */}
           <Link
             href="/contact"
             className="rounded-full px-7 py-3 text-[16px] font-semibold transition hover:bg-[#18716c]"
@@ -74,6 +74,7 @@ export default function Navbar() {
           >
             Request Proposal
           </Link>
+
         </div>
 
       </div>
