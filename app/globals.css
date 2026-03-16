@@ -1,101 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
-/* ------------------------------------------------ */
-/* ROOT COLOR VARIABLES */
-/* ------------------------------------------------ */
+@import "tailwindcss";
 
 :root {
+  --background: #ffffff;
+  --foreground: #0f3f3b;
   --odiscom-green: #1f8a84;
-  --odiscom-dark: #0f3f3b;
+  --odiscom-green-dark: #18716c;
 }
 
-
-/* ------------------------------------------------ */
-/* GLOBAL PAGE STYLING */
-/* ------------------------------------------------ */
-
-html,
-body {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: white;
-  color: var(--odiscom-dark);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-
-/* ------------------------------------------------ */
-/* HEADINGS */
-/* ------------------------------------------------ */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--odiscom-dark);
-  font-weight: 600;
+* {
+  box-sizing: border-box;
 }
-
-
-/* ------------------------------------------------ */
-/* LINKS */
-/* ------------------------------------------------ */
 
 a {
-  color: var(--odiscom-green);
-  transition: color 0.2s ease;
+  color: inherit;
+  text-decoration: none;
 }
 
-a:hover {
-  color: #18716c;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-
-/* ------------------------------------------------ */
-/* BUTTONS */
-/* ------------------------------------------------ */
-
-.btn-primary {
-  background: var(--odiscom-green);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.btn-primary:hover {
-  background: #18716c;
-}
-
-.btn-secondary {
-  border: 2px solid var(--odiscom-green);
-  color: var(--odiscom-green);
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--odiscom-green);
-  color: white;
-}
-
-
-/* ------------------------------------------------ */
-/* CLIENT LOGO MARQUEE ANIMATION */
-/* ------------------------------------------------ */
-
-@keyframes marquee {
+@keyframes marquee-scroll {
   0% {
     transform: translateX(0);
   }
@@ -105,8 +44,7 @@ a:hover {
 }
 
 .marquee-track {
-  display: flex;
-  animation: marquee 40s linear infinite;
+  animation: marquee-scroll 40s linear infinite;
 }
 
 .marquee-track:hover {
