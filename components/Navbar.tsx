@@ -1,9 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { COMPANY } from "@/lib/company"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -22,13 +20,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
+        <Link href="/" className="flex items-center">
+          <img
             src="/logos/odiscom.png"
             alt="Odiscom"
-            width={170}
-            height={40}
-            priority
+            className="h-12 w-auto object-contain"
           />
         </Link>
 
@@ -40,11 +36,11 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition ${
+                className={
                   active
-                    ? "text-[#1f8a84]"
-                    : "text-slate-700 hover:text-[#1f8a84]"
-                }`}
+                    ? "text-sm font-medium text-[#1f8a84]"
+                    : "text-sm font-medium text-[#0f3f3b] transition hover:text-[#1f8a84]"
+                }
               >
                 {item.label}
               </Link>
@@ -54,15 +50,15 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <a
-            href={`tel:${COMPANY.phoneLink}`}
-            className="hidden text-sm font-medium text-slate-700 hover:text-[#1f8a84] md:block"
+            href="tel:+14695311176"
+            className="hidden text-sm font-medium text-[#0f3f3b] md:block"
           >
-            {COMPANY.phoneDisplay}
+            (469) 531-1176
           </a>
 
           <Link
             href="/contact"
-            className="rounded-full bg-[#1f8a84] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#18716c]"
+            className="rounded-full bg-[#1f8a84] px-6 py-3 text-sm font-semibold !text-white transition hover:bg-[#18716c]"
           >
             Request Proposal
           </Link>

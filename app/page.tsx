@@ -21,7 +21,6 @@ export default function HomePage() {
 
   return (
     <main className="bg-white text-slate-900">
-      {/* HERO */}
       <section className="relative h-[680px] w-full overflow-hidden">
         <div className="absolute inset-y-0 left-0 w-1/2">
           <Image
@@ -66,14 +65,14 @@ export default function HomePage() {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="rounded-full bg-[#1f8a84] px-7 py-4 text-lg font-semibold text-white transition hover:bg-[#18716c]"
+                className="rounded-full bg-[#1f8a84] px-7 py-4 text-lg font-semibold !text-white transition hover:bg-[#18716c]"
               >
                 Request Proposal
               </Link>
 
               <Link
                 href="/services"
-                className="rounded-full border border-white/80 px-7 py-4 text-lg font-semibold text-white transition hover:bg-white/10"
+                className="rounded-full border border-white/80 px-7 py-4 text-lg font-semibold !text-white transition hover:bg-white/10"
               >
                 View Services
               </Link>
@@ -82,7 +81,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TRUSTED BY */}
       <section className="overflow-hidden border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
           <div className="mb-6 flex items-center justify-between">
@@ -126,7 +124,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
           <div className="mb-12 max-w-3xl">
@@ -196,7 +193,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-[#1f8a84] text-white">
         <div className="mx-auto max-w-5xl px-6 py-16 text-center lg:px-8">
           <h2 className="text-3xl font-semibold md:text-4xl">
@@ -211,14 +207,14 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/contact"
-              className="rounded-full bg-white px-6 py-3 font-semibold text-[#1f8a84] transition hover:bg-[#e8f5f4]"
+              className="rounded-full bg-white px-6 py-3 font-semibold !text-[#1f8a84] transition hover:bg-[#e8f5f4]"
             >
               Contact Odiscom
             </Link>
 
             <Link
               href="/services"
-              className="rounded-full border border-white/70 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+              className="rounded-full border border-white/70 px-6 py-3 font-semibold !text-white transition hover:bg-white/10"
             >
               Explore Services
             </Link>
