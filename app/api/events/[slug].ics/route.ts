@@ -25,15 +25,13 @@ function toICSDate(iso: string) {
   );
 }
 
-export async function GET(_request: Request, context: { params: Promise<unknown> }) {
-  const raw = await context.params;
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
 
-  // With `[slug].ics`, Next/Vercel may type params as Promise<{}>.
-  // So we extract defensively at runtime.
-  const slug =
-    raw && typeof raw === "object" && "slug" in raw ? String((raw as any).slug) : "";
-
-  const event = slug ? getEventBySlug(slug) : undefined;
+  const event = getEventBySlug(slug);
 
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
