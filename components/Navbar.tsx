@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -16,18 +17,37 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname()
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 24)
+    }
+
+    handleScroll()
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
-      <div className="mx-auto flex h-[86px] max-w-7xl items-center justify-between px-6 lg:px-8">
-
-        {/* LEFT SIDE */}
+    <header
+      className={`sticky top-0 z-50 border-b border-slate-200 transition-all duration-300 ${
+        isScrolled ? "bg-white/95 backdrop-blur shadow-sm" : "bg-white/78 backdrop-blur"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 transition-all duration-300 ${
+          isScrolled ? "h-[73px]" : "h-[86px]"
+        }`}
+      >
         <div className="flex items-center gap-12">
-          <Link href="/">
+          <Link href="/" className="flex items-center shrink-0">
             <img
               src="/logos/odiscom.png"
               alt="Odiscom"
-              className="w-[180px] object-contain"
+              className={`object-contain transition-all duration-300 ${
+                isScrolled ? "w-[153px]" : "w-[180px]"
+              }`}
             />
           </Link>
 
@@ -52,21 +72,19 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-8">
-
-          {/* PHONE */}
           <a
             href="tel:+14695311176"
-            className="hidden xl:block text-[15px] font-medium text-[#0f3f3b] whitespace-nowrap"
+            className="hidden xl:block whitespace-nowrap pl-4 text-[15px] font-medium text-[#0f3f3b]"
           >
             (469) 531-1176
           </a>
 
-          {/* CTA BUTTON */}
           <Link
             href="/contact"
-            className="rounded-full px-7 py-3 text-[16px] font-semibold transition hover:bg-[#18716c]"
+            className={`whitespace-nowrap rounded-full font-semibold transition-all duration-300 hover:bg-[#18716c] ${
+              isScrolled ? "px-6 py-2.5 text-[15px]" : "px-7 py-3 text-[16px]"
+            }`}
             style={{
               backgroundColor: "#1f8a84",
               color: "#ffffff",
@@ -74,9 +92,7 @@ export default function Navbar() {
           >
             Request Proposal
           </Link>
-
         </div>
-
       </div>
     </header>
   )
