@@ -40,7 +40,7 @@ export default function Navbar() {
           isScrolled ? "h-[73px]" : "h-[86px]"
         }`}
       >
-        <div className="flex items-center gap-12">
+        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-10" : "gap-8"}`}>
           <Link href="/" className="flex items-center shrink-0">
             <img
               src="/logos/odiscom.png"
@@ -51,7 +51,7 @@ export default function Navbar() {
             />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-7" : "gap-6"}`}>
             {navItems.map((item) => {
               const active = pathname === item.href
 
@@ -72,10 +72,10 @@ export default function Navbar() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-8">
+        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
           <a
             href="tel:+14695311176"
-            className="hidden xl:block whitespace-nowrap pl-4 text-[15px] font-medium text-[#0f3f3b]"
+            className="hidden 2xl:block whitespace-nowrap pl-4 text-[15px] font-medium text-[#0f3f3b]"
           >
             (469) 531-1176
           </a>
