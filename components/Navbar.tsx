@@ -29,7 +29,7 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 border-b border-slate-200 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur shadow-sm" : "bg-white/78 backdrop-blur"
+        isScrolled ? "bg-white/95 shadow-sm backdrop-blur" : "bg-white/78 backdrop-blur"
       }`}
     >
       <div
@@ -37,7 +37,11 @@ export default function Navbar() {
           isScrolled ? "h-[73px]" : "h-[84px]"
         }`}
       >
-        <div className={`flex min-w-0 items-center transition-all duration-300 ${isScrolled ? "gap-8" : "gap-6"}`}>
+        <div
+          className={`flex min-w-0 items-center transition-all duration-300 ${
+            isScrolled ? "gap-8" : "gap-6"
+          }`}
+        >
           <Link href="/" className="flex shrink-0 items-center">
             <img
               src="/logos/odiscom.png"
@@ -49,7 +53,7 @@ export default function Navbar() {
           </Link>
 
           <nav
-            className={`hidden min-w-0 lg:flex items-center transition-all duration-300 ${
+            className={`hidden min-w-0 items-center transition-all duration-300 lg:flex ${
               isScrolled ? "gap-3 xl:gap-4" : "gap-4 xl:gap-5"
             }`}
           >
@@ -63,7 +67,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group relative rounded-full px-3 py-2 text-[15px] xl:text-[16px] transition ${
+                  className={`group relative rounded-full px-3 py-2 text-[15px] transition xl:text-[16px] ${
                     active
                       ? "bg-[#1f8a84]/10 font-semibold text-[#1f8a84]"
                       : "font-medium text-[#0f3f3b] hover:bg-[#1f8a84]/8 hover:text-[#1f8a84]"
@@ -87,15 +91,15 @@ export default function Navbar() {
         <div className="ml-6 flex shrink-0 items-center gap-4 transition-all duration-300">
           <a
             href="tel:+14695311176"
-            className="hidden xl:block whitespace-nowrap text-[14px] font-medium text-[#0f3f3b]"
+            className="hidden whitespace-nowrap text-[14px] font-medium text-[#0f3f3b] xl:block"
           >
             (469) 531-1176
           </a>
 
           <Link
             href="/contact"
-            className={`btn btn-teal shrink-0 whitespace-nowrap font-semibold transition-all duration-300 ${
-              isScrolled ? "px-5 py-2.5 text-[15px]" : "px-6 py-3 text-[15px]"
+            className={`btn btn-primary whitespace-nowrap ${
+              isScrolled ? "btn-sm" : "btn-md"
             }`}
           >
             Request Proposal

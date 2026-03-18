@@ -1,130 +1,159 @@
-import Image from "next/image"
-import Link from "next/link"
-import BottomCta from "@/components/BottomCta"
-import { getFeaturedEvents, getUpcomingEvents, groupEventsByMonth } from "@/lib/events"
+import Link from "next/link";
+import { events } from "@/lib/events-data";
 
-export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Events | ODISCOM",
+  description:
+    "Industry events, conferences, and telecom gatherings Odiscom is tracking across fiber, tower, and infrastructure.",
+};
 
-function formatDateRange(start: string, end: string | null) {
-  const startDate = new Date(`${start}T00:00:00Z`)
-  const endDate = end ? new Date(`${end}T00:00:00Z`) : null
-  const startText = startDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
-  if (!endDate) return startText
-  const endText = endDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
-  return `${startText} – ${endText}`
+function formatDateRange(startsAt: string, endsAt: string) {
+  const start = new Date(startsAt);
+  const end = new Date(endsAt);
+
+  const sameDay = start.toDateString() === end.toDateString();
+
+  if (sameDay) {
+    return start.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  return `${start.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })} – ${end.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })}`;
 }
 
-function formatLocation(city: string | null, state: string | null, venue: string | null) {
-  const place = [city, state].filter(Boolean).join(", ")
-  if (venue && place) return `${venue} • ${place}`
-  return venue || place || "Location TBA"
-}
-
-export default async function EventsPage() {
-  const featuredEvents = await getFeaturedEvents()
-  const upcomingEvents = await getUpcomingEvents()
-  const groupedEvents = groupEventsByMonth(upcomingEvents)
-
+export default function EventsPage() {
   return (
-    <main className="bg-white text-slate-900">
-      <section className="relative h-[430px] w-full overflow-hidden">
-        <Image src="/logos/clients.png" alt="Industry events and professional meetings" fill priority className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f3f3b]/85 via-[#0f3f3b]/70 to-transparent" />
-        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
-          <div className="max-w-2xl text-white">
-            <p className="mb-4 text-sm tracking-[0.2em] text-white/80">EVENTS • CONFERENCES • INDUSTRY CALENDAR</p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-5xl">Telecom industry events and infrastructure calendar</h1>
-            <p className="mt-4 text-lg leading-8 text-white/90">
-              Follow conferences, trade shows, and industry gatherings relevant to fiber, wireless, towers, broadband, and telecom infrastructure.
+    <main className="bg-white">
+      <section className="bg-[#238f8a] py-24 text-white">
+        <div className="section-shell">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+              Industry Events & Gatherings
+            </h1>
+            <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90 md:text-xl">
+              Odiscom tracks conferences, summits, and telecom infrastructure events
+              that matter across fiber, tower, engineering, and construction.
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/contact" className="btn btn-secondary btn-lg">
+                Contact Odiscom
+              </Link>
+              <Link href="/clients" className="btn btn-primary btn-lg">
+                View Clients
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-slate-200 bg-white py-20">
+        <div className="section-shell">
+          <div className="mx-auto mb-12 max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-[#0f3f3b] md:text-4xl">
+              Current Industry Calendar
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              A curated list of events relevant to telecom infrastructure,
+              broadband expansion, engineering, permitting, field operations,
+              and construction delivery.
             </p>
           </div>
-        </div>
-      </section>
 
-      <section className="bg-[#f7fbfb]">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-          <div className="mb-12 max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">Featured Events</p>
-            <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Major industry events to watch</h2>
-          </div>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {events.map((event) => (
+              <article
+                key={event.slug}
+                className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                <div className="mb-4">
+                  <div className="inline-flex rounded-full bg-[#1f8a84]/10 px-3 py-1 text-sm font-semibold text-[#166e68]">
+                    {event.category}
+                  </div>
+                </div>
 
-          {featuredEvents.length > 0 ? (
-            <div className="grid gap-8 lg:grid-cols-3">
-              {featuredEvents.map((event) => (
-                <div key={event.id} className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">{event.category}</p>
-                  <h3 className="mt-4 text-2xl font-semibold">{event.title}</h3>
-                  <p className="mt-2 text-sm font-medium text-slate-500">
-                    {formatDateRange(event.start_date, event.end_date)} • {formatLocation(event.city, event.state, event.venue)}
+                <h3 className="text-2xl font-bold leading-tight text-[#0f3f3b]">
+                  {event.title}
+                </h3>
+
+                <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Date
+                </p>
+                <p className="mt-1 text-base text-slate-700">
+                  {formatDateRange(event.startsAt, event.endsAt)}
+                </p>
+
+                <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Location
+                </p>
+                <p className="mt-1 text-base text-slate-700">
+                  {[event.location, event.cityState].filter(Boolean).join(" — ")}
+                </p>
+
+                {event.description ? (
+                  <p className="mt-5 line-clamp-4 text-base leading-7 text-slate-600">
+                    {event.description}
                   </p>
-                  <p className="mt-4 leading-8 text-slate-600">{event.short_description || event.description || ""}</p>
-                  <a href={event.official_url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-block font-semibold text-[#1f8a84] transition hover:text-[#18716c]">
-                    Visit Event Website ↗
+                ) : null}
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {event.url ? (
+                    <a
+                      href={event.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      Visit Event
+                    </a>
+                  ) : null}
+
+                  <a
+                    href={`/api/events/${event.slug}.ics`}
+                    className="btn btn-secondary btn-sm"
+                  >
+                    Add to Calendar
                   </a>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
-              <h3 className="text-2xl font-semibold">No featured events yet</h3>
-              <p className="mt-4 text-slate-600">Featured events will appear here once they are marked in the database.</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="mb-12 max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">Upcoming Calendar</p>
-          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Upcoming telecom and infrastructure events</h2>
-        </div>
-
-        {Object.keys(groupedEvents).length > 0 ? (
-          <div className="space-y-10">
-            {Object.entries(groupedEvents).map(([month, events]) => (
-              <div key={month}>
-                <h3 className="mb-5 text-2xl font-semibold">{month}</h3>
-                <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-                  {events.map((event, index) => (
-                    <div
-                      key={event.id}
-                      className={`grid gap-4 px-6 py-5 md:grid-cols-[180px_1fr_220px] md:items-center ${
-                        index !== events.length - 1 ? "border-b border-slate-200" : ""
-                      }`}
-                    >
-                      <div className="font-semibold text-[#1f8a84]">{formatDateRange(event.start_date, event.end_date)}</div>
-                      <div>
-                        <Link href={`/events/${event.slug}`} className="text-lg font-semibold hover:text-[#1f8a84]">
-                          {event.title}
-                        </Link>
-                        <p className="mt-1 text-slate-600">{formatLocation(event.city, event.state, event.venue)}</p>
-                      </div>
-                      <div className="md:text-right">
-                        <p className="text-sm font-medium text-slate-500">{event.category}</p>
-                        <a href={event.official_url} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm font-semibold text-[#1f8a84] hover:text-[#18716c]">
-                          Official Site ↗
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </article>
             ))}
           </div>
-        ) : (
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
-            <h3 className="text-2xl font-semibold">No upcoming events found</h3>
-            <p className="mt-4 text-slate-600">Add events in Supabase and they will automatically appear here.</p>
-          </div>
-        )}
+        </div>
       </section>
 
-      <BottomCta
-        title="Want Odiscom to highlight an event or industry gathering?"
-        description="We are building this calendar to become a stronger resource for the telecom infrastructure community."
-        secondaryHref="/clients"
-        secondaryLabel="View Clients"
-      />
+      <section className="bg-[#238f8a] py-20 text-white">
+        <div className="section-shell">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight md:text-5xl">
+              Want Odiscom to highlight an event or industry gathering?
+            </h2>
+            <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90">
+              We are building this calendar to become a stronger resource for the
+              telecom infrastructure community.
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/contact" className="btn btn-secondary btn-lg">
+                Contact Odiscom
+              </Link>
+              <Link href="/clients" className="btn btn-primary btn-lg">
+                View Clients
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-  )
+  );
 }
