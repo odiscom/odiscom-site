@@ -37,21 +37,21 @@ export default function Navbar() {
     >
       <div
         className={`mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 transition-all duration-300 ${
-          isScrolled ? "h-[73px]" : "h-[86px]"
+          isScrolled ? "h-[73px]" : "h-[84px]"
         }`}
       >
-        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-10" : "gap-8"}`}>
+        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-9" : "gap-7"}`}>
           <Link href="/" className="flex items-center shrink-0">
             <img
               src="/logos/odiscom.png"
               alt="Odiscom"
               className={`object-contain transition-all duration-300 ${
-                isScrolled ? "w-[153px]" : "w-[180px]"
+                isScrolled ? "w-[150px]" : "w-[170px]"
               }`}
             />
           </Link>
 
-          <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-7" : "gap-6"}`}>
+          <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
             {navItems.map((item) => {
               const active = pathname === item.href
 
@@ -72,10 +72,10 @@ export default function Navbar() {
           </nav>
         </div>
 
-        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
+        <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-5" : "gap-4"}`}>
           <a
             href="tel:+14695311176"
-            className="hidden 2xl:block whitespace-nowrap pl-4 text-[15px] font-medium text-[#0f3f3b]"
+            className="hidden xl:block whitespace-nowrap pl-3 text-[14px] font-medium text-[#0f3f3b]"
           >
             (469) 531-1176
           </a>
@@ -83,7 +83,7 @@ export default function Navbar() {
           <Link
             href="/contact"
             className={`whitespace-nowrap rounded-full font-semibold transition-all duration-300 hover:bg-[#18716c] ${
-              isScrolled ? "px-6 py-2.5 text-[15px]" : "px-7 py-3 text-[16px]"
+              isScrolled ? "px-5 py-2.5 text-[15px]" : "px-6 py-3 text-[15px]"
             }`}
             style={{
               backgroundColor: "#1f8a84",
