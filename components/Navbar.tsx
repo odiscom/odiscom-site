@@ -52,24 +52,29 @@ export default function Navbar() {
           </Link>
 
           <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
-            {navItems.map((item) => {
-              const active = pathname === item.href
+  {navItems.map((item) => {
+    const active = pathname === item.href
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-[16px] font-medium transition ${
-                    active
-                      ? "text-[#1f8a84]"
-                      : "text-[#0f3f3b] hover:text-[#1f8a84]"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-          </nav>
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`relative text-[16px] transition ${
+          active
+            ? "font-semibold text-[#1f8a84]"
+            : "font-medium text-[#0f3f3b] hover:text-[#1f8a84]"
+        }`}
+      >
+        {item.label}
+
+        {/* underline indicator */}
+        {active && (
+          <span className="absolute -bottom-2 left-0 h-[2px] w-full bg-[#1f8a84]" />
+        )}
+      </Link>
+    )
+  })}
+</nav>
         </div>
 
         <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-5" : "gap-4"}`}>
