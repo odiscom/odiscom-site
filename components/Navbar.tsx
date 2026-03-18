@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -13,18 +13,18 @@ const navItems = [
   { label: "Government", href: "/government" },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
-]
+];
 
 export default function Navbar() {
-  const pathname = usePathname()
-  const [isScrolled, setIsScrolled] = useState(false)
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 24)
-    handleScroll()
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header
@@ -50,21 +50,35 @@ export default function Navbar() {
 
           <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
             {navItems.map((item) => {
-              const active = pathname === item.href
+              // Active logic that supports subroutes (ex: /services/* stays active)
+              const active =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href || pathname.startsWith(item.href + "/");
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative text-[16px] transition ${
+                  className={`group relative rounded-full px-3 py-2 text-[16px] transition ${
                     active
-                      ? "font-semibold text-[#1f8a84]"
-                      : "font-medium text-[#0f3f3b] hover:text-[#1f8a84]"
+                      ? "font-semibold text-[#1f8a84] bg-[#1f8a84]/10"
+                      : "font-medium text-[#0f3f3b] hover:text-[#1f8a84] hover:bg-[#1f8a84]/8"
                   }`}
                 >
                   {item.label}
-                  {active && <span className="absolute -bottom-2 left-0 h-[2px] w-full bg-[#1f8a84]" />}
+
+                  {/* underline: always visible when active, animates in on hover otherwise */}
+                  <span
+                    className={`absolute -bottom-[6px] left-3 right-3 h-[3px] rounded-full bg-[#1f8a84] transition-all duration-300 ${
+                      active
+                        ? "opacity-100 scale-x-100"
+                        : "opacity-0 scale-x-0 group-hover:opacity-100 group-hover:scale-x-100"
+                    }`}
+                    style={{ transformOrigin: "left" }}
+                  />
                 </Link>
-              )
+              );
             })}
           </nav>
         </div>
@@ -77,17 +91,17 @@ export default function Navbar() {
             (469) 531-1176
           </a>
 
+          {/* Centralized button rule: teal background => white text */}
           <Link
             href="/contact"
-            className={`whitespace-nowrap rounded-full font-semibold transition-all duration-300 hover:bg-[#18716c] ${
+            className={`btn btn-teal whitespace-nowrap font-semibold transition-all duration-300 ${
               isScrolled ? "px-5 py-2.5 text-[15px]" : "px-6 py-3 text-[15px]"
             }`}
-            style={{ backgroundColor: "#1f8a84", color: "#ffffff" }}
           >
             Request Proposal
           </Link>
         </div>
       </div>
     </header>
-  )
+  );
 }
