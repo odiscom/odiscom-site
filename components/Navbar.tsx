@@ -20,10 +20,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24)
-    }
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 24)
     handleScroll()
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
@@ -52,29 +49,24 @@ export default function Navbar() {
           </Link>
 
           <nav className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? "gap-6" : "gap-5"}`}>
-  {navItems.map((item) => {
-    const active = pathname === item.href
-
-    return (
-      <Link
-        key={item.href}
-        href={item.href}
-        className={`relative text-[16px] transition ${
-          active
-            ? "font-semibold text-[#1f8a84]"
-            : "font-medium text-[#0f3f3b] hover:text-[#1f8a84]"
-        }`}
-      >
-        {item.label}
-
-        {/* underline indicator */}
-        {active && (
-          <span className="absolute -bottom-2 left-0 h-[2px] w-full bg-[#1f8a84]" />
-        )}
-      </Link>
-    )
-  })}
-</nav>
+            {navItems.map((item) => {
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative text-[16px] transition ${
+                    active
+                      ? "font-semibold text-[#1f8a84]"
+                      : "font-medium text-[#0f3f3b] hover:text-[#1f8a84]"
+                  }`}
+                >
+                  {item.label}
+                  {active && <span className="absolute -bottom-2 left-0 h-[2px] w-full bg-[#1f8a84]" />}
+                </Link>
+              )
+            })}
+          </nav>
         </div>
 
         <div className={`flex items-center transition-all duration-300 ${isScrolled ? "gap-5" : "gap-4"}`}>
@@ -90,10 +82,7 @@ export default function Navbar() {
             className={`whitespace-nowrap rounded-full font-semibold transition-all duration-300 hover:bg-[#18716c] ${
               isScrolled ? "px-5 py-2.5 text-[15px]" : "px-6 py-3 text-[15px]"
             }`}
-            style={{
-              backgroundColor: "#1f8a84",
-              color: "#ffffff",
-            }}
+            style={{ backgroundColor: "#1f8a84", color: "#ffffff" }}
           >
             Request Proposal
           </Link>

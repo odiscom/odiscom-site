@@ -1,98 +1,29 @@
-import Link from "next/link";
+import Image from "next/image"
+import BottomCta from "@/components/BottomCta"
 
-export default function Page() {
+export default function GovernmentPage() {
   return (
-    <main className="bg-white">
-
-      <section className="mx-auto max-w-7xl px-6 pt-12 pb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-          Government & Public Sector Support
-        </h1>
-
-        <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          Odiscom supports federal, state, and local telecommunications
-          infrastructure programs including broadband expansion,
-          critical infrastructure upgrades, and public-sector network
-          modernization initiatives.
-        </p>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-
-          <Card
-            title="Broadband Expansion"
-            text="Engineering and deployment support for rural broadband initiatives and federally funded infrastructure programs."
-          />
-
-          <Card
-            title="Public Infrastructure"
-            text="Telecommunications engineering support for public infrastructure modernization including fiber networks and communications systems."
-          />
-
-          <Card
-            title="Grant-Funded Programs"
-            text="Support for broadband and infrastructure deployments funded through federal and state grant programs."
-          />
-
-          <Card
-            title="Engineering Services"
-            text="OSP engineering, structural coordination, infrastructure design, and construction documentation."
-          />
-
-          <Card
-            title="Program Coordination"
-            text="Multi-market coordination and program delivery support across large infrastructure deployments."
-          />
-
-          <Card
-            title="Infrastructure Consulting"
-            text="Strategic planning and advisory support for telecommunications and broadband initiatives."
-          />
-
-        </div>
-      </section>
-
-      <section className="border-t bg-slate-50">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
-
-          <h2 className="text-2xl font-bold text-slate-900">
-            Government Infrastructure Programs
-          </h2>
-
-          <p className="mt-2 text-slate-600">
-            Odiscom supports telecommunications engineering and
-            infrastructure deployment across the United States.
-          </p>
-
-          <div className="mt-6 flex justify-center gap-4">
-            <Link
-              href="/request-proposal"
-              className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-            >
-              Request Proposal
-            </Link>
-
-            <Link
-              href="/contact"
-              className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
-            >
-              Contact Us
-            </Link>
+    <main className="bg-white text-slate-900">
+      <section className="relative h-[430px] w-full overflow-hidden">
+        <Image src="/images/Towers/South_Tower.jpg" alt="Government and infrastructure support" fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f3f3b]/85 via-[#0f3f3b]/70 to-transparent" />
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
+          <div className="max-w-2xl text-white">
+            <p className="mb-4 text-sm tracking-[0.2em] text-white/80">GOVERNMENT • BROADBAND • INFRASTRUCTURE</p>
+            <h1 className="text-4xl font-semibold leading-tight md:text-5xl">Support for public-sector and infrastructure programs</h1>
+            <p className="mt-4 text-lg leading-8 text-white/90">
+              Odiscom supports broadband, telecom, and infrastructure work with practical delivery, engineering coordination, and field-aware execution support.
+            </p>
           </div>
-
         </div>
       </section>
 
+      <BottomCta
+        title="Need support for a public-sector telecom or infrastructure program?"
+        description="Odiscom helps clients navigate delivery with practical coordination, engineering support, and responsive execution."
+        secondaryHref="/projects"
+        secondaryLabel="View Projects"
+      />
     </main>
-  );
-}
-
-function Card({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-      <p className="mt-2 text-sm text-slate-600">{text}</p>
-    </div>
-  );
+  )
 }

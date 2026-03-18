@@ -1,137 +1,63 @@
 import Link from "next/link"
-import { COMPANY } from "@/lib/company"
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-[#0f6f6a] text-white">
-      <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">
-              Odiscom
-            </p>
+    <footer className="border-t border-white/30 bg-[#187c78] text-white">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-4 lg:px-8">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/80">Odiscom</p>
+          <h3 className="mt-4 text-2xl font-semibold leading-tight">
+            Telecom engineering and infrastructure support
+          </h3>
+          <p className="mt-4 text-lg leading-8 text-white/90">
+            Serving telecom infrastructure nationwide through practical design,
+            coordination, and field-aware delivery.
+          </p>
+        </div>
 
-            <h3 className="mt-4 text-2xl font-semibold">
-              Telecom engineering and infrastructure support
-            </h3>
-
-            <p className="mt-4 max-w-sm leading-8 text-white/85">
-              {COMPANY.tagline}
-            </p>
+        <div>
+          <h4 className="text-2xl font-semibold">Quick Links</h4>
+          <div className="mt-5 space-y-3 text-lg text-white/95">
+            <Link href="/">Home</Link>
+            <Link href="/services">Services</Link>
+            <Link href="/projects">Projects</Link>
+            <Link href="/clients">Clients</Link>
+            <Link href="/events">Events</Link>
           </div>
+        </div>
 
-          <div>
-            <h4 className="text-lg font-semibold">Quick Links</h4>
-
-            <div className="mt-5 space-y-3 text-white/85">
-              <div>
-                <Link href="/" className="transition hover:text-white">
-                  Home
-                </Link>
-              </div>
-              <div>
-                <Link href="/services" className="transition hover:text-white">
-                  Services
-                </Link>
-              </div>
-              <div>
-                <Link href="/projects" className="transition hover:text-white">
-                  Projects
-                </Link>
-              </div>
-              <div>
-                <Link href="/clients" className="transition hover:text-white">
-                  Clients
-                </Link>
-              </div>
-              <div>
-                <Link href="/events" className="transition hover:text-white">
-                  Events
-                </Link>
-              </div>
-              <div>
-                <Link href="/contact" className="transition hover:text-white">
-                  Contact
-                </Link>
-              </div>
+        <div>
+          <h4 className="text-2xl font-semibold">Contact</h4>
+          <div className="mt-5 space-y-4 text-lg">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">Location</p>
+              <p className="mt-1 text-white/95">League City, TX 77573</p>
             </div>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold">Contact</h4>
-
-            <div className="mt-5 space-y-4 text-white/85">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/65">
-                  Location
-                </p>
-                <p className="mt-1">{COMPANY.location}</p>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/65">
-                  Phone
-                </p>
-                <p className="mt-1">
-                  <a
-                    href={`tel:${COMPANY.phoneLink}`}
-                    className="transition hover:text-white"
-                  >
-                    {COMPANY.phoneDisplay}
-                  </a>
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/65">
-                  Email
-                </p>
-                <p className="mt-1">
-                  <a
-                    href={`mailto:${COMPANY.email}`}
-                    className="transition hover:text-white"
-                  >
-                    {COMPANY.email}
-                  </a>
-                </p>
-              </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">Phone</p>
+              <a className="mt-1 block text-white/95" href="tel:+14695311176">(469) 531-1176</a>
             </div>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold">Connect</h4>
-
-            <div className="mt-5 space-y-4 text-white/85">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/65">
-                  LinkedIn
-                </p>
-
-                <p className="mt-1">
-                  <a
-                    href={COMPANY.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="transition hover:text-white"
-                  >
-                    Follow Odiscom on LinkedIn
-                  </a>
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/65">
-                  Focus
-                </p>
-
-                <p className="mt-1">{COMPANY.focus}</p>
-              </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">Email</p>
+              <a className="mt-1 block text-white/95" href="mailto:owners@odiscom.com">owners@odiscom.com</a>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/15 pt-5 text-sm text-white/65">
-          © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
+        <div>
+          <h4 className="text-2xl font-semibold">Connect</h4>
+          <div className="mt-5 space-y-4 text-lg text-white/95">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">LinkedIn</p>
+              <a className="mt-1 block" href="https://www.linkedin.com/company/odiscom-llc" target="_blank" rel="noopener noreferrer">
+                Follow Odiscom on LinkedIn
+              </a>
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/75">Focus</p>
+              <p className="mt-1">Fiber, towers, and telecom infrastructure delivery</p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

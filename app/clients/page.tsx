@@ -1,10 +1,10 @@
 import Image from "next/image"
-import Link from "next/link"
+import BottomCta from "@/components/BottomCta"
 
 const clients = [
   { name: "AT&T", logo: "/logos/att.png" },
   { name: "Verizon", logo: "/logos/Verizon.png" },
-  { name: "Zayo", logo: "/logos/Zayo.svg" },
+  { name: "Zayo", logo: "/logos/zayo.png" },
   { name: "TDS Telecommunications", logo: "/logos/TDS.png" },
   { name: "ADB-US", logo: "/logos/adb.png" },
   { name: "Squan", logo: "/logos/squan.png" },
@@ -19,111 +19,43 @@ const clients = [
 export default function ClientsPage() {
   return (
     <main className="bg-white text-slate-900">
-      <section className="relative h-[520px] w-full overflow-hidden">
-        <Image
-          src="/images/Towers/South_Tower.jpg"
-          alt="Telecommunications infrastructure"
-          fill
-          priority
-          className="object-cover"
-        />
-
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-white" />
-
+      <section className="relative h-[430px] w-full overflow-hidden">
+        <Image src="/logos/clients.png" alt="Odiscom client partnerships" fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f3f3b]/85 via-[#0f3f3b]/70 to-transparent" />
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
-          <div className="max-w-3xl text-white">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
-              Clients
+          <div className="max-w-2xl text-white">
+            <p className="mb-4 text-sm tracking-[0.2em] text-white/80">PARTNERSHIPS • CLIENTS • TRUSTED DELIVERY</p>
+            <h1 className="text-4xl font-semibold leading-tight md:text-5xl">Trusted by Industry Leaders Nationwide</h1>
+            <p className="mt-4 text-lg leading-8 text-white/90">
+              Odiscom partners with carriers, infrastructure providers, and contractors to deliver reliable, scalable telecommunications solutions.
             </p>
-
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
-              Telecommunications operators and infrastructure partners
-            </h1>
-
-            <p className="mt-6 text-lg leading-8 text-white/90">
-              Odiscom supports telecommunications infrastructure programs across
-              wireless, fiber, and broadband deployment environments.
-            </p>
-
-            <Link
-              href="/contact"
-              className="mt-8 inline-block rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white hover:bg-[#18716c]"
-            >
-              Work With Odiscom
-            </Link>
           </div>
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <section className="bg-[#f7fbfb]">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
           <div className="mb-12 max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
-              Trusted By
-            </p>
-
-            <h2 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl">
-              Telecommunications clients and partners
-            </h2>
-
-            <p className="mt-6 text-lg leading-8 text-slate-600">
-              Odiscom works with carriers, infrastructure contractors, tower
-              operators, and broadband providers across the United States.
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">Selected Clients & Partners</p>
+            <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Organizations we have supported</h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {clients.map((client) => (
-              <div
-                key={client.name}
-                className="group flex items-center justify-center rounded-2xl border border-slate-200 bg-[#d2eeea] p-8 transition hover:bg-[#c3e7e2] hover:shadow-md"
-              >
-                <Image
-                  src={client.logo}
-                  alt={client.name}
-                  width={200}
-                  height={80}
-                  className="h-[60px] w-auto object-contain"
-                />
+              <div key={client.name} className="flex h-32 items-center justify-center rounded-[1.5rem] border border-slate-200 bg-white px-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                <img src={client.logo} alt={client.name} className="max-h-[52px] max-w-[190px] object-contain" />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
-            Start the conversation
-          </p>
-
-          <h2 className="mt-4 text-3xl font-semibold md:text-4xl">
-            Looking for a telecom delivery partner?
-          </h2>
-
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            If your program needs dependable engineering support, coordinated
-            infrastructure delivery, or field execution, we’d be glad to talk.
-          </p>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/contact"
-              className="rounded-full bg-[#1f8a84] px-7 py-4 font-semibold text-white hover:bg-[#18716c]"
-            >
-              Contact Odiscom
-            </Link>
-
-            <Link
-              href="/projects"
-              className="rounded-full border border-slate-300 px-7 py-4 font-semibold text-slate-900 hover:border-[#1f8a84] hover:text-[#1f8a84]"
-            >
-              View Projects
-            </Link>
-          </div>
-        </div>
-      </section>
+      <BottomCta
+        title="Looking for a dependable telecom infrastructure partner?"
+        description="Odiscom supports clients with practical engineering, responsive coordination, and construction-minded delivery across fiber, tower, and telecom programs."
+        secondaryHref="/projects"
+        secondaryLabel="View Projects"
+      />
     </main>
   )
 }
