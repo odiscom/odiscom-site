@@ -35,22 +35,22 @@ function formatDateRange(startsAt: string, endsAt: string) {
 export default function EventsPage() {
   return (
     <main className="bg-white">
-      <section className="bg-[#238f8a] py-24 text-white">
+      <section className="bg-[#edf8f7] py-24">
         <div className="section-shell">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className="text-4xl font-bold leading-tight text-[#0f3f3b] md:text-6xl">
               Industry Events & Gatherings
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90 md:text-xl">
+            <p className="mx-auto mt-6 max-w-3xl text-lg text-slate-600 md:text-xl">
               Odiscom tracks conferences, summits, and telecom infrastructure events
               that matter across fiber, tower, engineering, and construction.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/contact" className="btn btn-secondary btn-lg">
+              <Link href="/contact" className="btn btn-lg">
                 Contact Odiscom
               </Link>
-              <Link href="/clients" className="btn btn-primary btn-lg">
+              <Link href="/clients" className="btn btn-lg">
                 View Clients
               </Link>
             </div>
@@ -77,11 +77,13 @@ export default function EventsPage() {
                 key={event.slug}
                 className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg"
               >
-                <div className="mb-4">
-                  <div className="inline-flex rounded-full bg-[#1f8a84]/10 px-3 py-1 text-sm font-semibold text-[#166e68]">
-                    {event.category}
+                {event.category ? (
+                  <div className="mb-4">
+                    <div className="inline-flex rounded-full bg-[#1f8a84]/10 px-3 py-1 text-sm font-semibold text-[#166e68]">
+                      {event.category}
+                    </div>
                   </div>
-                </div>
+                ) : null}
 
                 <h3 className="text-2xl font-bold leading-tight text-[#0f3f3b]">
                   {event.title}
@@ -113,7 +115,7 @@ export default function EventsPage() {
                       href={event.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-sm"
                     >
                       Visit Event
                     </a>
@@ -121,36 +123,13 @@ export default function EventsPage() {
 
                   <a
                     href={`/api/events/${event.slug}.ics`}
-                    className="btn btn-secondary btn-sm"
+                    className="btn btn-sm"
                   >
                     Add to Calendar
                   </a>
                 </div>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#238f8a] py-20 text-white">
-        <div className="section-shell">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-bold leading-tight md:text-5xl">
-              Want Odiscom to highlight an event or industry gathering?
-            </h2>
-            <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90">
-              We are building this calendar to become a stronger resource for the
-              telecom infrastructure community.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/contact" className="btn btn-secondary btn-lg">
-                Contact Odiscom
-              </Link>
-              <Link href="/clients" className="btn btn-primary btn-lg">
-                View Clients
-              </Link>
-            </div>
           </div>
         </div>
       </section>
