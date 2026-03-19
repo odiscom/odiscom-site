@@ -62,19 +62,11 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              {/* CENTRALIZED BUTTON: teal bg => white text */}
-              <Link
-                href="/contact"
-                className="btn btn-teal px-7 py-4 text-lg"
-              >
+              <Link href="/contact" className="btn btn-lg">
                 Request Proposal
               </Link>
 
-              {/* CENTRALIZED BUTTON: white bg => teal text */}
-              <Link
-                href="/services"
-                className="btn btn-white px-7 py-4 text-lg"
-              >
+              <Link href="/services" className="btn btn-lg">
                 View Services
               </Link>
             </div>

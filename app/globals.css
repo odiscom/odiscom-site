@@ -1,13 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  --odiscom-teal-1: #1f8a84;
-  --odiscom-teal-2: #166e68;
-  --odiscom-teal-3: #115a55;
+  --odiscom-teal-1: #166e68;
+  --odiscom-teal-2: #115a55;
+  --odiscom-teal-3: #0d4a46;
   --odiscom-text: #0f3f3b;
-  --odiscom-light: #f4fbfa;
 }
 
 html {
@@ -15,50 +12,83 @@ html {
 }
 
 body {
+  margin: 0;
   color: var(--odiscom-text);
   background: #ffffff;
 }
 
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-full font-semibold whitespace-nowrap transition-all duration-300;
-  }
+/* UNIVERSAL BUTTON SYSTEM */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
 
-  .btn-primary {
-    @apply text-white shadow-md hover:shadow-lg active:scale-[0.98];
-    background-image: linear-gradient(to bottom, var(--odiscom-teal-1), var(--odiscom-teal-2));
-  }
+  background-image: linear-gradient(
+    to bottom,
+    var(--odiscom-teal-1),
+    var(--odiscom-teal-2)
+  );
 
-  .btn-primary:hover {
-    background-image: linear-gradient(to bottom, #18736e, var(--odiscom-teal-3));
-  }
+  box-shadow:
+    0 8px 18px rgba(13, 74, 70, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 
-  .btn-secondary {
-    @apply bg-white text-[#166e68] shadow-sm ring-1 ring-black/5 hover:shadow-md hover:bg-[#f7fbfb] active:scale-[0.98];
-  }
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
 
-  .btn-ghost {
-    @apply text-white hover:text-white;
-    background-color: transparent;
-  }
+.btn:hover {
+  background-image: linear-gradient(
+    to bottom,
+    var(--odiscom-teal-2),
+    var(--odiscom-teal-3)
+  );
 
-  .btn-ghost:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-  }
+  box-shadow:
+    0 12px 24px rgba(13, 74, 70, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
 
-  .btn-sm {
-    @apply px-5 py-2.5 text-[15px];
-  }
+.btn:active {
+  transform: scale(0.97);
+}
 
-  .btn-md {
-    @apply px-6 py-3 text-[15px];
-  }
+/* Sizes */
+.btn-sm {
+  padding: 0.6rem 1.3rem;
+  font-size: 14px;
+}
 
-  .btn-lg {
-    @apply px-7 py-3.5 text-[16px];
-  }
+.btn-md {
+  padding: 0.75rem 1.6rem;
+  font-size: 15px;
+}
 
+.btn-lg {
+  padding: 0.9rem 2rem;
+  font-size: 16px;
+}
+
+/* Layout helper */
+.section-shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
   .section-shell {
-    @apply mx-auto w-full max-w-7xl px-6 lg:px-8;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

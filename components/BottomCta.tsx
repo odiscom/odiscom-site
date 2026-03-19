@@ -3,40 +3,30 @@ import Link from "next/link";
 type BottomCtaProps = {
   title: string;
   description: string;
-  secondaryHref?: string;
-  secondaryLabel?: string;
 };
 
-export default function BottomCta({
-  title,
-  description,
-  secondaryHref = "/services",
-  secondaryLabel = "Explore Services",
-}: BottomCtaProps) {
+export default function BottomCta({ title, description }: BottomCtaProps) {
   return (
-    <section className="bg-[#1f8a84] text-white">
-      <div className="mx-auto max-w-5xl px-6 py-16 text-center lg:px-8">
-        <h2 className="text-3xl font-semibold md:text-4xl">{title}</h2>
-        <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/90">
-          {description}
-        </p>
+    <section className="border-t border-white/20 bg-[#edf8f7] text-[#0f3f3b]">
+      <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-semibold leading-tight md:text-6xl">
+            {title}
+          </h2>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          {/* CENTRALIZED BUTTON: white bg => teal text */}
-          <Link
-            href="/contact"
-            className="btn btn-white px-10 py-5 text-[18px] font-semibold"
-          >
-            Contact Odiscom
-          </Link>
+          <p className="mx-auto mt-6 max-w-3xl text-xl leading-9 text-slate-600">
+            {description}
+          </p>
 
-          {/* CENTRALIZED BUTTON: teal bg => white text */}
-          <Link
-            href={secondaryHref}
-            className="btn btn-teal px-10 py-5 text-[18px] font-semibold"
-          >
-            {secondaryLabel}
-          </Link>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/contact" className="btn btn-lg">
+              Contact Odiscom
+            </Link>
+
+            <Link href="/services" className="btn btn-lg">
+              Explore Services
+            </Link>
+          </div>
         </div>
       </div>
     </section>
