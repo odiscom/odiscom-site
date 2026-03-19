@@ -13,6 +13,7 @@ function escapeICSText(input: string) {
 function toICSDate(iso: string) {
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, "0");
+
   return (
     d.getUTCFullYear() +
     pad(d.getUTCMonth() + 1) +
@@ -27,9 +28,14 @@ function toICSDate(iso: string) {
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  context: { params: Promise<Record<string, string>> }
 ) {
-  const { slug } = await params;
+  const params = await context.params;
+  const slug = params.slug;
+
+  if (!slug) {
+    return NextResponse.json({ error: "Missing event slug" }, { status: 400 });
+  }
 
   const event = getEventBySlug(slug);
 
