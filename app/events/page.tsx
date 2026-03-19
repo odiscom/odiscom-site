@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { events } from "@/lib/events-data";
+import { EVENTS } from "@/lib/events-data";
 
 export const metadata = {
   title: "Events | ODISCOM",
