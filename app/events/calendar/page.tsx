@@ -58,7 +58,7 @@ export default async function Page({ searchParams }: Props) {
 
   const title = formatMonthTitle(year, monthIndex);
 
-  const evts = eventsForMonth(year, monthIndex);
+  const evts = await eventsForMonth(year, monthIndex);
   const byDay = eventsByDayMap(evts);
 
   const grid = buildCalendarGrid(year, monthIndex);

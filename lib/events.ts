@@ -92,29 +92,38 @@ export function formatTimeRange(startIso: string, endIso?: string | null) {
 
 /* ---------------- CALENDAR LOGIC ---------------- */
 
-export function eventsForMonth(
-  events: EventItem[],
-  year: number,
-  monthIndex: number
-) {
+export async function eventsForMonth(year: number, monthIndex: number) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data: events = [] } = await supabase
+    .from("events")
+    .select("*")
+    .order("starts_at", { ascending: true });
+
   const start = new Date(year, monthIndex, 1);
   const end = new Date(year, monthIndex + 1, 1);
 
-  return events.filter((e) => {
+  return (events as EventItem[]).filter((e) => {
     const d = new Date(e.starts_at);
     return d >= start && d < end;
   });
 }
 
 export function eventsByDayMap(events: EventItem[]) {
-  const map: Record<string, EventItem[]> = {};
+  const map = new Map<string, EventItem[]>();
 
   for (const event of events) {
     const date = new Date(event.starts_at);
     const key = date.toISOString().split("T")[0];
 
-    if (!map[key]) map[key] = [];
-    map[key].push(event);
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+
+    map.get(key)!.push(event);
   }
 
   return map;
