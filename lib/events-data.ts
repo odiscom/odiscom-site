@@ -2,13 +2,14 @@
 export type EventItem = {
   slug: string;
   title: string;
-  startsAt: string; // ISO string with timezone offset if known
-  endsAt: string;   // ISO string
+  startsAt: string; // ISO string
+  endsAt: string; // ISO string
   timezone?: string;
   location?: string;
   cityState?: string;
-  url?: string; // registration link
+  url?: string;
   description?: string;
+  category?: string;
 };
 
 export const EVENTS: EventItem[] = [
@@ -21,6 +22,11 @@ export const EVENTS: EventItem[] = [
     cityState: "Las Vegas, NV",
     url: "https://natehome.com/events/calendar/",
     description: "Industry conference and events.",
+    category: "Conference",
   },
   // Add your own events here...
 ];
+
+export function getEventBySlug(slug: string) {
+  return EVENTS.find((e) => e.slug === slug);
+}

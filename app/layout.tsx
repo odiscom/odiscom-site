@@ -1,23 +1,12 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata = {
+export const metadata: Metadata = {
   title: "ODISCOM — Fiber & Tower",
   description:
-    "Telecom engineering, fiber infrastructure, and tower services supporting nationwide network deployment.",
+    "Telecommunications engineering, fiber infrastructure development, tower services, and construction support nationwide.",
 };
 
 export default function RootLayout({
@@ -27,11 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-<body>
-  <Header />
-  {children}
-  <Footer />
-</body>
+      <body className="bg-white text-[#0f3f3b] antialiased">
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

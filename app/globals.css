@@ -1,71 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --odiscom-teal-1: #166e68;
+  --odiscom-teal-2: #115a55;
+  --odiscom-teal-3: #0d4a46;
+  --odiscom-text: #0f3f3b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-.logo-marquee {
-  animation: scrollLogos 35s linear infinite;
-  width: max-content;
+  margin: 0;
+  color: var(--odiscom-text);
+  background: #ffffff;
 }
 
-@keyframes scrollLogos {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}/* Odiscom logo marquee (App Router safe) */
-.odiscom-marquee {
-  width: 100%;
-  overflow: hidden;
-}
-
-.odiscom-marquee-track {
-  display: flex;
+/* UNIVERSAL BUTTON SYSTEM */
+.btn {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  width: max-content;
-  animation: odiscom-marquee 26s linear infinite;
-  will-change: transform;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+
+  background-image: linear-gradient(
+    to bottom,
+    var(--odiscom-teal-1),
+    var(--odiscom-teal-2)
+  );
+
+  box-shadow:
+    0 8px 18px rgba(13, 74, 70, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
 }
 
-.odiscom-marquee-track:hover {
-  animation-play-state: paused;
+.btn:hover {
+  background-image: linear-gradient(
+    to bottom,
+    var(--odiscom-teal-2),
+    var(--odiscom-teal-3)
+  );
+
+  box-shadow:
+    0 12px 24px rgba(13, 74, 70, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-@keyframes odiscom-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+.btn:active {
+  transform: scale(0.97);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .odiscom-marquee-track {
-    animation: none;
+/* Sizes */
+.btn-sm {
+  padding: 0.6rem 1.3rem;
+  font-size: 14px;
+}
+
+.btn-md {
+  padding: 0.75rem 1.6rem;
+  font-size: 15px;
+}
+
+.btn-lg {
+  padding: 0.9rem 2rem;
+  font-size: 16px;
+}
+
+/* Layout helper */
+.section-shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .section-shell {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

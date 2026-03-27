@@ -1,182 +1,181 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import BottomCta from "@/components/BottomCta";
 
-const clientLogos = [
-  { src: "/logos/att.png", alt: "AT&T" },
-  { src: "/logos/Verizon.png", alt: "Verizon" },
-  { src: "/logos/TDS.png", alt: "TDS" },
-  { src: "/logos/vertical-bridge-logo.svg", alt: "Vertical Bridge" },
-  { src: "/logos/Zayo.svg", alt: "Zayo" },
-  { src: "/logos/EBI.svg", alt: "EBI" },
-  { src: "/logos/smartlink.png", alt: "Smartlink" },
-  { src: "/logos/sonic.png", alt: "SONIC" },
-  { src: "/logos/Nextlink.png", alt: "Nextlink" },
-  { src: "/logos/crowncastle-logo.png", alt: "Crown Castle" },
-  { src: "/logos/Ericsson-Symbol.png", alt: "Ericsson" },
-  { src: "/logos/nokia.png", alt: "Nokia" },
-  { src: "/logos/ATC.png", alt: "American Tower" },
-  { src: "/logos/SBA.png", alt: "SBA Communications" },
+const trustedLogos = [
+  { name: "AT&T", logo: "/logos/att.png" },
+  { name: "Verizon", logo: "/logos/Verizon.png" },
+  { name: "Zayo", logo: "/logos/zayo.png" },
+  { name: "TDS Telecommunications", logo: "/logos/TDS.png" },
+  { name: "ADB-US", logo: "/logos/adb.png" },
+  { name: "Squan", logo: "/logos/squan.png" },
+  { name: "Harmoni Towers", logo: "/logos/harmoni.png" },
+  { name: "Nextlink", logo: "/logos/nextlink.jpg" },
+  { name: "Foresight Communications", logo: "/logos/foresight.png" },
+  { name: "EBI", logo: "/logos/ebi.jpeg" },
+  { name: "Smartlink", logo: "/logos/smartlink.png" },
+  { name: "SONIC", logo: "/logos/sonic.png" },
 ];
 
-export default function Page() {
+export default function HomePage() {
+  const marqueeLogos = [...trustedLogos, ...trustedLogos];
+
   return (
-    <>
-      {/* Plain CSS (NOT styled-jsx) so this stays a Server Component */}
-      <style>{`
-        @keyframes odiscom-marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .marquee-track {
-          animation: odiscom-marquee 28s linear infinite;
-        }
-        .marquee:hover .marquee-track {
-          animation-play-state: paused;
-        }
-      `}</style>
-
-      <main className="bg-white">
-        {/* HERO (no image) */}
-        <section className="mx-auto max-w-7xl px-6 pt-10 pb-8">
-          <p className="text-sm text-slate-600">
-            Telecommunications • Fiber • Towers • Construction
-          </p>
-
-          <div className="mt-4 grid gap-8 lg:grid-cols-12 lg:items-start">
-            <div className="lg:col-span-7">
-              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-                Engineering America’s Digital Infrastructure
-              </h1>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-                Odiscom provides telecommunications engineering, fiber infrastructure development,
-                and tower services supporting nationwide network deployment.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/request-proposal"
-                  className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
-                >
-                  Request Proposal
-                </Link>
-                <Link
-                  href="/services"
-                  className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
-                >
-                  View Services
-                </Link>
-              </div>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-4">
-                <StatCard label="Founded" value="2015" />
-                <StatCard label="Coverage" value="Nationwide" />
-                <StatCard label="Delivery" value="Engineering + Construction" />
-                <StatCard label="Response" value="Rapid mobilization" />
-              </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Fiber + Tower delivery, under one roof
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Practical design. Field-ready plans. Clean documentation. Safe execution.
-                </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-700">
-                  <li>• OSP / OSP Engineering</li>
-                  <li>• Pole loading + make-ready support</li>
-                  <li>• Tower A&E + construction support</li>
-                  <li>• Program and vendor coordination</li>
-                </ul>
-                <Link
-                  href="/contact"
-                  className="mt-5 inline-flex items-center text-sm font-semibold text-slate-900 hover:underline"
-                >
-                  Talk to us →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CLIENT LOGOS (scrolling marquee) */}
-        <section className="border-t bg-slate-50">
-          <div className="mx-auto max-w-7xl px-6 py-10">
-            <div className="flex items-end justify-between gap-6">
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                  Trusted by telecommunications operators and infrastructure owners
-                </h2>
-                <p className="mt-2 text-sm text-slate-600">Selected clients and partners.</p>
-              </div>
-
-              <Link
-                href="/clients"
-                className="hidden text-sm font-semibold text-slate-900 hover:underline sm:inline-flex"
-              >
-                View Clients →
-              </Link>
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-              <div className="relative overflow-hidden rounded-2xl marquee">
-                {/* Edge fades (match bg-slate-50) */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-50 to-transparent" />
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-50 to-transparent" />
-
-                <div className="marquee-track flex w-[200%] items-center py-7">
-                  {/* First pass */}
-                  <LogoRow logos={clientLogos} />
-                  {/* Second pass (duplicate for seamless loop) */}
-                  <LogoRow logos={clientLogos} />
-                </div>
-              </div>
-
-              <p className="px-6 pb-5 text-center text-xs text-slate-500">
-                Logos are trademarks of their respective owners.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Next sections */}
-        <section className="mx-auto max-w-7xl px-6 py-14">
-          <h3 className="text-xl font-bold text-slate-900">What we do</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-            Add services, project highlights, certifications, safety culture, and government
-            capabilities next.
-          </p>
-        </section>
-      </main>
-    </>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="text-xs font-medium text-slate-500">{label}</div>
-      <div className="mt-1 text-base font-semibold text-slate-900">{value}</div>
-    </div>
-  );
-}
-
-function LogoRow({ logos }: { logos: { src: string; alt: string }[] }) {
-  return (
-    <div className="flex min-w-max items-center gap-12 px-10">
-      {logos.map((logo) => (
-        <div key={logo.src} className="flex items-center">
+    <main className="bg-white text-slate-900">
+      <section className="relative h-[680px] w-full overflow-hidden">
+        <div className="absolute inset-y-0 left-0 w-1/2">
           <Image
-            src={logo.src}
-            alt={logo.alt}
-            width={200}
-            height={70}
-            className="h-10 w-auto object-contain"
+            src="/images/Towers/South_Tower.jpg"
+            alt="Telecom tower infrastructure"
+            fill
+            priority
+            className="object-cover"
           />
         </div>
-      ))}
-    </div>
+        <div className="absolute inset-y-0 right-0 w-1/2">
+          <Image
+            src="/images/Fiber/trenching_pic.jpg"
+            alt="Fiber trenching"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
+
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-[#1f8a84]/25" />
+        <div className="absolute left-1/2 top-0 h-full w-px bg-white/20" />
+
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
+          <div className="max-w-3xl text-white">
+            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
+              Telecommunications • Fiber • Towers • Construction
+            </p>
+
+            <h1 className="text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
+              Engineering America’s Digital Infrastructure
+            </h1>
+
+            <p className="mt-8 max-w-2xl text-xl leading-9 text-white/90">
+              Odiscom supports fiber, tower, and telecommunications infrastructure programs with practical design,
+              coordinated delivery, and construction-minded execution.
+            </p>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link href="/contact" className="btn btn-lg">
+                Request Proposal
+              </Link>
+
+              <Link href="/services" className="btn btn-lg">
+                View Services
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="overflow-hidden border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+                Trusted By
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold md:text-3xl">
+                Telecom operators, contractors, and infrastructure partners
+              </h2>
+            </div>
+            <Link
+              href="/clients"
+              className="hidden text-sm font-semibold text-[#1f8a84] transition hover:text-[#18716c] md:block"
+            >
+              View All Clients →
+            </Link>
+          </div>
+
+          <div className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-gradient-to-r from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-white to-transparent" />
+            <div className="marquee-track flex w-max items-center gap-4">
+              {marqueeLogos.map((client, index) => (
+                <div
+                  key={`${client.name}-${index}`}
+                  className="flex h-24 w-[280px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-[#edf8f7] px-6"
+                >
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="block max-h-[42px] max-w-[180px] object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+          <div className="mb-12 max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+              What we do
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
+              Practical support for fiber, tower, and telecom infrastructure projects
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-slate-600">
+              Odiscom delivers engineering, fielding, and construction support built for real-world deployment
+              across telecommunications programs.
+            </p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
+                Fiber
+              </p>
+              <h3 className="mt-4 text-2xl font-semibold">
+                OSP engineering and infrastructure support
+              </h3>
+              <p className="mt-4 leading-8 text-slate-600">
+                Route development, utility coordination, make-ready support, fielding, and plan production aligned
+                with deployment needs.
+              </p>
+            </div>
+
+            <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
+                Towers
+              </p>
+              <h3 className="mt-4 text-2xl font-semibold">
+                Wireless site and tower project execution support
+              </h3>
+              <p className="mt-4 leading-8 text-slate-600">
+                A&E coordination, site documentation, upgrade support, and project delivery tailored to carrier and
+                infrastructure programs.
+              </p>
+            </div>
+
+            <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
+                Construction
+              </p>
+              <h3 className="mt-4 text-2xl font-semibold">
+                Construction-minded planning and delivery
+              </h3>
+              <p className="mt-4 leading-8 text-slate-600">
+                Documentation and coordination built to support field teams, mobilization, vendor alignment, and
+                real-world execution.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <BottomCta
+        title="Need support on a fiber, tower, or telecom infrastructure project?"
+        description="Tell us what you're building, where you need support, and how quickly you need to move."
+      />
+    </main>
   );
 }
