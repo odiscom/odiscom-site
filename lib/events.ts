@@ -1,73 +1,75 @@
-import { getSupabaseClient } from "./supabase"
-import type { EventItem } from "../types/event"
+export type EventItem = {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  category?: string | null;
+  starts_at: string;
+  created_at?: string;
+};
 
-export async function getFeaturedEvents(): Promise<EventItem[]> {
-  try {
-    const supabase = getSupabaseClient()
-    if (!supabase) return []
-    const today = new Date().toISOString().slice(0, 10)
-    const { data, error } = await supabase
-      .from("events")
-      .select("*")
-      .eq("is_active", true)
-      .eq("is_featured", true)
-      .gte("start_date", today)
-      .order("start_date", { ascending: true })
-      .limit(3)
-    if (error) return []
-    return (data ?? []) as EventItem[]
-  } catch {
-    return []
-  }
+export function getEventBySlug(events: EventItem[], slug: string) {
+  return events.find((event) => event.slug === slug);
 }
 
-export async function getUpcomingEvents(): Promise<EventItem[]> {
-  try {
-    const supabase = getSupabaseClient()
-    if (!supabase) return []
-    const start = new Date()
-    const end = new Date()
-    end.setFullYear(end.getFullYear() + 1)
-    const { data, error } = await supabase
-      .from("events")
-      .select("*")
-      .eq("is_active", true)
-      .gte("start_date", start.toISOString().slice(0, 10))
-      .lte("start_date", end.toISOString().slice(0, 10))
-      .order("start_date", { ascending: true })
-    if (error) return []
-    return (data ?? []) as EventItem[]
-  } catch {
-    return []
+export function parseMonthParam(month?: string) {
+  if (!month) {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   }
+
+  const match = /^(\d{4})-(\d{2})$/.exec(month);
+  if (!match) {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  const year = Number(match[1]);
+  const monthIndex = Number(match[2]) - 1;
+
+  if (monthIndex < 0 || monthIndex > 11) {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  return new Date(year, monthIndex, 1);
 }
 
-export async function getEventBySlug(slug: string): Promise<EventItem | null> {
-  try {
-    const supabase = getSupabaseClient()
-    if (!supabase) return null
-    const { data, error } = await supabase
-      .from("events")
-      .select("*")
-      .eq("slug", slug)
-      .eq("is_active", true)
-      .maybeSingle()
-    if (error) return null
-    return (data as EventItem | null) ?? null
-  } catch {
-    return null
-  }
+export function addMonths(date: Date, amount: number) {
+  return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
-export function groupEventsByMonth(events: EventItem[]) {
-  return events.reduce<Record<string, EventItem[]>>((acc, event) => {
-    const key = new Date(`${event.start_date}T00:00:00Z`).toLocaleString("en-US", {
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    })
-    if (!acc[key]) acc[key] = []
-    acc[key].push(event)
-    return acc
-  }, {})
+export function monthKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+}
+
+export function formatTimeRange(startIso: string, endIso?: string | null) {
+  const start = new Date(startIso);
+
+  if (Number.isNaN(start.getTime())) return "";
+
+  const startText = start.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  if (!endIso) return startText;
+
+  const end = new Date(endIso);
+  if (Number.isNaN(end.getTime())) return startText;
+
+  const endText = end.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  return `${startText} - ${endText}`;
 }
