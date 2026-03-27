@@ -1,24 +1,34 @@
-async function getEvents() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/events`, {
-    cache: "no-store",
-  });
+import { createClient } from "@supabase/supabase-js";
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch events");
-  }
-
-  return res.json();
-}
+export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
-  const { data } = await getEvents();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data: events, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("starts_at", { ascending: false })
+    .limit(25);
+
+  if (error) {
+    return (
+      <div className="max-w-5xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">Industry Events</h1>
+        <p>Failed to load events.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Industry Events</h1>
 
       <div className="space-y-4">
-        {data?.map((event: any) => (
+        {events?.map((event: any) => (
           <div
             key={event.id}
             className="border rounded-lg p-4 hover:shadow-md transition"
