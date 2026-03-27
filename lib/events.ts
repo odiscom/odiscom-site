@@ -1,3 +1,5 @@
+import { createClient } from "@supabase/supabase-js";
+
 export type EventItem = {
   id: string;
   title: string;
@@ -10,34 +12,57 @@ export type EventItem = {
 
 /* ---------------- BASIC HELPERS ---------------- */
 
-export function getEventBySlug(events: EventItem[], slug: string) {
-  return events.find((event) => event.slug === slug);
+export async function getEventBySlug(slug: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error) return null;
+  return data as EventItem | null;
 }
 
 export function parseMonthParam(month?: string) {
+  const now = new Date();
+
   if (!month) {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), 1);
+    return { year: now.getFullYear(), monthIndex: now.getMonth() };
   }
 
   const match = /^(\d{4})-(\d{2})$/.exec(month);
-  if (!match) return new Date();
+  if (!match) {
+    return { year: now.getFullYear(), monthIndex: now.getMonth() };
+  }
 
-  return new Date(Number(match[1]), Number(match[2]) - 1, 1);
+  const year = Number(match[1]);
+  const monthIndex = Number(match[2]) - 1;
+
+  if (monthIndex < 0 || monthIndex > 11) {
+    return { year: now.getFullYear(), monthIndex: now.getMonth() };
+  }
+
+  return { year, monthIndex };
 }
 
-export function addMonths(date: Date, amount: number) {
-  return new Date(date.getFullYear(), date.getMonth() + amount, 1);
+export function addMonths(year: number, monthIndex: number, amount: number) {
+  const d = new Date(year, monthIndex + amount, 1);
+  return { year: d.getFullYear(), monthIndex: d.getMonth() };
 }
 
-export function monthKey(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+export function monthKey(year: number, monthIndex: number) {
+  return `${year}-${String(monthIndex + 1).padStart(2, "0")}`;
 }
 
 /* ---------------- DISPLAY HELPERS ---------------- */
 
-export function formatMonthTitle(date: Date) {
-  return date.toLocaleString("en-US", {
+export function formatMonthTitle(year: number, monthIndex: number) {
+  return new Date(year, monthIndex, 1).toLocaleString("en-US", {
     month: "long",
     year: "numeric",
   });
@@ -67,9 +92,13 @@ export function formatTimeRange(startIso: string, endIso?: string | null) {
 
 /* ---------------- CALENDAR LOGIC ---------------- */
 
-export function eventsForMonth(events: EventItem[], month: Date) {
-  const start = new Date(month.getFullYear(), month.getMonth(), 1);
-  const end = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+export function eventsForMonth(
+  events: EventItem[],
+  year: number,
+  monthIndex: number
+) {
+  const start = new Date(year, monthIndex, 1);
+  const end = new Date(year, monthIndex + 1, 1);
 
   return events.filter((e) => {
     const d = new Date(e.starts_at);
