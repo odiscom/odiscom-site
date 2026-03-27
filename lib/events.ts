@@ -10,13 +10,15 @@ export type EventItem = {
   created_at?: string;
 };
 
-/* ---------------- BASIC HELPERS ---------------- */
-
-export async function getEventBySlug(slug: string) {
-  const supabase = createClient(
+function getSupabase() {
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
+}
+
+export async function getEventBySlug(slug: string) {
+  const supabase = getSupabase();
 
   const { data, error } = await supabase
     .from("events")
@@ -59,8 +61,6 @@ export function monthKey(year: number, monthIndex: number) {
   return `${year}-${String(monthIndex + 1).padStart(2, "0")}`;
 }
 
-/* ---------------- DISPLAY HELPERS ---------------- */
-
 export function formatMonthTitle(year: number, monthIndex: number) {
   return new Date(year, monthIndex, 1).toLocaleString("en-US", {
     month: "long",
@@ -68,35 +68,19 @@ export function formatMonthTitle(year: number, monthIndex: number) {
   });
 }
 
-export function formatTimeRange(startIso: string, endIso?: string | null) {
+export function formatTimeRange(startIso: string) {
   const start = new Date(startIso);
 
-  const startText = start.toLocaleString("en-US", {
+  return start.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
   });
-
-  if (!endIso) return startText;
-
-  const end = new Date(endIso);
-
-  const endText = end.toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-  return `${startText} - ${endText}`;
 }
 
-/* ---------------- CALENDAR LOGIC ---------------- */
-
 export async function eventsForMonth(year: number, monthIndex: number) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabase = getSupabase();
 
   const { data: events = [] } = await supabase
     .from("events")
@@ -117,7 +101,10 @@ export function eventsByDayMap(events: EventItem[]) {
 
   for (const event of events) {
     const date = new Date(event.starts_at);
-    const key = date.toISOString().split("T")[0];
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
 
     if (!map.has(key)) {
       map.set(key, []);

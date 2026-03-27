@@ -70,7 +70,7 @@ export default async function Page({ searchParams }: Props) {
               Events Calendar
             </h1>
             <p className="mt-1 text-sm text-slate-600">
-              Click an event for details
+              Industry feed by publish date
             </p>
           </div>
 
@@ -151,10 +151,6 @@ export default async function Page({ searchParams }: Props) {
               );
             })}
           </div>
-        </div>
-
-        <div className="text-center text-xs text-slate-500">
-          Want your calendar syndicated? We can add an iCal feed.
         </div>
       </div>
     </main>
