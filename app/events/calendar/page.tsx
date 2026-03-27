@@ -87,7 +87,6 @@ export default async function Page({ searchParams }: Props) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* View Toggle */}
             <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
               <Link
                 href={hrefWith(baseMonth, "month")}
@@ -112,7 +111,6 @@ export default async function Page({ searchParams }: Props) {
               </Link>
             </div>
 
-            {/* Month Navigation */}
             <div className="flex items-center gap-2">
               <Link
                 href={hrefWith(monthKey(prev.year, prev.monthIndex), view)}
@@ -135,7 +133,6 @@ export default async function Page({ searchParams }: Props) {
           </div>
         </div>
 
-        {/* Calendar */}
         {view === "month" ? (
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
@@ -182,12 +179,6 @@ export default async function Page({ searchParams }: Props) {
                           {e.title}
                         </Link>
                       ))}
-
-                      {dayEvents.length > 3 && (
-                        <div className="text-xs text-slate-500">
-                          +{dayEvents.length - 3} more
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
@@ -210,8 +201,7 @@ export default async function Page({ searchParams }: Props) {
                   </Link>
 
                   <div className="text-xs text-slate-600 mt-1">
-                    {formatTimeRange(e.startsAt, e.endsAt)}
-                    {e.location && ` • ${e.location}`}
+                    {formatTimeRange(e.starts_at)}
                   </div>
                 </div>
               ))}
