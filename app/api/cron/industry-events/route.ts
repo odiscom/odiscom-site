@@ -88,22 +88,6 @@ function isLikelyEventTitle(title: string) {
   ].some((word) => t.includes(word));
 }
 
-function extractHrefLinks(html: string, baseUrl: string) {
-  const matches = [...html.matchAll(/href=["']([^"'#]+)["']/gi)];
-  const urls = new Set<string>();
-
-  for (const match of matches) {
-    try {
-      const absolute = new URL(match[1], baseUrl).toString();
-      urls.add(absolute);
-    } catch {
-      // ignore bad URLs
-    }
-  }
-
-  return [...urls];
-}
-
 function extractJsonLdBlocks(html: string) {
   return [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
     .map((m) => m[1])
@@ -184,51 +168,52 @@ async function fetchHtml(url: string) {
 
 async function crawlSource(source: SourceName, landingUrl: string) {
   const landingHtml = await fetchHtml(landingUrl);
-  const landingHost = new URL(landingUrl).host;
+  const events: RawEvent[] = [];
 
-  const candidateLinks = extractHrefLinks(landingHtml, landingUrl).filter((link) => {
-    try {
-      const url = new URL(link);
-      if (url.host !== landingHost) return false;
+  // Try structured data first
+  const jsonEvents = parseJsonLdEvents(landingHtml, source, landingUrl);
+  events.push(...jsonEvents);
 
-      const path = url.pathname.toLowerCase();
-      return (
-        path.includes("/event") ||
-        path.includes("/events") ||
-        path.includes("/calendar") ||
-        path.includes("/conference") ||
-        path.includes("/training") ||
-        path.includes("/summit") ||
-        path.includes("/webinar")
-      );
-    } catch {
-      return false;
-    }
-  });
+  // Fallback for sites like NATE that do not expose usable JSON-LD
+  if (events.length === 0) {
+    const matches = [...landingHtml.matchAll(/<a[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
 
-  const uniqueLinks = [...new Set([landingUrl, ...candidateLinks])].slice(0, 30);
-  const collected: RawEvent[] = [];
+    for (const match of matches) {
+      const rawUrl = match[1];
+      const rawTitle = stripHtml(match[2]);
 
-  for (const link of uniqueLinks) {
-    try {
-      const html = await fetchHtml(link);
-      const parsed = parseJsonLdEvents(html, source, link);
-      collected.push(...parsed);
-    } catch {
-      // keep going
+      if (!rawTitle || rawTitle.length < 10) continue;
+      if (!isLikelyEventTitle(rawTitle)) continue;
+
+      try {
+        const fullUrl = new URL(rawUrl, landingUrl).toString();
+
+        events.push({
+          title: rawTitle,
+          source,
+          description: null,
+          location: null,
+          starts_at: new Date().toISOString(),
+          ends_at: null,
+          url: fullUrl,
+          organizer: source.toUpperCase(),
+        });
+      } catch {
+        // ignore bad URLs
+      }
     }
   }
 
   const deduped = new Map<string, RawEvent>();
 
-  for (const event of collected) {
-    const key = `${event.title}|${event.starts_at}|${event.url}`;
+  for (const event of events) {
+    const key = `${event.title}|${event.url}`;
     if (!deduped.has(key)) {
       deduped.set(key, event);
     }
   }
 
-  return [...deduped.values()];
+  return [...deduped.values()].slice(0, 25);
 }
 
 export async function GET(req: Request) {
