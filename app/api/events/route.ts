@@ -11,20 +11,21 @@ function monthStart(date: Date) {
 }
 
 export async function GET(req: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    return NextResponse.json(
+      {
+        error: "Missing env vars",
+        hasSupabaseUrl: Boolean(supabaseUrl),
+        hasServiceRoleKey: Boolean(serviceRoleKey),
+      },
+      { status: 500 }
+    );
+  }
+
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json(
-        {
-          error:
-            "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.",
-        },
-        { status: 500 }
-      );
-    }
-
     const monthParam = req.nextUrl.searchParams.get("month");
     const sourceParam = (req.nextUrl.searchParams.get("source") ||
       "all") as SourceName;
@@ -44,8 +45,11 @@ export async function GET(req: NextRequest) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
       auth: {
-        autoRefreshToken: false,
         persistSession: false,
+        autoRefreshToken: false,
+      },
+      global: {
+        fetch: fetch,
       },
     });
 
@@ -65,14 +69,42 @@ export async function GET(req: NextRequest) {
     const { data, error } = await query;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: error.message,
+          code: error.code ?? null,
+          details: error.details ?? null,
+          hint: error.hint ?? null,
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ events: data || [] });
+    return NextResponse.json({
+      events: data || [],
+      debug: {
+        selectedMonth,
+        sourceParam,
+        count: data?.length || 0,
+      },
+    });
   } catch (error) {
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Unknown API error",
+        stack:
+          error instanceof Error && process.env.NODE_ENV !== "production"
+            ? error.stack
+            : undefined,
+        debug: {
+          supabaseUrlHost: (() => {
+            try {
+              return new URL(supabaseUrl).host;
+            } catch {
+              return "INVALID_URL";
+            }
+          })(),
+        },
       },
       { status: 500 }
     );
