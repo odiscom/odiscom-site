@@ -4,7 +4,12 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type SourceName = "nate" | "wia" | "fiberconnect" | "other";
+type SourceName =
+  | "nate"
+  | "wia"
+  | "fiberconnect"
+  | "eventbrite"
+  | "other";
 
 type RawEvent = {
   title: string;
@@ -15,27 +20,83 @@ type RawEvent = {
   ends_at?: string | null;
   url: string;
   organizer?: string | null;
+  discovery_url?: string | null;
+  confidence_score?: number | null;
 };
 
-const SOURCES: Array<{
+type DiscoverySource = {
   source: SourceName;
   landingUrl: string;
-}> = [
+  eventLinkPattern?: RegExp;
+};
+
+const SOURCES: DiscoverySource[] = [
   {
     source: "nate",
     landingUrl: "https://natehome.com/events/calendar/",
+    eventLinkPattern: /\/event|\/events|\/calendar|\/conference|\/summit|\/training|\/webinar/i,
   },
   ...(process.env.WIA_EVENTS_URL
-    ? [{ source: "wia" as SourceName, landingUrl: process.env.WIA_EVENTS_URL }]
+    ? [
+        {
+          source: "wia" as SourceName,
+          landingUrl: process.env.WIA_EVENTS_URL,
+          eventLinkPattern: /\/event|\/events|\/conference|\/summit|\/calendar|\/webinar/i,
+        },
+      ]
     : []),
   ...(process.env.FIBERCONNECT_EVENTS_URL
     ? [
         {
           source: "fiberconnect" as SourceName,
           landingUrl: process.env.FIBERCONNECT_EVENTS_URL,
+          eventLinkPattern: /\/event|\/events|\/conference|\/summit|\/expo|\/calendar/i,
         },
       ]
     : []),
+  ...(process.env.EVENTBRITE_TELECOM_URL
+    ? [
+        {
+          source: "eventbrite" as SourceName,
+          landingUrl: process.env.EVENTBRITE_TELECOM_URL,
+          eventLinkPattern: /event|tickets|conference|summit|expo|webinar/i,
+        },
+      ]
+    : []),
+];
+
+const DISCOVERY_KEYWORDS = [
+  "conference",
+  "expo",
+  "summit",
+  "forum",
+  "convention",
+  "webinar",
+  "training",
+  "workshop",
+  "meetup",
+  "event",
+  "fiber connect",
+  "wireless",
+  "telecom",
+  "broadband",
+  "tower",
+  "infrastructure",
+  "unite",
+];
+
+const JUNK_PHRASES = [
+  "privacy",
+  "copyright",
+  "login",
+  "sign in",
+  "register now",
+  "menu",
+  "search",
+  "skip to content",
+  "view cart",
+  "my account",
+  "cookie",
 ];
 
 function normalizeWhitespace(value?: string | null) {
@@ -51,7 +112,10 @@ function decodeHtml(input: string) {
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
     .replace(/&#x27;/gi, "'")
-    .replace(/&#x2F;/gi, "/");
+    .replace(/&#x2F;/gi, "/")
+    .replace(/&#8211;/gi, "-")
+    .replace(/&#8212;/gi, "-")
+    .replace(/&#038;/gi, "&");
 }
 
 function cleanText(input?: string | null) {
@@ -86,22 +150,57 @@ function makeSlug(source: SourceName, title: string, startsAt: string) {
   return `${source}-${slugify(title)}-${yyyyMmDd}`;
 }
 
-function isLikelyEventTitle(title: string) {
-  const t = title.toLowerCase();
-  return [
-    "conference",
-    "expo",
-    "summit",
-    "forum",
-    "convention",
-    "webinar",
-    "training",
-    "workshop",
-    "meetup",
-    "event",
-    "fiber connect",
-    "unite",
-  ].some((word) => t.includes(word));
+function looksLikeEventTitle(title?: string | null) {
+  const t = (title || "").toLowerCase();
+  if (!t || t.length < 8) return false;
+  if (JUNK_PHRASES.some((phrase) => t.includes(phrase))) return false;
+  return DISCOVERY_KEYWORDS.some((word) => t.includes(word));
+}
+
+function looksLikeJunkUrl(url: string) {
+  const lower = url.toLowerCase();
+  return (
+    lower.includes("/tag/") ||
+    lower.includes("/category/") ||
+    lower.includes("/author/") ||
+    lower.includes("/feed") ||
+    lower.includes("wp-json") ||
+    lower.includes("mailto:") ||
+    lower.includes("javascript:")
+  );
+}
+
+function looksLikeDate(value?: string | null) {
+  if (!value) return false;
+  const d = new Date(value);
+  return !Number.isNaN(d.getTime());
+}
+
+function parseVisibleDate(text?: string | null) {
+  const raw = normalizeWhitespace(text);
+  if (!raw) return null;
+
+  const cleaned = raw
+    .replace(/\b(at|from|to)\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const parsed = new Date(cleaned);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString();
+  }
+
+  const monthMatch = cleaned.match(
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\b[\s,]+\d{1,2}(?:[\s,-]+\d{4})?/i
+  );
+  if (monthMatch) {
+    const d = new Date(monthMatch[0]);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toISOString();
+    }
+  }
+
+  return null;
 }
 
 function extractJsonLdBlocks(html: string) {
@@ -117,10 +216,82 @@ function toArray<T>(value: T | T[] | undefined | null): T[] {
   return Array.isArray(value) ? value : [value];
 }
 
+function fetchMetaContent(html: string, key: string, attr = "property") {
+  const regex = new RegExp(
+    `<meta[^>]*${attr}=["']${key}["'][^>]*content=["']([^"']+)["'][^>]*>`,
+    "i"
+  );
+  const match = html.match(regex);
+  return cleanText(match?.[1] || null);
+}
+
+function extractHrefLinks(html: string, baseUrl: string) {
+  const matches = [...html.matchAll(/<a[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+  const links: Array<{ url: string; text: string }> = [];
+
+  for (const match of matches) {
+    try {
+      const absolute = new URL(match[1], baseUrl).toString();
+      if (looksLikeJunkUrl(absolute)) continue;
+
+      links.push({
+        url: absolute,
+        text: cleanText(match[2]) || "",
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  return links;
+}
+
+function scoreCandidateLink(text: string, url: string, pattern?: RegExp) {
+  let score = 0;
+  const t = text.toLowerCase();
+  const u = url.toLowerCase();
+
+  if (looksLikeEventTitle(text)) score += 3;
+  if (pattern?.test(url)) score += 2;
+  if (u.includes("event")) score += 1;
+  if (u.includes("conference")) score += 1;
+  if (u.includes("summit")) score += 1;
+  if (u.includes("webinar")) score += 1;
+  if (u.includes("expo")) score += 1;
+  if (u.includes("ticket")) score += 1;
+
+  return score;
+}
+
+function dedupeEvents(events: RawEvent[]) {
+  const map = new Map<string, RawEvent>();
+
+  for (const event of events) {
+    const cleanedTitle = cleanText(event.title) || "Untitled Event";
+    const cleanedUrl = cleanText(event.url) || event.url;
+    const key = `${cleanedTitle}|${event.starts_at}|${cleanedUrl}`;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        ...event,
+        title: cleanedTitle,
+        description: cleanText(event.description),
+        location: cleanText(event.location),
+        url: cleanedUrl,
+        organizer: cleanText(event.organizer),
+        discovery_url: cleanText(event.discovery_url),
+      });
+    }
+  }
+
+  return [...map.values()];
+}
+
 function parseJsonLdEvents(
   html: string,
   source: SourceName,
-  pageUrl: string
+  pageUrl: string,
+  discoveryUrl: string
 ): RawEvent[] {
   const blocks = extractJsonLdBlocks(html);
   const events: RawEvent[] = [];
@@ -145,12 +316,14 @@ function parseJsonLdEvents(
           const startsAt = item?.startDate;
 
           if (!title || !startsAt) continue;
-          if (!isLikelyEventTitle(title)) continue;
+          if (!looksLikeEventTitle(title)) continue;
+          if (!looksLikeDate(startsAt)) continue;
 
           const location =
             cleanText(item?.location?.name) ||
             cleanText(item?.location?.address?.streetAddress) ||
             cleanText(item?.location?.address?.addressLocality) ||
+            cleanText(item?.location?.address?.addressRegion) ||
             null;
 
           const url = cleanText(item?.url) || pageUrl;
@@ -160,10 +333,14 @@ function parseJsonLdEvents(
             source,
             description: stripHtml(item?.description),
             location,
-            starts_at: startsAt,
-            ends_at: item?.endDate || null,
+            starts_at: new Date(startsAt).toISOString(),
+            ends_at: looksLikeDate(item?.endDate)
+              ? new Date(item.endDate).toISOString()
+              : null,
             url,
             organizer: cleanText(item?.organizer?.name) || null,
+            discovery_url: discoveryUrl,
+            confidence_score: 0.95,
           });
         }
       }
@@ -173,6 +350,52 @@ function parseJsonLdEvents(
   }
 
   return events;
+}
+
+function parseMetaFallback(
+  html: string,
+  source: SourceName,
+  pageUrl: string,
+  discoveryUrl: string
+): RawEvent[] {
+  const title =
+    fetchMetaContent(html, "og:title") ||
+    fetchMetaContent(html, "twitter:title", "name") ||
+    cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || null);
+
+  const description =
+    fetchMetaContent(html, "og:description") ||
+    fetchMetaContent(html, "description", "name") ||
+    null;
+
+  const eventStart =
+    fetchMetaContent(html, "event:start_time") ||
+    fetchMetaContent(html, "article:published_time") ||
+    parseVisibleDate(description);
+
+  const location =
+    fetchMetaContent(html, "event:location") ||
+    fetchMetaContent(html, "og:locality") ||
+    null;
+
+  if (!title || !looksLikeEventTitle(title) || !eventStart) {
+    return [];
+  }
+
+  return [
+    {
+      title,
+      source,
+      description,
+      location,
+      starts_at: eventStart,
+      ends_at: null,
+      url: pageUrl,
+      organizer: null,
+      discovery_url: discoveryUrl,
+      confidence_score: 0.65,
+    },
+  ];
 }
 
 async function fetchHtml(url: string) {
@@ -191,69 +414,98 @@ async function fetchHtml(url: string) {
   return res.text();
 }
 
-async function crawlSource(source: SourceName, landingUrl: string) {
-  const landingHtml = await fetchHtml(landingUrl);
+async function discoverCandidatePages(source: DiscoverySource) {
+  const html = await fetchHtml(source.landingUrl);
+  const links = extractHrefLinks(html, source.landingUrl);
+
+  const scored = links
+    .map((link) => ({
+      ...link,
+      score: scoreCandidateLink(link.text, link.url, source.eventLinkPattern),
+    }))
+    .filter((link) => link.score >= 2)
+    .sort((a, b) => b.score - a.score);
+
+  const deduped = new Map<string, { url: string; text: string; score: number }>();
+  for (const link of scored) {
+    if (!deduped.has(link.url)) {
+      deduped.set(link.url, link);
+    }
+  }
+
+  return {
+    landingHtml: html,
+    pages: [...deduped.values()].slice(0, 40),
+  };
+}
+
+async function extractEventDetails(
+  source: SourceName,
+  pageUrl: string,
+  discoveryUrl: string
+) {
+  const html = await fetchHtml(pageUrl);
+
+  const jsonLdEvents = parseJsonLdEvents(html, source, pageUrl, discoveryUrl);
+  if (jsonLdEvents.length) return jsonLdEvents;
+
+  const metaFallback = parseMetaFallback(html, source, pageUrl, discoveryUrl);
+  if (metaFallback.length) return metaFallback;
+
+  return [];
+}
+
+async function crawlSource(source: DiscoverySource) {
   const events: RawEvent[] = [];
 
-  const jsonEvents = parseJsonLdEvents(landingHtml, source, landingUrl);
-  events.push(...jsonEvents);
+  const discovered = await discoverCandidatePages(source);
 
-  if (events.length === 0) {
-    const textBlocks = [...landingHtml.matchAll(/>([^<>]{15,200})</g)];
+  const landingEvents = parseJsonLdEvents(
+    discovered.landingHtml,
+    source.source,
+    source.landingUrl,
+    source.landingUrl
+  );
 
-    for (const match of textBlocks) {
-      const rawTitle = cleanText(match[1]);
+  events.push(...landingEvents);
 
-      if (!rawTitle) continue;
-      if (!isLikelyEventTitle(rawTitle)) continue;
+  for (const page of discovered.pages) {
+    try {
+      const extracted = await extractEventDetails(
+        source.source,
+        page.url,
+        source.landingUrl
+      );
 
-      const lower = rawTitle.toLowerCase();
-
-      if (
-        lower.includes("copyright") ||
-        lower.includes("privacy") ||
-        lower.includes("login") ||
-        lower.includes("search") ||
-        lower.includes("menu") ||
-        lower.includes("register") ||
-        rawTitle.length < 10
-      ) {
+      if (extracted.length) {
+        events.push(...extracted);
         continue;
       }
 
-      events.push({
-        title: rawTitle,
-        source,
-        description: null,
-        location: null,
-        starts_at: new Date().toISOString(),
-        ends_at: null,
-        url: landingUrl,
-        organizer: source.toUpperCase(),
-      });
+      const fallbackDate = parseVisibleDate(page.text);
+      if (page.text && looksLikeEventTitle(page.text) && fallbackDate) {
+        events.push({
+          title: page.text,
+          source: source.source,
+          description: null,
+          location: null,
+          starts_at: fallbackDate,
+          ends_at: null,
+          url: page.url,
+          organizer: source.source.toUpperCase(),
+          discovery_url: source.landingUrl,
+          confidence_score: 0.4,
+        });
+      }
+    } catch {
+      // continue crawling other pages
     }
   }
 
-  const deduped = new Map<string, RawEvent>();
-
-  for (const event of events) {
-    const cleanedTitle = cleanText(event.title) || "Untitled Event";
-    const cleanedUrl = cleanText(event.url) || landingUrl;
-    const key = `${cleanedTitle}|${cleanedUrl}`;
-
-    if (!deduped.has(key)) {
-      deduped.set(key, {
-        ...event,
-        title: cleanedTitle,
-        description: cleanText(event.description),
-        location: cleanText(event.location),
-        url: cleanedUrl,
-        organizer: cleanText(event.organizer),
-      });
-    }
-  }
-
-  return [...deduped.values()].slice(0, 25);
+  return dedupeEvents(events)
+    .filter((event) => looksLikeEventTitle(event.title))
+    .filter((event) => looksLikeDate(event.starts_at))
+    .slice(0, 50);
 }
 
 export async function GET(req: Request) {
@@ -278,17 +530,29 @@ export async function GET(req: Request) {
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
   const allEvents: RawEvent[] = [];
+  const sourceSummaries: Array<{
+    source: SourceName;
+    discovered: number;
+  }> = [];
 
   for (const source of SOURCES) {
     try {
-      const events = await crawlSource(source.source, source.landingUrl);
+      const events = await crawlSource(source);
       allEvents.push(...events);
+      sourceSummaries.push({
+        source: source.source,
+        discovered: events.length,
+      });
     } catch (error) {
       console.error(`Failed source ${source.source}:`, error);
+      sourceSummaries.push({
+        source: source.source,
+        discovered: 0,
+      });
     }
   }
 
-  const rows = allEvents
+  const rows = dedupeEvents(allEvents)
     .filter((event) => event.title && event.starts_at && event.url)
     .map((event) => {
       const cleanedTitle = cleanText(event.title) || "Untitled Event";
@@ -299,8 +563,8 @@ export async function GET(req: Request) {
         source: event.source,
         description: cleanText(event.description),
         location: cleanText(event.location),
-        starts_at: event.starts_at,
-        ends_at: event.ends_at || null,
+        starts_at: new Date(event.starts_at).toISOString(),
+        ends_at: event.ends_at ? new Date(event.ends_at).toISOString() : null,
         url: cleanText(event.url) || event.url,
         organizer: cleanText(event.organizer),
       };
@@ -311,6 +575,7 @@ export async function GET(req: Request) {
       ok: true,
       message: "No events found",
       inserted: 0,
+      sources: sourceSummaries,
     });
   }
 
@@ -328,6 +593,6 @@ export async function GET(req: Request) {
   return NextResponse.json({
     ok: true,
     inserted: rows.length,
-    sources: SOURCES.map((s) => s.source),
+    sources: sourceSummaries,
   });
 }
