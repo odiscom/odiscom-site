@@ -11,6 +11,12 @@ type SourceName =
   | "eventbrite"
   | "other";
 
+type DiscoverySource = {
+  source: SourceName;
+  landingUrl: string;
+  eventLinkPattern?: RegExp;
+};
+
 type RawEvent = {
   title: string;
   source: SourceName;
@@ -21,27 +27,24 @@ type RawEvent = {
   url: string;
   organizer?: string | null;
   discovery_url?: string | null;
-  confidence_score?: number | null;
-};
-
-type DiscoverySource = {
-  source: SourceName;
-  landingUrl: string;
-  eventLinkPattern?: RegExp;
+  confidence_score: number;
+  confidence_reason: string;
 };
 
 const SOURCES: DiscoverySource[] = [
   {
     source: "nate",
     landingUrl: "https://natehome.com/events/calendar/",
-    eventLinkPattern: /\/event|\/events|\/calendar|\/conference|\/summit|\/training|\/webinar/i,
+    eventLinkPattern:
+      /\/event|\/events|\/calendar|\/conference|\/summit|\/training|\/webinar/i,
   },
   ...(process.env.WIA_EVENTS_URL
     ? [
         {
           source: "wia" as SourceName,
           landingUrl: process.env.WIA_EVENTS_URL,
-          eventLinkPattern: /\/event|\/events|\/conference|\/summit|\/calendar|\/webinar/i,
+          eventLinkPattern:
+            /\/event|\/events|\/conference|\/summit|\/calendar|\/webinar/i,
         },
       ]
     : []),
@@ -50,7 +53,8 @@ const SOURCES: DiscoverySource[] = [
         {
           source: "fiberconnect" as SourceName,
           landingUrl: process.env.FIBERCONNECT_EVENTS_URL,
-          eventLinkPattern: /\/event|\/events|\/conference|\/summit|\/expo|\/calendar/i,
+          eventLinkPattern:
+            /\/event|\/events|\/conference|\/summit|\/expo|\/calendar/i,
         },
       ]
     : []),
@@ -91,13 +95,21 @@ const JUNK_PHRASES = [
   "login",
   "sign in",
   "register now",
+  "register today",
   "menu",
   "search",
   "skip to content",
   "view cart",
   "my account",
   "cookie",
+  "news",
+  "press release",
+  "blog",
+  "article",
 ];
+
+const PUBLISH_CONFIDENCE_THRESHOLD = 0.85;
+const QUEUE_CONFIDENCE_THRESHOLD = 0.45;
 
 function normalizeWhitespace(value?: string | null) {
   return (value || "").replace(/\s+/g, " ").trim();
@@ -131,10 +143,6 @@ function cleanText(input?: string | null) {
   );
 }
 
-function stripHtml(html?: string | null) {
-  return cleanText(html);
-}
-
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -166,7 +174,8 @@ function looksLikeJunkUrl(url: string) {
     lower.includes("/feed") ||
     lower.includes("wp-json") ||
     lower.includes("mailto:") ||
-    lower.includes("javascript:")
+    lower.includes("javascript:") ||
+    lower.includes("#")
   );
 }
 
@@ -259,6 +268,8 @@ function scoreCandidateLink(text: string, url: string, pattern?: RegExp) {
   if (u.includes("webinar")) score += 1;
   if (u.includes("expo")) score += 1;
   if (u.includes("ticket")) score += 1;
+  if (t.includes("more info")) score += 1;
+  if (t.includes("register")) score += 1;
 
   return score;
 }
@@ -327,20 +338,30 @@ function parseJsonLdEvents(
             null;
 
           const url = cleanText(item?.url) || pageUrl;
+          const organizer = cleanText(item?.organizer?.name) || null;
+          const endsAt = looksLikeDate(item?.endDate)
+            ? new Date(item.endDate).toISOString()
+            : null;
+
+          let confidence = 0.9;
+          let reason = "jsonld_event";
+
+          if (location) confidence += 0.03;
+          if (organizer) confidence += 0.02;
+          if (endsAt) confidence += 0.02;
 
           events.push({
             title,
             source,
-            description: stripHtml(item?.description),
+            description: cleanText(item?.description),
             location,
             starts_at: new Date(startsAt).toISOString(),
-            ends_at: looksLikeDate(item?.endDate)
-              ? new Date(item.endDate).toISOString()
-              : null,
+            ends_at: endsAt,
             url,
-            organizer: cleanText(item?.organizer?.name) || null,
+            organizer,
             discovery_url: discoveryUrl,
-            confidence_score: 0.95,
+            confidence_score: Math.min(confidence, 0.99),
+            confidence_reason: reason,
           });
         }
       }
@@ -368,17 +389,22 @@ function parseMetaFallback(
     fetchMetaContent(html, "description", "name") ||
     null;
 
-  const eventStart =
+  const explicitEventStart =
     fetchMetaContent(html, "event:start_time") ||
-    fetchMetaContent(html, "article:published_time") ||
-    parseVisibleDate(description);
+    fetchMetaContent(html, "event:start") ||
+    fetchMetaContent(html, "startDate", "itemprop") ||
+    null;
 
   const location =
     fetchMetaContent(html, "event:location") ||
     fetchMetaContent(html, "og:locality") ||
     null;
 
-  if (!title || !looksLikeEventTitle(title) || !eventStart) {
+  if (!title || !looksLikeEventTitle(title) || !explicitEventStart) {
+    return [];
+  }
+
+  if (!looksLikeDate(explicitEventStart)) {
     return [];
   }
 
@@ -388,12 +414,50 @@ function parseMetaFallback(
       source,
       description,
       location,
-      starts_at: eventStart,
+      starts_at: new Date(explicitEventStart).toISOString(),
       ends_at: null,
       url: pageUrl,
       organizer: null,
       discovery_url: discoveryUrl,
-      confidence_score: 0.65,
+      confidence_score: 0.72,
+      confidence_reason: "meta_event_fields",
+    },
+  ];
+}
+
+function parseVisiblePageFallback(
+  html: string,
+  source: SourceName,
+  pageUrl: string,
+  discoveryUrl: string
+): RawEvent[] {
+  const title =
+    cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || null) ||
+    fetchMetaContent(html, "og:title");
+
+  const bodyText = cleanText(html);
+  const dateGuess = parseVisibleDate(bodyText);
+  const locationGuess = bodyText?.match(
+    /\b([A-Z][a-z]+(?:,\s*[A-Z]{2})?|[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,4},\s*[A-Z]{2})\b/
+  )?.[1];
+
+  if (!title || !looksLikeEventTitle(title) || !dateGuess) {
+    return [];
+  }
+
+  return [
+    {
+      title,
+      source,
+      description: fetchMetaContent(html, "description", "name") || null,
+      location: cleanText(locationGuess || null),
+      starts_at: dateGuess,
+      ends_at: null,
+      url: pageUrl,
+      organizer: null,
+      discovery_url: discoveryUrl,
+      confidence_score: 0.5,
+      confidence_reason: "visible_text_guess",
     },
   ];
 }
@@ -452,12 +516,19 @@ async function extractEventDetails(
   const metaFallback = parseMetaFallback(html, source, pageUrl, discoveryUrl);
   if (metaFallback.length) return metaFallback;
 
+  const visibleFallback = parseVisiblePageFallback(
+    html,
+    source,
+    pageUrl,
+    discoveryUrl
+  );
+  if (visibleFallback.length) return visibleFallback;
+
   return [];
 }
 
 async function crawlSource(source: DiscoverySource) {
   const events: RawEvent[] = [];
-
   const discovered = await discoverCandidatePages(source);
 
   const landingEvents = parseJsonLdEvents(
@@ -466,7 +537,6 @@ async function crawlSource(source: DiscoverySource) {
     source.landingUrl,
     source.landingUrl
   );
-
   events.push(...landingEvents);
 
   for (const page of discovered.pages) {
@@ -479,23 +549,6 @@ async function crawlSource(source: DiscoverySource) {
 
       if (extracted.length) {
         events.push(...extracted);
-        continue;
-      }
-
-      const fallbackDate = parseVisibleDate(page.text);
-      if (page.text && looksLikeEventTitle(page.text) && fallbackDate) {
-        events.push({
-          title: page.text,
-          source: source.source,
-          description: null,
-          location: null,
-          starts_at: fallbackDate,
-          ends_at: null,
-          url: page.url,
-          organizer: source.source.toUpperCase(),
-          discovery_url: source.landingUrl,
-          confidence_score: 0.4,
-        });
       }
     } catch {
       // continue crawling other pages
@@ -533,6 +586,8 @@ export async function GET(req: Request) {
   const sourceSummaries: Array<{
     source: SourceName;
     discovered: number;
+    published: number;
+    queued: number;
   }> = [];
 
   for (const source of SOURCES) {
@@ -542,57 +597,129 @@ export async function GET(req: Request) {
       sourceSummaries.push({
         source: source.source,
         discovered: events.length,
+        published: 0,
+        queued: 0,
       });
     } catch (error) {
       console.error(`Failed source ${source.source}:`, error);
       sourceSummaries.push({
         source: source.source,
         discovered: 0,
+        published: 0,
+        queued: 0,
       });
     }
   }
 
-  const rows = dedupeEvents(allEvents)
-    .filter((event) => event.title && event.starts_at && event.url)
-    .map((event) => {
-      const cleanedTitle = cleanText(event.title) || "Untitled Event";
+  const deduped = dedupeEvents(allEvents);
 
-      return {
-        title: cleanedTitle,
-        slug: makeSlug(event.source, cleanedTitle, event.starts_at),
-        source: event.source,
-        description: cleanText(event.description),
-        location: cleanText(event.location),
-        starts_at: new Date(event.starts_at).toISOString(),
-        ends_at: event.ends_at ? new Date(event.ends_at).toISOString() : null,
-        url: cleanText(event.url) || event.url,
-        organizer: cleanText(event.organizer),
-      };
-    });
+  const publishable = deduped.filter(
+    (event) =>
+      event.confidence_score >= PUBLISH_CONFIDENCE_THRESHOLD &&
+      !!event.title &&
+      !!event.starts_at &&
+      !!event.url
+  );
 
-  if (!rows.length) {
-    return NextResponse.json({
-      ok: true,
-      message: "No events found",
-      inserted: 0,
-      sources: sourceSummaries,
-    });
-  }
+  const queued = deduped.filter(
+    (event) =>
+      event.confidence_score >= QUEUE_CONFIDENCE_THRESHOLD &&
+      event.confidence_score < PUBLISH_CONFIDENCE_THRESHOLD &&
+      !!event.title &&
+      !!event.url
+  );
 
-  const { error } = await supabase.from("events").upsert(rows, {
-    onConflict: "slug",
+  const publishRows = publishable.map((event) => {
+    const cleanedTitle = cleanText(event.title) || "Untitled Event";
+
+    return {
+      title: cleanedTitle,
+      slug: makeSlug(event.source, cleanedTitle, event.starts_at),
+      source: event.source,
+      description: cleanText(event.description),
+      location: cleanText(event.location),
+      starts_at: new Date(event.starts_at).toISOString(),
+      ends_at: event.ends_at ? new Date(event.ends_at).toISOString() : null,
+      url: cleanText(event.url) || event.url,
+      organizer: cleanText(event.organizer),
+    };
   });
 
-  if (error) {
-    return NextResponse.json(
-      { error: error.message, count: rows.length },
-      { status: 500 }
-    );
+  const candidateRows = queued.map((event) => {
+    const cleanedTitle = cleanText(event.title) || "Untitled Event";
+
+    return {
+      candidate_key: `${event.source}|${slugify(cleanedTitle)}|${cleanText(event.url) || event.url}`,
+      title: cleanedTitle,
+      source: event.source,
+      description: cleanText(event.description),
+      location: cleanText(event.location),
+      starts_at: looksLikeDate(event.starts_at)
+        ? new Date(event.starts_at).toISOString()
+        : null,
+      ends_at: event.ends_at && looksLikeDate(event.ends_at)
+        ? new Date(event.ends_at).toISOString()
+        : null,
+      url: cleanText(event.url) || event.url,
+      organizer: cleanText(event.organizer),
+      discovery_url: cleanText(event.discovery_url),
+      confidence_score: event.confidence_score,
+      confidence_reason: event.confidence_reason,
+      status: "queued",
+    };
+  });
+
+  let publishedCount = 0;
+  let queuedCount = 0;
+  let candidateQueueWarning: string | null = null;
+
+  if (publishRows.length) {
+    const { error } = await supabase.from("events").upsert(publishRows, {
+      onConflict: "slug",
+    });
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message, phase: "publish", count: publishRows.length },
+        { status: 500 }
+      );
+    }
+
+    publishedCount = publishRows.length;
+  }
+
+  if (candidateRows.length) {
+    const { error } = await supabase.from("event_candidates").upsert(candidateRows, {
+      onConflict: "candidate_key",
+    });
+
+    if (error) {
+      candidateQueueWarning = error.message;
+    } else {
+      queuedCount = candidateRows.length;
+    }
+  }
+
+  for (const summary of sourceSummaries) {
+    const sourcePublishCount = publishable.filter(
+      (event) => event.source === summary.source
+    ).length;
+    const sourceQueueCount = queued.filter(
+      (event) => event.source === summary.source
+    ).length;
+
+    summary.published = sourcePublishCount;
+    summary.queued = sourceQueueCount;
   }
 
   return NextResponse.json({
     ok: true,
-    inserted: rows.length,
+    discovered: deduped.length,
+    published: publishedCount,
+    queued: queuedCount,
+    publish_threshold: PUBLISH_CONFIDENCE_THRESHOLD,
+    queue_threshold: QUEUE_CONFIDENCE_THRESHOLD,
+    candidate_queue_warning: candidateQueueWarning,
     sources: sourceSummaries,
   });
 }
