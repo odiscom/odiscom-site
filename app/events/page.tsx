@@ -14,7 +14,7 @@ type EventRow = {
   location: string | null;
   starts_at: string;
   ends_at: string | null;
-  url: string;
+  url: string | null;
   organizer: string | null;
 };
 
@@ -61,14 +61,6 @@ function fmtDayLabel(date: Date) {
   }).format(date);
 }
 
-function fmtEventDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-}
-
 function fmtEventTime(value: string) {
   const date = new Date(value);
   if (
@@ -111,33 +103,60 @@ function dayKey(date: Date) {
 }
 
 async function getEvents(selectedMonth: string, source: SourceName) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const supabase = createClient(supabaseUrl, anonKey);
-
-  const baseDate = new Date(`${selectedMonth}-01T12:00:00`);
-  const start = monthStart(baseDate).toISOString();
-  const end = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 1).toISOString();
-
-  let query = supabase
-    .from("events")
-    .select("*")
-    .gte("starts_at", start)
-    .lt("starts_at", end)
-    .order("starts_at", { ascending: true });
-
-  if (source !== "all") {
-    query = query.eq("source", source);
+  if (!supabaseUrl || !anonKey) {
+    return {
+      events: [] as EventRow[],
+      error: "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel.",
+    };
   }
 
-  const { data, error } = await query;
+  try {
+    const supabase = createClient(supabaseUrl, anonKey);
 
-  if (error) {
-    throw new Error(error.message);
+    const baseDate = new Date(`${selectedMonth}-01T12:00:00`);
+    const start = monthStart(baseDate).toISOString();
+    const end = new Date(
+      baseDate.getFullYear(),
+      baseDate.getMonth() + 1,
+      1
+    ).toISOString();
+
+    let query = supabase
+      .from("events")
+      .select(
+        "id,title,slug,source,description,location,starts_at,ends_at,url,organizer"
+      )
+      .gte("starts_at", start)
+      .lt("starts_at", end)
+      .order("starts_at", { ascending: true });
+
+    if (source !== "all") {
+      query = query.eq("source", source);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      return {
+        events: [] as EventRow[],
+        error: error.message,
+      };
+    }
+
+    return {
+      events: (data || []) as EventRow[],
+      error: null as string | null,
+    };
+  } catch (error) {
+    return {
+      events: [] as EventRow[],
+      error:
+        error instanceof Error ? error.message : "Unknown server-side error loading events.",
+    };
   }
-
-  return (data || []) as EventRow[];
 }
 
 export default async function EventsPage({
@@ -146,12 +165,22 @@ export default async function EventsPage({
   searchParams?: Promise<{ month?: string; source?: SourceName }>;
 }) {
   const params = (await searchParams) || {};
-  const selectedMonth = /^\d{4}-\d{2}$/.test(params.month || "")
-    ? (params.month as string)
-    : fmtMonthInput(new Date());
+
+  const selectedMonth =
+    typeof params.month === "string" && /^\d{4}-\d{2}$/.test(params.month)
+      ? params.month
+      : fmtMonthInput(new Date());
+
+  const allowedSources: SourceName[] = [
+    "all",
+    "nate",
+    "wia",
+    "fiberconnect",
+    "other",
+  ];
 
   const selectedSource: SourceName =
-    params.source && ["all", "nate", "wia", "fiberconnect", "other"].includes(params.source)
+    typeof params.source === "string" && allowedSources.includes(params.source)
       ? params.source
       : "all";
 
@@ -159,7 +188,7 @@ export default async function EventsPage({
   const prevMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
   const nextMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
 
-  const events = await getEvents(selectedMonth, selectedSource);
+  const { events, error } = await getEvents(selectedMonth, selectedSource);
   const days = getCalendarCells(viewDate);
 
   const eventsByDay = new Map<string, EventRow[]>();
@@ -188,7 +217,7 @@ export default async function EventsPage({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {(Object.keys(SOURCE_LABELS) as SourceName[]).map((source) => {
+          {allowedSources.map((source) => {
             const active = source === selectedSource;
             return (
               <Link
@@ -207,6 +236,12 @@ export default async function EventsPage({
         </div>
       </div>
 
+      {error ? (
+        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+          Events page could not load data: {error}
+        </div>
+      ) : null}
+
       <div className="mb-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
         <Link
           href={`/events?month=${fmtMonthInput(prevMonth)}&source=${selectedSource}`}
@@ -216,7 +251,9 @@ export default async function EventsPage({
         </Link>
 
         <div className="text-center">
-          <div className="text-xl font-semibold text-slate-900">{fmtHumanDate(viewDate)}</div>
+          <div className="text-xl font-semibold text-slate-900">
+            {fmtHumanDate(viewDate)}
+          </div>
           <div className="mt-1 text-sm text-slate-500">
             {events.length} event{events.length === 1 ? "" : "s"}
           </div>
@@ -269,7 +306,7 @@ export default async function EventsPage({
                         href={`/events/${event.slug}`}
                         className={`block rounded-xl p-2 text-xs shadow-sm transition hover:-translate-y-0.5 hover:shadow ${SOURCE_STYLES[event.source]}`}
                       >
-                        <div className="mb-1 flex items-center justify-between gap-2">
+                        <div className="mb-1">
                           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                             {SOURCE_LABELS[event.source]}
                           </span>
@@ -311,20 +348,14 @@ export default async function EventsPage({
                   href={`/events/${event.slug}`}
                   className={`block rounded-2xl p-4 transition hover:-translate-y-0.5 hover:shadow ${SOURCE_STYLES[event.source]}`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        {SOURCE_LABELS[event.source]}
-                      </div>
-                      <div className="mt-1 font-semibold text-slate-900">{event.title}</div>
-                    </div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    {SOURCE_LABELS[event.source]}
                   </div>
-
+                  <div className="mt-1 font-semibold text-slate-900">{event.title}</div>
                   <div className="mt-2 text-sm text-slate-600">
                     {fmtDayLabel(new Date(event.starts_at))}
                     {fmtEventTime(event.starts_at) ? ` • ${fmtEventTime(event.starts_at)}` : ""}
                   </div>
-
                   {event.location ? (
                     <div className="mt-1 text-sm text-slate-500">{event.location}</div>
                   ) : null}
