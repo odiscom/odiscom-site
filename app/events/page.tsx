@@ -101,14 +101,11 @@ function dayKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-/* ✅ FIXED: uses internal API instead of direct Supabase */
+/* ✅ FIXED — internal API call */
 async function getEvents(selectedMonth: string, source: SourceName) {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odiscom-site.vercel.app";
-
   try {
     const res = await fetch(
-      `${siteUrl}/api/events?month=${selectedMonth}&source=${source}`,
+      `/api/events?month=${selectedMonth}&source=${source}`,
       {
         cache: "no-store",
       }
@@ -178,44 +175,14 @@ export default async function EventsPage({
     eventsByDay.set(key, list);
   }
 
-  const upcoming = events.slice(0, 12);
-
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">
-            Odiscom Industry Events
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold text-slate-900">
-            Telecom conference and association calendar
-          </h1>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {allowedSources.map((source) => {
-            const active = source === selectedSource;
-            return (
-              <Link
-                key={source}
-                href={`/events?month=${selectedMonth}&source=${source}`}
-                className={`rounded-full px-4 py-2 text-sm font-medium ${
-                  active
-                    ? "bg-emerald-700 text-white"
-                    : "bg-slate-100 text-slate-700"
-                }`}
-              >
-                {SOURCE_LABELS[source]}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <h1 className="text-3xl font-semibold mb-4">
+        Telecom conference and association calendar
+      </h1>
 
       {error && (
-        <div className="mb-6 rounded-xl bg-red-50 p-4 text-red-700">
-          {error}
-        </div>
+        <div className="mb-6 bg-red-50 p-4 text-red-700">{error}</div>
       )}
 
       <div className="text-center mb-6">
