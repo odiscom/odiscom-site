@@ -104,17 +104,17 @@ function dayKey(date: Date) {
 
 async function getEvents(selectedMonth: string, source: SourceName) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !anonKey) {
+  if (!supabaseUrl || !serviceRoleKey) {
     return {
       events: [] as EventRow[],
-      error: "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel.",
+      error: "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in Vercel.",
     };
   }
 
   try {
-    const supabase = createClient(supabaseUrl, anonKey);
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const baseDate = new Date(`${selectedMonth}-01T12:00:00`);
     const start = monthStart(baseDate).toISOString();
@@ -154,7 +154,9 @@ async function getEvents(selectedMonth: string, source: SourceName) {
     return {
       events: [] as EventRow[],
       error:
-        error instanceof Error ? error.message : "Unknown server-side error loading events.",
+        error instanceof Error
+          ? error.message
+          : "Unknown server-side error loading events.",
     };
   }
 }
@@ -354,7 +356,9 @@ export default async function EventsPage({
                   <div className="mt-1 font-semibold text-slate-900">{event.title}</div>
                   <div className="mt-2 text-sm text-slate-600">
                     {fmtDayLabel(new Date(event.starts_at))}
-                    {fmtEventTime(event.starts_at) ? ` • ${fmtEventTime(event.starts_at)}` : ""}
+                    {fmtEventTime(event.starts_at)
+                      ? ` • ${fmtEventTime(event.starts_at)}`
+                      : ""}
                   </div>
                   {event.location ? (
                     <div className="mt-1 text-sm text-slate-500">{event.location}</div>
