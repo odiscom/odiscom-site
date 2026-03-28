@@ -42,17 +42,33 @@ function normalizeWhitespace(value?: string | null) {
   return (value || "").replace(/\s+/g, " ").trim();
 }
 
-function stripHtml(html?: string | null) {
+function decodeHtml(input: string) {
+  return input
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&#x27;/gi, "'")
+    .replace(/&#x2F;/gi, "/");
+}
+
+function cleanText(input?: string | null) {
+  if (!input) return null;
+
   return normalizeWhitespace(
-    (html || "")
-      .replace(/<script[\s\S]*?<\/script>/gi, "")
-      .replace(/<style[\s\S]*?<\/style>/gi, "")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&nbsp;/gi, " ")
-      .replace(/&amp;/gi, "&")
-      .replace(/&#39;/gi, "'")
-      .replace(/&quot;/gi, '"')
+    decodeHtml(
+      input
+        .replace(/<script[\s\S]*?<\/script>/gi, "")
+        .replace(/<style[\s\S]*?<\/style>/gi, "")
+        .replace(/<[^>]+>/g, " ")
+    )
   );
+}
+
+function stripHtml(html?: string | null) {
+  return cleanText(html);
 }
 
 function slugify(value: string) {
@@ -125,19 +141,19 @@ function parseJsonLdEvents(
 
           if (!types.includes("Event")) continue;
 
-          const title = normalizeWhitespace(item?.name);
+          const title = cleanText(item?.name);
           const startsAt = item?.startDate;
 
           if (!title || !startsAt) continue;
           if (!isLikelyEventTitle(title)) continue;
 
           const location =
-            normalizeWhitespace(item?.location?.name) ||
-            normalizeWhitespace(item?.location?.address?.streetAddress) ||
-            normalizeWhitespace(item?.location?.address?.addressLocality) ||
+            cleanText(item?.location?.name) ||
+            cleanText(item?.location?.address?.streetAddress) ||
+            cleanText(item?.location?.address?.addressLocality) ||
             null;
 
-          const url = item?.url || pageUrl;
+          const url = cleanText(item?.url) || pageUrl;
 
           events.push({
             title,
@@ -147,7 +163,7 @@ function parseJsonLdEvents(
             starts_at: startsAt,
             ends_at: item?.endDate || null,
             url,
-            organizer: normalizeWhitespace(item?.organizer?.name) || null,
+            organizer: cleanText(item?.organizer?.name) || null,
           });
         }
       }
@@ -179,27 +195,27 @@ async function crawlSource(source: SourceName, landingUrl: string) {
   const landingHtml = await fetchHtml(landingUrl);
   const events: RawEvent[] = [];
 
-  // First try structured data
   const jsonEvents = parseJsonLdEvents(landingHtml, source, landingUrl);
   events.push(...jsonEvents);
 
-  // Fallback parser for pages like NATE that do not expose usable JSON-LD
   if (events.length === 0) {
     const textBlocks = [...landingHtml.matchAll(/>([^<>]{15,200})</g)];
 
     for (const match of textBlocks) {
-      const rawTitle = normalizeWhitespace(match[1]);
+      const rawTitle = cleanText(match[1]);
 
       if (!rawTitle) continue;
       if (!isLikelyEventTitle(rawTitle)) continue;
 
+      const lower = rawTitle.toLowerCase();
+
       if (
-        rawTitle.includes("copyright") ||
-        rawTitle.includes("privacy") ||
-        rawTitle.includes("login") ||
-        rawTitle.includes("search") ||
-        rawTitle.includes("menu") ||
-        rawTitle.includes("register") ||
+        lower.includes("copyright") ||
+        lower.includes("privacy") ||
+        lower.includes("login") ||
+        lower.includes("search") ||
+        lower.includes("menu") ||
+        lower.includes("register") ||
         rawTitle.length < 10
       ) {
         continue;
@@ -221,9 +237,19 @@ async function crawlSource(source: SourceName, landingUrl: string) {
   const deduped = new Map<string, RawEvent>();
 
   for (const event of events) {
-    const key = `${event.title}|${event.url}`;
+    const cleanedTitle = cleanText(event.title) || "Untitled Event";
+    const cleanedUrl = cleanText(event.url) || landingUrl;
+    const key = `${cleanedTitle}|${cleanedUrl}`;
+
     if (!deduped.has(key)) {
-      deduped.set(key, event);
+      deduped.set(key, {
+        ...event,
+        title: cleanedTitle,
+        description: cleanText(event.description),
+        location: cleanText(event.location),
+        url: cleanedUrl,
+        organizer: cleanText(event.organizer),
+      });
     }
   }
 
@@ -264,17 +290,21 @@ export async function GET(req: Request) {
 
   const rows = allEvents
     .filter((event) => event.title && event.starts_at && event.url)
-    .map((event) => ({
-      title: normalizeWhitespace(event.title),
-      slug: makeSlug(event.source, event.title, event.starts_at),
-      source: event.source,
-      description: event.description || null,
-      location: event.location || null,
-      starts_at: event.starts_at,
-      ends_at: event.ends_at || null,
-      url: event.url,
-      organizer: event.organizer || null,
-    }));
+    .map((event) => {
+      const cleanedTitle = cleanText(event.title) || "Untitled Event";
+
+      return {
+        title: cleanedTitle,
+        slug: makeSlug(event.source, cleanedTitle, event.starts_at),
+        source: event.source,
+        description: cleanText(event.description),
+        location: cleanText(event.location),
+        starts_at: event.starts_at,
+        ends_at: event.ends_at || null,
+        url: cleanText(event.url) || event.url,
+        organizer: cleanText(event.organizer),
+      };
+    });
 
   if (!rows.length) {
     return NextResponse.json({
