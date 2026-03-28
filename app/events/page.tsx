@@ -1,70 +1,247 @@
-import { createClient } from "@supabase/supabase-js";
-import { NextRequest, NextResponse } from "next/server";
+"use client";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type SourceName = "all" | "nate" | "wia" | "fiberconnect" | "other";
+
+type EventRow = {
+  id: string;
+  title: string;
+  slug: string;
+  source: Exclude<SourceName, "all">;
+  description: string | null;
+  location: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  url: string | null;
+  organizer: string | null;
+};
+
+const SOURCE_LABELS: Record<SourceName, string> = {
+  all: "All",
+  nate: "NATE",
+  wia: "WIA",
+  fiberconnect: "Fiber Connect",
+  other: "Other",
+};
 
 function monthStart(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
-export async function GET(req: NextRequest) {
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function monthEnd(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
 
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json(
-        { error: "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY." },
-        { status: 500 }
-      );
-    }
+function fmtMonthInput(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return `${y}-${m}`;
+}
 
-    const url = new URL(req.url);
-    const monthParam = url.searchParams.get("month");
-    const sourceParam = (url.searchParams.get("source") || "all") as SourceName;
+function fmtHumanDate(date: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
 
-    const selectedMonth =
-      monthParam && /^\d{4}-\d{2}$/.test(monthParam)
-        ? monthParam
-        : new Date().toISOString().slice(0, 7);
+function getCalendarCells(viewDate: Date) {
+  const start = monthStart(viewDate);
+  const end = monthEnd(viewDate);
 
-    const baseDate = new Date(`${selectedMonth}-01T12:00:00`);
-    const start = monthStart(baseDate).toISOString();
-    const end = new Date(
-      baseDate.getFullYear(),
-      baseDate.getMonth() + 1,
-      1
-    ).toISOString();
+  const firstGridDay = new Date(start);
+  firstGridDay.setDate(start.getDate() - start.getDay());
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const lastGridDay = new Date(end);
+  lastGridDay.setDate(end.getDate() + (6 - end.getDay()));
 
-    let query = supabase
-      .from("events")
-      .select("id,title,slug,source,description,location,starts_at,ends_at,url,organizer")
-      .gte("starts_at", start)
-      .lt("starts_at", end)
-      .order("starts_at", { ascending: true });
+  const days: Date[] = [];
+  const cursor = new Date(firstGridDay);
 
-    if (sourceParam !== "all") {
-      query = query.eq("source", sourceParam);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ events: data || [] });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Unknown API error",
-      },
-      { status: 500 }
-    );
+  while (cursor <= lastGridDay) {
+    days.push(new Date(cursor));
+    cursor.setDate(cursor.getDate() + 1);
   }
+
+  return days;
+}
+
+function dayKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+export default function EventsPage() {
+  const searchParams = useSearchParams();
+
+  const selectedMonth =
+    searchParams.get("month") && /^\d{4}-\d{2}$/.test(searchParams.get("month") || "")
+      ? (searchParams.get("month") as string)
+      : fmtMonthInput(new Date());
+
+  const allowedSources: SourceName[] = [
+    "all",
+    "nate",
+    "wia",
+    "fiberconnect",
+    "other",
+  ];
+
+  const selectedSource: SourceName = allowedSources.includes(
+    (searchParams.get("source") || "all") as SourceName
+  )
+    ? ((searchParams.get("source") || "all") as SourceName)
+    : "all";
+
+  const [events, setEvents] = useState<EventRow[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const viewDate = useMemo(
+    () => new Date(`${selectedMonth}-01T12:00:00`),
+    [selectedMonth]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEvents() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch(
+          `/api/events?month=${selectedMonth}&source=${selectedSource}`,
+          { cache: "no-store" }
+        );
+
+        const json = await res.json();
+
+        if (!res.ok) {
+          throw new Error(json?.error || "Failed to load events.");
+        }
+
+        if (!cancelled) {
+          setEvents(Array.isArray(json.events) ? json.events : []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setEvents([]);
+          setError(err instanceof Error ? err.message : "Failed to load events.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadEvents();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedMonth, selectedSource]);
+
+  const prevMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+  const nextMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+  const days = getCalendarCells(viewDate);
+
+  const eventsByDay = new Map<string, EventRow[]>();
+  for (const event of events) {
+    const key = event.starts_at.slice(0, 10);
+    const list = eventsByDay.get(key) || [];
+    list.push(event);
+    eventsByDay.set(key, list);
+  }
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">
+            Odiscom Industry Events
+          </p>
+          <h1 className="text-3xl font-semibold text-slate-900">
+            Telecom conference and association calendar
+          </h1>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {allowedSources.map((source) => {
+            const active = source === selectedSource;
+            return (
+              <Link
+                key={source}
+                href={`/events?month=${selectedMonth}&source=${source}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ${
+                  active
+                    ? "bg-emerald-700 text-white"
+                    : "bg-slate-100 text-slate-700"
+                }`}
+              >
+                {SOURCE_LABELS[source]}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {error ? (
+        <div className="mb-6 rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+      ) : null}
+
+      <div className="mb-6 flex items-center justify-between">
+        <Link
+          href={`/events?month=${fmtMonthInput(prevMonth)}&source=${selectedSource}`}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        >
+          ← Previous
+        </Link>
+
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-slate-900">
+            {fmtHumanDate(viewDate)}
+          </h2>
+          <p className="text-sm text-slate-500">
+            {loading ? "Loading..." : `${events.length} events`}
+          </p>
+        </div>
+
+        <Link
+          href={`/events?month=${fmtMonthInput(nextMonth)}&source=${selectedSource}`}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        >
+          Next →
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-7 gap-2">
+        {days.map((date) => {
+          const key = dayKey(date);
+          const dayEvents = eventsByDay.get(key) || [];
+
+          return (
+            <div key={key} className="min-h-[120px] border p-2">
+              <div className="font-semibold text-slate-900">{date.getDate()}</div>
+
+              <div className="mt-1 space-y-1">
+                {dayEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-800"
+                    title={event.title}
+                  >
+                    {event.title}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
