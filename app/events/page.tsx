@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -25,13 +26,6 @@ const SOURCE_LABELS: Record<SourceName, string> = {
   other: "Other",
 };
 
-const SOURCE_STYLES: Record<Exclude<SourceName, "all">, string> = {
-  nate: "border-l-4 border-l-emerald-500 bg-white",
-  wia: "border-l-4 border-l-sky-500 bg-white",
-  fiberconnect: "border-l-4 border-l-amber-500 bg-white",
-  other: "border-l-4 border-l-slate-400 bg-white",
-};
-
 function monthStart(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
@@ -50,29 +44,6 @@ function fmtHumanDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
     year: "numeric",
-  }).format(date);
-}
-
-function fmtDayLabel(date: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
-
-function fmtEventTime(value: string) {
-  const date = new Date(value);
-  if (
-    date.getUTCHours() === 0 &&
-    date.getUTCMinutes() === 0 &&
-    date.getUTCSeconds() === 0
-  ) {
-    return "";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
   }).format(date);
 }
 
@@ -101,11 +72,24 @@ function dayKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-/* ✅ FIXED — internal API call */
+async function getBaseUrl() {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "https";
+
+  if (!host) {
+    throw new Error("Could not determine host for events API request.");
+  }
+
+  return `${proto}://${host}`;
+}
+
 async function getEvents(selectedMonth: string, source: SourceName) {
   try {
+    const baseUrl = await getBaseUrl();
+
     const res = await fetch(
-      `/api/events?month=${selectedMonth}&source=${source}`,
+      `${baseUrl}/api/events?month=${selectedMonth}&source=${source}`,
       {
         cache: "no-store",
       }
@@ -161,9 +145,6 @@ export default async function EventsPage({
       : "all";
 
   const viewDate = new Date(`${selectedMonth}-01T12:00:00`);
-  const prevMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
-  const nextMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
-
   const { events, error } = await getEvents(selectedMonth, selectedSource);
   const days = getCalendarCells(viewDate);
 
@@ -177,15 +158,43 @@ export default async function EventsPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-semibold mb-4">
-        Telecom conference and association calendar
-      </h1>
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">
+            Odiscom Industry Events
+          </p>
+          <h1 className="text-3xl font-semibold">
+            Telecom conference and association calendar
+          </h1>
+        </div>
 
-      {error && (
-        <div className="mb-6 bg-red-50 p-4 text-red-700">{error}</div>
-      )}
+        <div className="flex flex-wrap gap-2">
+          {allowedSources.map((source) => {
+            const active = source === selectedSource;
+            return (
+              <Link
+                key={source}
+                href={`/events?month=${selectedMonth}&source=${source}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ${
+                  active
+                    ? "bg-emerald-700 text-white"
+                    : "bg-slate-100 text-slate-700"
+                }`}
+              >
+                {SOURCE_LABELS[source]}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
-      <div className="text-center mb-6">
+      {error ? (
+        <div className="mb-6 rounded-xl bg-red-50 p-4 text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      <div className="mb-6 text-center">
         <h2 className="text-xl font-semibold">{fmtHumanDate(viewDate)}</h2>
         <p className="text-sm text-slate-500">{events.length} events</p>
       </div>
@@ -196,11 +205,11 @@ export default async function EventsPage({
           const dayEvents = eventsByDay.get(key) || [];
 
           return (
-            <div key={key} className="border p-2 min-h-[120px]">
+            <div key={key} className="min-h-[120px] border p-2">
               <div className="font-semibold">{date.getDate()}</div>
 
               {dayEvents.map((event) => (
-                <div key={event.id} className="text-xs mt-1">
+                <div key={event.id} className="mt-1 text-xs">
                   {event.title}
                 </div>
               ))}
