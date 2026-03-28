@@ -89,7 +89,9 @@ function isLikelyEventTitle(title: string) {
 }
 
 function extractJsonLdBlocks(html: string) {
-  return [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+  return [...html.matchAll(
+    /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+  )]
     .map((m) => m[1])
     .filter(Boolean);
 }
@@ -99,7 +101,11 @@ function toArray<T>(value: T | T[] | undefined | null): T[] {
   return Array.isArray(value) ? value : [value];
 }
 
-function parseJsonLdEvents(html: string, source: SourceName, pageUrl: string): RawEvent[] {
+function parseJsonLdEvents(
+  html: string,
+  source: SourceName,
+  pageUrl: string
+): RawEvent[] {
   const blocks = extractJsonLdBlocks(html);
   const events: RawEvent[] = [];
 
@@ -109,7 +115,9 @@ function parseJsonLdEvents(html: string, source: SourceName, pageUrl: string): R
       const candidates = toArray(parsed);
 
       for (const candidate of candidates) {
-        const graphItems = candidate?.["@graph"] ? toArray(candidate["@graph"]) : [candidate];
+        const graphItems = candidate?.["@graph"]
+          ? toArray(candidate["@graph"])
+          : [candidate];
 
         for (const item of graphItems) {
           const typeValue = item?.["@type"];
@@ -119,6 +127,7 @@ function parseJsonLdEvents(html: string, source: SourceName, pageUrl: string): R
 
           const title = normalizeWhitespace(item?.name);
           const startsAt = item?.startDate;
+
           if (!title || !startsAt) continue;
           if (!isLikelyEventTitle(title)) continue;
 
@@ -170,37 +179,42 @@ async function crawlSource(source: SourceName, landingUrl: string) {
   const landingHtml = await fetchHtml(landingUrl);
   const events: RawEvent[] = [];
 
-  // Try structured data first
+  // First try structured data
   const jsonEvents = parseJsonLdEvents(landingHtml, source, landingUrl);
   events.push(...jsonEvents);
 
-  // Fallback for sites like NATE that do not expose usable JSON-LD
+  // Fallback parser for pages like NATE that do not expose usable JSON-LD
   if (events.length === 0) {
-    const matches = [...landingHtml.matchAll(/<a[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+    const textBlocks = [...landingHtml.matchAll(/>([^<>]{15,200})</g)];
 
-    for (const match of matches) {
-      const rawUrl = match[1];
-      const rawTitle = stripHtml(match[2]);
+    for (const match of textBlocks) {
+      const rawTitle = normalizeWhitespace(match[1]);
 
-      if (!rawTitle || rawTitle.length < 10) continue;
+      if (!rawTitle) continue;
       if (!isLikelyEventTitle(rawTitle)) continue;
 
-      try {
-        const fullUrl = new URL(rawUrl, landingUrl).toString();
-
-        events.push({
-          title: rawTitle,
-          source,
-          description: null,
-          location: null,
-          starts_at: new Date().toISOString(),
-          ends_at: null,
-          url: fullUrl,
-          organizer: source.toUpperCase(),
-        });
-      } catch {
-        // ignore bad URLs
+      if (
+        rawTitle.includes("copyright") ||
+        rawTitle.includes("privacy") ||
+        rawTitle.includes("login") ||
+        rawTitle.includes("search") ||
+        rawTitle.includes("menu") ||
+        rawTitle.includes("register") ||
+        rawTitle.length < 10
+      ) {
+        continue;
       }
+
+      events.push({
+        title: rawTitle,
+        source,
+        description: null,
+        location: null,
+        starts_at: new Date().toISOString(),
+        ends_at: null,
+        url: landingUrl,
+        organizer: source.toUpperCase(),
+      });
     }
   }
 
