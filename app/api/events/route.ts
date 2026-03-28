@@ -17,14 +17,17 @@ export async function GET(req: NextRequest) {
 
     if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json(
-        { error: "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY." },
+        {
+          error:
+            "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.",
+        },
         { status: 500 }
       );
     }
 
-    const url = new URL(req.url);
-    const monthParam = url.searchParams.get("month");
-    const sourceParam = (url.searchParams.get("source") || "all") as SourceName;
+    const monthParam = req.nextUrl.searchParams.get("month");
+    const sourceParam = (req.nextUrl.searchParams.get("source") ||
+      "all") as SourceName;
 
     const selectedMonth =
       monthParam && /^\d{4}-\d{2}$/.test(monthParam)
@@ -39,11 +42,18 @@ export async function GET(req: NextRequest) {
       1
     ).toISOString();
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
 
     let query = supabase
       .from("events")
-      .select("id,title,slug,source,description,location,starts_at,ends_at,url,organizer")
+      .select(
+        "id,title,slug,source,description,location,starts_at,ends_at,url,organizer"
+      )
       .gte("starts_at", start)
       .lt("starts_at", end)
       .order("starts_at", { ascending: true });
