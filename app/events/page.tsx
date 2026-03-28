@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type SourceName = "all" | "nate" | "wia" | "fiberconnect" | "other";
@@ -73,7 +73,7 @@ function dayKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-export default function EventsPage() {
+function EventsPageInner() {
   const searchParams = useSearchParams();
 
   const selectedMonth =
@@ -243,5 +243,26 @@ export default function EventsPage() {
         })}
       </div>
     </div>
+  );
+}
+
+function EventsPageFallback() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <h1 className="text-3xl font-semibold text-slate-900">
+        Telecom conference and association calendar
+      </h1>
+      <div className="mt-6 rounded-xl bg-slate-50 p-4 text-slate-600">
+        Loading events...
+      </div>
+    </div>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<EventsPageFallback />}>
+      <EventsPageInner />
+    </Suspense>
   );
 }
