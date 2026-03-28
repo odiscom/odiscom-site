@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/industry-events",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
