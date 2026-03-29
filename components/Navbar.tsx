@@ -18,6 +18,7 @@ const navItems = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24);
@@ -29,51 +30,52 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 border-b border-slate-200 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 shadow-sm backdrop-blur" : "bg-white/78 backdrop-blur"
+        isScrolled
+          ? "bg-white/95 shadow-md backdrop-blur"
+          : "bg-white/80 backdrop-blur"
       }`}
     >
       <div
-        className={`mx-auto flex max-w-7xl items-center px-5 lg:px-6 transition-all duration-300 ${
-          isScrolled ? "h-[73px]" : "h-[84px]"
+        className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-all duration-300 ${
+          isScrolled ? "h-[74px]" : "h-[88px]"
         }`}
       >
-        <Link href="/" className="mr-5 flex shrink-0 items-center lg:mr-6">
+        {/* LOGO */}
+        <Link href="/" className="flex items-center">
           <img
             src="/logos/odiscom.png"
             alt="Odiscom"
-            className={`object-contain transition-all duration-300 ${
-              isScrolled ? "w-[148px]" : "w-[165px]"
+            className={`transition-all duration-300 ${
+              isScrolled ? "w-[150px]" : "w-[170px]"
             }`}
           />
         </Link>
 
-        <nav
-          className={`hidden min-w-0 flex-1 items-center justify-start transition-all duration-300 lg:flex ${
-            isScrolled ? "gap-1 xl:gap-1.5" : "gap-1.5 xl:gap-2"
-          }`}
-        >
+        {/* DESKTOP NAV */}
+        <nav className="hidden lg:flex items-center gap-2">
           {navItems.map((item) => {
             const active =
               item.href === "/"
                 ? pathname === "/"
-                : pathname === item.href || pathname.startsWith(item.href + "/");
+                : pathname === item.href ||
+                  pathname.startsWith(item.href + "/");
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`group relative rounded-full px-1.5 py-1.5 text-[14px] transition xl:px-2 xl:text-[15px] ${
+                className={`relative px-3 py-2 text-[15px] font-medium rounded-full transition ${
                   active
-                    ? "bg-[#1f8a84]/10 font-semibold text-[#1f8a84]"
-                    : "font-medium text-[#0f3f3b] hover:bg-[#1f8a84]/8 hover:text-[#1f8a84]"
+                    ? "text-[#1f8a84] font-semibold"
+                    : "text-[#0f3f3b] hover:text-[#1f8a84]"
                 }`}
               >
                 {item.label}
+
+                {/* underline */}
                 <span
-                  className={`absolute -bottom-[6px] left-1.5 right-1.5 h-[3px] rounded-full bg-[#1f8a84] transition-all duration-300 ${
-                    active
-                      ? "scale-x-100 opacity-100"
-                      : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
+                  className={`absolute left-3 right-3 -bottom-[6px] h-[2px] bg-[#1f8a84] transition-all duration-300 ${
+                    active ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
                   }`}
                   style={{ transformOrigin: "left" }}
                 />
@@ -82,22 +84,63 @@ export default function Navbar() {
           })}
         </nav>
 
-        <div className="ml-4 hidden shrink-0 items-center gap-3 xl:flex">
+        {/* RIGHT SIDE */}
+        <div className="hidden lg:flex items-center gap-5">
           <a
             href="tel:+14695311176"
-            className="whitespace-nowrap text-[13px] font-medium text-[#0f3f3b] 2xl:text-[14px]"
+            className="text-sm text-slate-500 hover:text-[#1f8a84]"
           >
             (469) 531-1176
           </a>
 
           <Link
             href="/contact"
-            className={`btn whitespace-nowrap ${isScrolled ? "btn-sm" : "btn-md"}`}
+            className="rounded-full bg-[#1f8a84] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#18716c]"
           >
             Request Proposal
           </Link>
         </div>
+
+        {/* MOBILE BUTTON */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="lg:hidden text-[#0f3f3b]"
+        >
+          ☰
+        </button>
       </div>
+
+      {/* MOBILE MENU */}
+      {mobileOpen && (
+        <div className="lg:hidden border-t border-slate-200 bg-white px-6 py-6 space-y-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className="block text-lg font-medium text-[#0f3f3b]"
+            >
+              {item.label}
+            </Link>
+          ))}
+
+          <div className="pt-4 border-t border-slate-200 space-y-3">
+            <a
+              href="tel:+14695311176"
+              className="block text-sm text-slate-600"
+            >
+              (469) 531-1176
+            </a>
+
+            <Link
+              href="/contact"
+              className="block text-center rounded-full bg-[#1f8a84] px-6 py-3 text-white font-semibold"
+            >
+              Request Proposal
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
