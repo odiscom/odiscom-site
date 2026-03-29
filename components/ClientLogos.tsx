@@ -1,17 +1,14 @@
 import Image from "next/image"
 
 const logos = [
-  // Tier 1 – Carriers
   { src: "/logos/att.png", alt: "AT&T" },
   { src: "/logos/Verizon.png", alt: "Verizon" },
   { src: "/logos/sonic.png", alt: "Sonic" },
 
-  // Tier 2 – Infrastructure / Towers
   { src: "/logos/crowncastle-logo.png", alt: "Crown Castle" },
   { src: "/logos/vertical-bridge-logo.svg", alt: "Vertical Bridge" },
-  { src: "/logos/zayo.png", alt: "Zayo" },
+  { src: "/logos/Zayo.svg", alt: "Zayo" },
 
-  // Tier 3 – Vendors / Ecosystem
   { src: "/logos/smartlink.png", alt: "Smartlink" },
   { src: "/logos/Ericsson-Symbol.png", alt: "Ericsson" },
   { src: "/logos/nokia.png", alt: "Nokia" },
@@ -22,30 +19,36 @@ const logos = [
 
 export default function ClientLogos() {
   return (
-    <section className="bg-white py-20">
+    <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="text-center">
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
             Trusted by telecom infrastructure leaders
           </p>
 
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
             Supporting fiber, wireless, and tower infrastructure programs
           </h2>
+
+          <p className="mt-4 text-slate-600">
+            Experience across carriers, tower companies, and infrastructure partners.
+          </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+        {/* Logos */}
+        <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {logos.map((logo) => (
             <div
               key={logo.alt}
-              className="flex h-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+              className="group flex h-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <Image
                 src={logo.src}
                 alt={logo.alt}
                 width={160}
                 height={60}
-                className="max-h-12 w-auto object-contain"
+                className="max-h-10 w-auto object-contain opacity-80 transition group-hover:opacity-100"
               />
             </div>
           ))}
