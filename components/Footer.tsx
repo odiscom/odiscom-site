@@ -65,15 +65,6 @@ export default function Footer() {
             <div className="mt-6 space-y-8">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/65">
-                  Location
-                </p>
-                <p className="mt-3 text-lg leading-8 text-white/90">
-                  League City, TX 77573
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/65">
                   Phone
                 </p>
                 <a
@@ -94,6 +85,15 @@ export default function Footer() {
                 >
                   owners@odiscom.com
                 </a>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/65">
+                  Coverage
+                </p>
+                <p className="mt-3 text-lg leading-8 text-white/90">
+                  Supporting telecom infrastructure programs nationwide
+                </p>
               </div>
             </div>
           </div>
@@ -118,11 +118,16 @@ export default function Footer() {
 
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/65">
-                  Focus
+                  Bookings
                 </p>
-                <p className="mt-3 text-lg leading-8 text-white/90">
-                  Fiber, towers, and telecom infrastructure delivery
-                </p>
+                <a
+                  href="https://outlook.office.com/book/Odiscom@odiscom.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 block text-lg leading-8 text-white/90 hover:text-white"
+                >
+                  Book a Meeting
+                </a>
               </div>
             </div>
           </div>

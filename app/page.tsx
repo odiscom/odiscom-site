@@ -22,8 +22,6 @@ export default function HomePage() {
 
   return (
     <main className="bg-white text-slate-900">
-
-      {/* HERO */}
       <section className="relative h-[720px] w-full overflow-hidden">
         <div className="absolute inset-y-0 left-0 w-1/2">
           <Image
@@ -51,7 +49,6 @@ export default function HomePage() {
 
         <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
           <div className="max-w-3xl text-white">
-
             <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
               Fiber • Wireless • Towers • Construction
             </p>
@@ -66,22 +63,28 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              <Link href="/contact" className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84] hover:bg-slate-100 transition">
+              <Link
+                href="/contact"
+                className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84] transition hover:bg-slate-100"
+              >
                 Request Proposal
               </Link>
 
-              <Link href="/projects" className="rounded-full border border-white px-8 py-4 font-semibold text-white hover:bg-white/10 transition">
-                View Projects
-              </Link>
+              <a
+                href="https://outlook.office.com/book/Odiscom@odiscom.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-white px-8 py-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                Book a Meeting
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* TRUST STRIP */}
       <section className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-
           <div className="text-center mb-8">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
               Trusted By
@@ -111,10 +114,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-
           <div className="mb-12 max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
               What we do
@@ -130,8 +131,6 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">
-
-            {/* Fiber */}
             <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
                 Fiber
@@ -147,7 +146,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Towers */}
             <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
                 Towers
@@ -163,7 +161,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Construction */}
             <div className="rounded-[2rem] border border-slate-200 p-8 shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
                 Construction
@@ -178,15 +175,13 @@ export default function HomePage() {
                 contractor alignment, and project delivery.
               </p>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <BottomCta
         title="Need support on a fiber, tower, or telecom infrastructure project?"
-        description="Tell us what you're building, where you need support, and how quickly you need to move."
+        description="Tell us what you're building, or book time with our team to get started quickly."
       />
     </main>
   );
