@@ -1,3 +1,4 @@
+import ClientLogos from "@/components/ClientLogos"
 import Image from "next/image"
 import Link from "next/link"
 import BottomCta from "@/components/BottomCta"
@@ -7,19 +8,16 @@ const serviceCards = [
     title: "OSP / Fiber Engineering",
     description:
       "Route development, field verification, make-ready support, utility coordination, and plan production aligned with deployment needs.",
-    href: "/services/fiber",
   },
   {
-    title: "Wireless / Tower Program Support",
+    title: "Wireless / Tower Support",
     description:
       "Site documentation, A&E coordination, upgrade planning, and project delivery support for carrier and infrastructure programs.",
-    href: "/services/wireless",
   },
   {
-    title: "Construction Delivery Coordination",
+    title: "Construction Delivery Support",
     description:
       "Construction-minded documentation, vendor coordination, field support, and execution planning from kickoff through closeout.",
-    href: "/services/construction",
   },
 ]
 
@@ -29,7 +27,6 @@ export default function ServicesPage() {
       {/* HERO */}
       <section className="border-b border-slate-200 bg-[#f7fbfb]">
         <div className="mx-auto grid max-w-7xl overflow-hidden lg:min-h-[620px] lg:grid-cols-2">
-          {/* LEFT */}
           <div className="flex items-center px-6 py-20 lg:px-8 lg:py-28">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
@@ -44,8 +41,8 @@ export default function ServicesPage() {
 
               <p className="mt-6 text-lg leading-8 text-slate-600">
                 Odiscom supports fiber, wireless, tower, and telecommunications
-                infrastructure programs with practical design, coordinated
-                delivery, and construction-minded execution.
+                infrastructure programs with practical design, coordinated delivery,
+                and construction-minded execution.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
@@ -66,7 +63,6 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          {/* RIGHT IMAGE */}
           <div className="relative min-h-[320px] lg:min-h-full">
             <Image
               src="/images/Fiber/trenching_pic.jpg"
@@ -79,6 +75,9 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* LOGOS SECTION */}
+      <ClientLogos />
 
       {/* DIVIDER */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
@@ -102,9 +101,8 @@ export default function ServicesPage() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           {serviceCards.map((service) => (
-            <Link
+            <div
               key={service.title}
-              href={service.href}
               className="group flex h-full flex-col rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#1f8a84]/30 hover:shadow-xl"
             >
               <div className="mb-6 flex items-center gap-3">
@@ -128,7 +126,7 @@ export default function ServicesPage() {
                   </span>
                 </span>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </section>
