@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -19,15 +21,7 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-[#1f8a84] text-white">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
         <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-[1.2fr_.9fr_.9fr_.9fr]">
-          
-          {/* Brand */}
           <div className="max-w-md">
-            <img
-              src="/logos/odiscom-logo-white.png"
-              alt="Odiscom"
-              className="mb-6 h-8 w-auto"
-            />
-
             <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               Telecom engineering and infrastructure support
             </h2>
@@ -38,15 +32,15 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="text-2xl font-semibold tracking-tight">Quick Links</h3>
 
             <nav className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4">
               {quickLinks.map((link) => {
                 const isActive =
-                  pathname === link.href ||
-                  pathname.startsWith(link.href + "/")
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname === link.href || pathname.startsWith(link.href + "/")
 
                 return (
                   <Link
@@ -54,7 +48,7 @@ export default function Footer() {
                     href={link.href}
                     className={`text-lg transition ${
                       isActive
-                        ? "text-white font-semibold"
+                        ? "font-semibold text-white"
                         : "text-white/80 hover:text-white"
                     }`}
                   >
@@ -65,7 +59,6 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* Contact */}
           <div>
             <h3 className="text-2xl font-semibold tracking-tight">Contact</h3>
 
@@ -105,7 +98,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Connect */}
           <div>
             <h3 className="text-2xl font-semibold tracking-tight">Connect</h3>
 
@@ -115,7 +107,7 @@ export default function Footer() {
                   LinkedIn
                 </p>
                 <a
-                  href="https://www.linkedin.com"
+                  href="https://www.linkedin.com/company/odiscom"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-3 block text-lg leading-8 text-white/90 hover:text-white"
@@ -136,8 +128,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-14 border-t border-white/10 pt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col gap-2 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-white/65">
             © {new Date().getFullYear()} Odiscom. All rights reserved.
           </p>
