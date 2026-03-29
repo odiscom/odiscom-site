@@ -11,7 +11,6 @@ export default function ClientLogos() {
   return (
     <section className="bg-white py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Heading */}
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
             Trusted by telecom infrastructure leaders
@@ -22,7 +21,6 @@ export default function ClientLogos() {
           </h2>
         </div>
 
-        {/* Logos */}
         <div className="mt-12 grid grid-cols-2 items-center gap-x-12 gap-y-12 sm:grid-cols-3 lg:grid-cols-6">
           {logos.map((logo) => (
             <div
