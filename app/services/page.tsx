@@ -1,4 +1,5 @@
 import ClientLogos from "@/components/ClientLogos"
+import ProjectsPreview from "@/components/ProjectsPreview"
 import Image from "next/image"
 import Link from "next/link"
 import BottomCta from "@/components/BottomCta"
@@ -8,23 +9,25 @@ const serviceCards = [
     title: "OSP / Fiber Engineering",
     description:
       "Route development, field verification, make-ready support, utility coordination, and plan production aligned with deployment needs.",
+    href: "/services/fiber",
   },
   {
-    title: "Wireless / Tower Support",
+    title: "Wireless / Tower Program Support",
     description:
       "Site documentation, A&E coordination, upgrade planning, and project delivery support for carrier and infrastructure programs.",
+    href: "/services/wireless",
   },
   {
-    title: "Construction Delivery Support",
+    title: "Construction Delivery Coordination",
     description:
       "Construction-minded documentation, vendor coordination, field support, and execution planning from kickoff through closeout.",
+    href: "/services/construction",
   },
 ]
 
 export default function ServicesPage() {
   return (
     <main className="bg-white text-slate-900">
-      {/* HERO */}
       <section className="border-b border-slate-200 bg-[#f7fbfb]">
         <div className="mx-auto grid max-w-7xl overflow-hidden lg:min-h-[620px] lg:grid-cols-2">
           <div className="flex items-center px-6 py-20 lg:px-8 lg:py-28">
@@ -41,8 +44,8 @@ export default function ServicesPage() {
 
               <p className="mt-6 text-lg leading-8 text-slate-600">
                 Odiscom supports fiber, wireless, tower, and telecommunications
-                infrastructure programs with practical design, coordinated delivery,
-                and construction-minded execution.
+                infrastructure programs with practical design, coordinated
+                delivery, and construction-minded execution.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
@@ -76,13 +79,10 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* LOGOS SECTION */}
       <ClientLogos />
 
-      {/* DIVIDER */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      {/* SERVICES */}
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="mb-14 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
@@ -101,8 +101,9 @@ export default function ServicesPage() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           {serviceCards.map((service) => (
-            <div
+            <Link
               key={service.title}
+              href={service.href}
               className="group flex h-full flex-col rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#1f8a84]/30 hover:shadow-xl"
             >
               <div className="mb-6 flex items-center gap-3">
@@ -126,12 +127,13 @@ export default function ServicesPage() {
                   </span>
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
+      <ProjectsPreview />
+
       <BottomCta
         title="Need support on a fiber, tower, or telecom infrastructure project?"
         description="Tell us what you're building, where you need support, and how quickly you need to move."
