@@ -1,13 +1,15 @@
-export default function ClientLogos() {
-  const logos = [
-    { src: "/logos/att.png", alt: "AT&T" },
-    { src: "/logos/verizon.png", alt: "Verizon" },
-    { src: "/logos/tmobile.png", alt: "T-Mobile" },
-    { src: "/logos/zayo.png", alt: "Zayo" },
-    { src: "/logos/crown.png", alt: "Crown Castle" },
-    { src: "/logos/american-tower.png", alt: "American Tower" },
-  ]
+import Image from "next/image"
 
+const logos = [
+  { src: "/logos/att.png", alt: "AT&T" },
+  { src: "/logos/Verizon.png", alt: "Verizon" },
+  { src: "/logos/zayo.png", alt: "Zayo" },
+  { src: "/logos/crowncastle-logo.png", alt: "Crown Castle" },
+  { src: "/logos/vertical-bridge-logo.svg", alt: "Vertical Bridge" },
+  { src: "/logos/smartlink.png", alt: "Smartlink" },
+]
+
+export default function ClientLogos() {
   return (
     <section className="bg-white py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -21,16 +23,18 @@ export default function ClientLogos() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 items-center gap-x-12 gap-y-12 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           {logos.map((logo) => (
             <div
               key={logo.alt}
-              className="flex items-center justify-center grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+              className="flex h-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
             >
-              <img
+              <Image
                 src={logo.src}
                 alt={logo.alt}
-                className="h-10 w-auto object-contain"
+                width={160}
+                height={60}
+                className="max-h-12 w-auto object-contain"
               />
             </div>
           ))}
