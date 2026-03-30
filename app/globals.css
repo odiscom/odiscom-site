@@ -92,3 +92,31 @@ body {
     padding-right: 2rem;
   }
 }
+/* LOGO MARQUEE ANIMATION */
+@keyframes logo-scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes logo-scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.logo-marquee {
+  width: max-content;
+  animation: logo-scroll-left 45s linear infinite;
+}
+
+.logo-marquee-reverse {
+  width: max-content;
+  animation: logo-scroll-right 45s linear infinite;
+}

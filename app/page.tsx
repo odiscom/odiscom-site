@@ -19,7 +19,10 @@ const trustedLogos = [
 
 export default function HomePage() {
   const marqueeLogosTop = [...trustedLogos, ...trustedLogos];
-  const marqueeLogosBottom = [...trustedLogos.slice().reverse(), ...trustedLogos.slice().reverse()];
+  const marqueeLogosBottom = [
+    ...trustedLogos.slice().reverse(),
+    ...trustedLogos.slice().reverse(),
+  ];
 
   return (
     <main className="bg-white text-slate-900">
@@ -103,36 +106,38 @@ export default function HomePage() {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
 
-            {/* TOP ROW */}
-            <div className="logo-marquee flex min-w-[200%] items-center gap-6">
-              {marqueeLogosTop.map((client, index) => (
-                <div
-                  key={`top-${client.name}-${index}`}
-                  className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
-                >
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
-                  />
-                </div>
-              ))}
+            <div className="group overflow-hidden">
+              <div className="logo-marquee flex min-w-max items-center gap-6 group-hover:[animation-play-state:paused]">
+                {marqueeLogosTop.map((client, index) => (
+                  <div
+                    key={`top-${client.name}-${index}`}
+                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+                  >
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* BOTTOM ROW */}
-            <div className="logo-marquee-reverse flex min-w-[200%] items-center gap-6">
-              {marqueeLogosBottom.map((client, index) => (
-                <div
-                  key={`bottom-${client.name}-${index}`}
-                  className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
-                >
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
-                  />
-                </div>
-              ))}
+            <div className="group overflow-hidden">
+              <div className="logo-marquee-reverse flex min-w-max items-center gap-6 group-hover:[animation-play-state:paused]">
+                {marqueeLogosBottom.map((client, index) => (
+                  <div
+                    key={`bottom-${client.name}-${index}`}
+                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+                  >
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -142,39 +147,6 @@ export default function HomePage() {
         title="Need support on a fiber, tower, or telecom infrastructure project?"
         description="Tell us what you're building, or book time with our team to get started quickly."
       />
-
-      <style jsx>{`
-        .logo-marquee {
-          animation: scroll-left 45s linear infinite;
-        }
-
-        .logo-marquee-reverse {
-          animation: scroll-right 45s linear infinite;
-        }
-
-        .logo-marquee:hover,
-        .logo-marquee-reverse:hover {
-          animation-play-state: paused;
-        }
-
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        @keyframes scroll-right {
-          0% {
-            transform: translateX(-50%);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </main>
   );
 }
