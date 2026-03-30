@@ -66,9 +66,9 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-7 max-w-2xl text-xl leading-9 text-white/90">
-              Odiscom supports fiber, tower, and telecommunications infrastructure
-              programs with practical design, coordinated execution, and
-              construction-ready documentation.
+              Odiscom supports fiber, tower, and telecommunications
+              infrastructure programs with practical design, coordinated
+              execution, and construction-ready documentation.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -114,12 +114,12 @@ export default function HomePage() {
                 {marqueeLogosTop.map((client, index) => (
                   <div
                     key={`top-${client.name}-${index}`}
-                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
                   >
                     <img
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+                      className="max-h-[40px] w-auto object-contain opacity-90 transition duration-300 hover:opacity-100 hover:scale-105"
                     />
                   </div>
                 ))}
@@ -131,12 +131,12 @@ export default function HomePage() {
                 {marqueeLogosBottom.map((client, index) => (
                   <div
                     key={`bottom-${client.name}-${index}`}
-                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
                   >
                     <img
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+                      className="max-h-[40px] w-auto object-contain opacity-90 transition duration-300 hover:opacity-100 hover:scale-105"
                     />
                   </div>
                 ))}
