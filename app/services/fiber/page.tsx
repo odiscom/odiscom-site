@@ -134,21 +134,18 @@ export default function FiberServicePage() {
             >
               Fiber
             </Link>
-
             <Link
               href="/services/wireless"
               className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
             >
               Wireless
             </Link>
-
             <Link
               href="/services/towers"
               className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
             >
               Towers
             </Link>
-
             <Link
               href="/services/construction"
               className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
