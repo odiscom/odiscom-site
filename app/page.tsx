@@ -6,25 +6,17 @@ const trustedLogos = [
   { name: "AT&T", logo: "/logos/att.png", size: "normal" },
   { name: "Verizon", logo: "/logos/verizon.png", size: "xlarge" },
   { name: "Zayo", logo: "/logos/zayo.png", size: "normal" },
-
   { name: "TDS Telecommunications", logo: "/logos/tds.png", size: "large" },
   { name: "ADB-US", logo: "/logos/adb.png", size: "large" },
   { name: "Squan", logo: "/logos/squan.png", size: "normal" },
-
   { name: "Harmoni Towers", logo: "/logos/harmoni.png", size: "large" },
   { name: "Nextlink", logo: "/logos/nextlink.png", size: "large" },
-
   { name: "Foresight Communications", logo: "/logos/foresight.png", size: "xlarge" },
-
   { name: "EBI", logo: "/logos/ebi.png", size: "small" },
-
   { name: "Smartlink", logo: "/logos/smartlink.png", size: "large" },
   { name: "SONIC", logo: "/logos/sonic.png", size: "large" },
-
   { name: "Crown Castle", logo: "/logos/crowncastle.png", size: "normal" },
-
   { name: "Ericsson", logo: "/logos/ericsson.png", size: "xlarge" },
-
   { name: "Vertical Bridge", logo: "/logos/verticalbridge.png", size: "xlarge" },
 ] as const;
 
@@ -40,6 +32,33 @@ function getLogoSizing(size?: "small" | "normal" | "large" | "xlarge") {
       return "max-h-[36px] md:max-h-[40px]";
   }
 }
+
+const coreServices = [
+  {
+    name: "Fiber",
+    href: "/services/fiber",
+    description:
+      "OSP engineering, route development, fielding, and construction-ready documentation for fiber deployment programs.",
+  },
+  {
+    name: "Wireless",
+    href: "/services/wireless",
+    description:
+      "Wireless site support, upgrade coordination, and execution-focused delivery for carrier infrastructure programs.",
+  },
+  {
+    name: "Towers",
+    href: "/services/towers",
+    description:
+      "Tower modifications, vertical infrastructure support, and field-ready coordination built for active projects.",
+  },
+  {
+    name: "Construction",
+    href: "/services/construction",
+    description:
+      "Construction-minded planning, documentation, and delivery support aligned with real field conditions.",
+  },
+];
 
 export default function HomePage() {
   const marqueeLogosTop = [...trustedLogos, ...trustedLogos];
@@ -109,6 +128,53 @@ export default function HomePage() {
                 Book a Meeting
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CORE SERVICES */}
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+              Core Services
+            </p>
+
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
+              Telecom support across fiber, wireless, tower, and construction
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+              Explore Odiscom’s core service areas built to support active
+              infrastructure programs from planning through field execution.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {coreServices.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="group rounded-[1.75rem] border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#1f8a84]/30 hover:shadow-xl"
+              >
+                <div className="inline-flex rounded-full bg-[#e8f6f5] px-4 py-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#1f8a84]">
+                  {item.name}
+                </div>
+
+                <h3 className="mt-5 text-2xl font-semibold tracking-tight text-slate-900">
+                  {item.name}
+                </h3>
+
+                <p className="mt-4 leading-7 text-slate-600">
+                  {item.description}
+                </p>
+
+                <div className="mt-6 inline-flex items-center font-semibold text-[#1f8a84] transition group-hover:translate-x-1">
+                  Learn More
+                  <span className="ml-2">→</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
