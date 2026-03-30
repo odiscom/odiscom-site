@@ -15,6 +15,9 @@ const trustedLogos = [
   { name: "EBI", logo: "/logos/ebi.png" },
   { name: "Smartlink", logo: "/logos/smartlink.png" },
   { name: "SONIC", logo: "/logos/sonic.png" },
+  { name: "Crown Castle", logo: "/logos/crowncastle.png" },
+  { name: "Ericsson", logo: "/logos/ericsson.png" },
+  { name: "Vertical Bridge", logo: "/logos/verticalbridge.png" },
 ];
 
 export default function HomePage() {
