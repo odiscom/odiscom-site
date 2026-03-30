@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
-  { label: "Projects", href: "/projects" },
+  { label: "Projects", href: "/case-studies" },
   { label: "Clients", href: "/clients" },
   { label: "Events", href: "/events" },
   { label: "Government", href: "/government" },
+  { label: "Capability Statement", href: "/capability-statement" },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];
@@ -72,7 +73,6 @@ export default function Navbar() {
               >
                 {item.label}
 
-                {/* underline */}
                 <span
                   className={`absolute left-3 right-3 -bottom-[6px] h-[2px] bg-[#1f8a84] transition-all duration-300 ${
                     active ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
@@ -134,6 +134,7 @@ export default function Navbar() {
 
             <Link
               href="/contact"
+              onClick={() => setMobileOpen(false)}
               className="block text-center rounded-full bg-[#1f8a84] px-6 py-3 text-white font-semibold"
             >
               Request Proposal
