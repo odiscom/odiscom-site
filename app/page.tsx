@@ -3,22 +3,33 @@ import Link from "next/link";
 import BottomCta from "@/components/BottomCta";
 
 const trustedLogos = [
-  { name: "AT&T", logo: "/logos/att.png" },
-  { name: "Verizon", logo: "/logos/verizon.png" },
-  { name: "Zayo", logo: "/logos/zayo.png" },
-  { name: "TDS Telecommunications", logo: "/logos/tds.png" },
-  { name: "ADB-US", logo: "/logos/adb.png" },
-  { name: "Squan", logo: "/logos/squan.png" },
-  { name: "Harmoni Towers", logo: "/logos/harmoni.png" },
-  { name: "Nextlink", logo: "/logos/nextlink.png" },
-  { name: "Foresight Communications", logo: "/logos/foresight.png" },
-  { name: "EBI", logo: "/logos/ebi.png" },
-  { name: "Smartlink", logo: "/logos/smartlink.png" },
-  { name: "SONIC", logo: "/logos/sonic.png" },
-  { name: "Crown Castle", logo: "/logos/crowncastle.png" },
-  { name: "Ericsson", logo: "/logos/ericsson.png" },
-  { name: "Vertical Bridge", logo: "/logos/verticalbridge.png" },
-];
+  { name: "AT&T", logo: "/logos/att.png", size: "normal" },
+  { name: "Verizon", logo: "/logos/verizon.png", size: "normal" },
+  { name: "Zayo", logo: "/logos/zayo.png", size: "normal" },
+  { name: "TDS Telecommunications", logo: "/logos/tds.png", size: "large" },
+  { name: "ADB-US", logo: "/logos/adb.png", size: "large" },
+  { name: "Squan", logo: "/logos/squan.png", size: "normal" },
+  { name: "Harmoni Towers", logo: "/logos/harmoni.png", size: "large" },
+  { name: "Nextlink", logo: "/logos/nextlink.png", size: "large" },
+  { name: "Foresight Communications", logo: "/logos/foresight.png", size: "normal" },
+  { name: "EBI", logo: "/logos/ebi.png", size: "small" },
+  { name: "Smartlink", logo: "/logos/smartlink.png", size: "large" },
+  { name: "SONIC", logo: "/logos/sonic.png", size: "large" },
+  { name: "Crown Castle", logo: "/logos/crowncastle.png", size: "normal" },
+  { name: "Ericsson", logo: "/logos/ericsson.png", size: "large" },
+  { name: "Vertical Bridge", logo: "/logos/verticalbridge.png", size: "normal" },
+] as const;
+
+function getLogoSizing(size?: "small" | "normal" | "large") {
+  switch (size) {
+    case "small":
+      return "max-h-[30px] md:max-h-[34px]";
+    case "large":
+      return "max-h-[44px] md:max-h-[48px]";
+    default:
+      return "max-h-[36px] md:max-h-[40px]";
+  }
+}
 
 export default function HomePage() {
   const marqueeLogosTop = [...trustedLogos, ...trustedLogos];
@@ -106,38 +117,52 @@ export default function HomePage() {
           </div>
 
           <div className="relative overflow-hidden space-y-6">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-white to-transparent" />
 
+            {/* TOP ROW */}
             <div className="group overflow-hidden">
               <div className="logo-marquee flex min-w-max items-center gap-6 group-hover:[animation-play-state:paused]">
                 {marqueeLogosTop.map((client, index) => (
                   <div
                     key={`top-${client.name}-${index}`}
-                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
+                    className="logo-card relative flex h-24 w-[250px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300"
                   >
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="max-h-[40px] w-auto object-contain opacity-90 transition duration-300 hover:opacity-100 hover:scale-105"
-                    />
+                    <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_center,rgba(31,138,132,0.10),transparent_65%)] opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                    <div className="flex h-full w-full items-center justify-center">
+                      <img
+                        src={client.logo}
+                        alt={client.name}
+                        className={`w-auto object-contain align-middle opacity-95 transition duration-300 hover:scale-[1.04] hover:opacity-100 ${getLogoSizing(
+                          client.size
+                        )}`}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* BOTTOM ROW */}
             <div className="group overflow-hidden">
               <div className="logo-marquee-reverse flex min-w-max items-center gap-6 group-hover:[animation-play-state:paused]">
                 {marqueeLogosBottom.map((client, index) => (
                   <div
                     key={`bottom-${client.name}-${index}`}
-                    className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
+                    className="logo-card relative flex h-24 w-[250px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white px-6 shadow-sm transition duration-300"
                   >
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="max-h-[40px] w-auto object-contain opacity-90 transition duration-300 hover:opacity-100 hover:scale-105"
-                    />
+                    <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_center,rgba(31,138,132,0.10),transparent_65%)] opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                    <div className="flex h-full w-full items-center justify-center">
+                      <img
+                        src={client.logo}
+                        alt={client.name}
+                        className={`w-auto object-contain align-middle opacity-95 transition duration-300 hover:scale-[1.04] hover:opacity-100 ${getLogoSizing(
+                          client.size
+                        )}`}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
