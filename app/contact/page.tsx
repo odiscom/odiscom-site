@@ -92,7 +92,7 @@ export default function ContactPage() {
               </a>
 
               <a
-                href="https://teams.microsoft.com/l/call/0/0?users=+14695311176"
+                href="https://teams.microsoft.com/l/call/0/0?users=4:14695311176"
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-full border border-[#1f8a84] px-5 py-2 text-sm font-semibold text-[#1f8a84] hover:bg-[#f0f7f7]"
@@ -134,7 +134,127 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* (rest of your file unchanged) */}
+      {/* FORM */}
+      <section className="mx-auto max-w-3xl px-6 pb-20 lg:px-8">
+        <div
+          id="project-inquiry"
+          className="rounded-2xl border border-slate-200 p-8 shadow-sm"
+        >
+          <h2 className="text-2xl font-semibold">Project Inquiry</h2>
+
+          <p className="mt-3 text-slate-600">
+            Tell us about your project, timeline, and support needs.
+          </p>
+
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium">
+                Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-[#1f8a84] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-[#1f8a84] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="company" className="block text-sm font-medium">
+                Company
+              </label>
+              <input
+                id="company"
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-[#1f8a84] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="projectDetails" className="block text-sm font-medium">
+                Project Details
+              </label>
+              <textarea
+                id="projectDetails"
+                rows={5}
+                value={projectDetails}
+                onChange={(e) => setProjectDetails(e.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-[#1f8a84] focus:outline-none"
+              />
+            </div>
+
+            {successMessage && (
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {successMessage}
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {errorMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-full bg-[#1f8a84] px-6 py-4 font-semibold text-white transition hover:bg-[#18716c] disabled:opacity-70"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-[#1f8a84]">
+        <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8">
+          <h2 className="text-3xl font-semibold text-white md:text-5xl">
+            Need support on a telecom project?
+          </h2>
+
+          <p className="mt-6 text-lg text-white/90">
+            Reach out and we’ll help you move forward quickly.
+          </p>
+
+          <div className="mt-10 flex justify-center gap-4">
+            <a
+              href="#project-inquiry"
+              className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84]"
+            >
+              Request Proposal
+            </a>
+
+            <a
+              href="https://outlook.office.com/book/Odiscom@odiscom.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-white/30 px-8 py-4 text-white"
+            >
+              Book a Meeting
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
