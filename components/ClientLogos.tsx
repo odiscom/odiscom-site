@@ -2,27 +2,25 @@ import Image from "next/image"
 
 const logos = [
   { src: "/logos/att.png", alt: "AT&T" },
-  { src: "/logos/Verizon.png", alt: "Verizon" },
+  { src: "/logos/verizon.png", alt: "Verizon" },
   { src: "/logos/sonic.png", alt: "Sonic" },
-
-  { src: "/logos/crowncastle-logo.png", alt: "Crown Castle" },
-  { src: "/logos/vertical-bridge-logo.svg", alt: "Vertical Bridge" },
-  { src: "/logos/Zayo.svg", alt: "Zayo" },
-
+  { src: "/logos/crowncastle.png", alt: "Crown Castle" },
+  { src: "/logos/verticalbridge.png", alt: "Vertical Bridge" },
+  { src: "/logos/zayo.png", alt: "Zayo" },
   { src: "/logos/smartlink.png", alt: "Smartlink" },
-  { src: "/logos/Ericsson-Symbol.png", alt: "Ericsson" },
+  { src: "/logos/ericsson.png", alt: "Ericsson" },
   { src: "/logos/nokia.png", alt: "Nokia" },
   { src: "/logos/nextlink.png", alt: "Nextlink" },
   { src: "/logos/foresight.png", alt: "Foresight" },
-  { src: "/logos/ebi.jpeg", alt: "EBI Consulting" },
+  { src: "/logos/ebi.png", alt: "EBI Consulting" },
+  { src: "/logos/tds.png", alt: "TDS Telecommunications" },
 ]
 
 export default function ClientLogos() {
   return (
     <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
             Trusted by telecom infrastructure leaders
           </p>
@@ -36,7 +34,6 @@ export default function ClientLogos() {
           </p>
         </div>
 
-        {/* Logos */}
         <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {logos.map((logo) => (
             <div
