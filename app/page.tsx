@@ -4,28 +4,38 @@ import BottomCta from "@/components/BottomCta";
 
 const trustedLogos = [
   { name: "AT&T", logo: "/logos/att.png", size: "normal" },
-  { name: "Verizon", logo: "/logos/verizon.png", size: "normal" },
+  { name: "Verizon", logo: "/logos/verizon.png", size: "xlarge" },
   { name: "Zayo", logo: "/logos/zayo.png", size: "normal" },
+
   { name: "TDS Telecommunications", logo: "/logos/tds.png", size: "large" },
   { name: "ADB-US", logo: "/logos/adb.png", size: "large" },
   { name: "Squan", logo: "/logos/squan.png", size: "normal" },
+
   { name: "Harmoni Towers", logo: "/logos/harmoni.png", size: "large" },
   { name: "Nextlink", logo: "/logos/nextlink.png", size: "large" },
-  { name: "Foresight Communications", logo: "/logos/foresight.png", size: "normal" },
+
+  { name: "Foresight Communications", logo: "/logos/foresight.png", size: "xlarge" },
+
   { name: "EBI", logo: "/logos/ebi.png", size: "small" },
+
   { name: "Smartlink", logo: "/logos/smartlink.png", size: "large" },
   { name: "SONIC", logo: "/logos/sonic.png", size: "large" },
+
   { name: "Crown Castle", logo: "/logos/crowncastle.png", size: "normal" },
-  { name: "Ericsson", logo: "/logos/ericsson.png", size: "large" },
-  { name: "Vertical Bridge", logo: "/logos/verticalbridge.png", size: "normal" },
+
+  { name: "Ericsson", logo: "/logos/ericsson.png", size: "xlarge" },
+
+  { name: "Vertical Bridge", logo: "/logos/verticalbridge.png", size: "xlarge" },
 ] as const;
 
-function getLogoSizing(size?: "small" | "normal" | "large") {
+function getLogoSizing(size?: "small" | "normal" | "large" | "xlarge") {
   switch (size) {
     case "small":
       return "max-h-[30px] md:max-h-[34px]";
     case "large":
       return "max-h-[44px] md:max-h-[48px]";
+    case "xlarge":
+      return "max-h-[52px] md:max-h-[56px]";
     default:
       return "max-h-[36px] md:max-h-[40px]";
   }
