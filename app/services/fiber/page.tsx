@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image"
-import BottomCta from "@/components/BottomCta"
+import Image from "next/image";
+import BottomCta from "@/components/BottomCta";
+
+export const metadata: Metadata = {
+  title: "Fiber Engineering Services",
+  description:
+    "Odiscom provides fiber engineering, OSP design, route development, and construction support for telecom infrastructure projects across Texas and nationwide.",
+};
 
 const supportItems = [
   "Route development and corridor planning",
@@ -10,7 +16,7 @@ const supportItems = [
   "Aerial and underground design support",
   "Permit and construction drawing production",
   "Construction-ready plan set development",
-]
+];
 
 export default function FiberServicePage() {
   return (
@@ -115,44 +121,48 @@ export default function FiberServicePage() {
             </ul>
           </div>
         </div>
+
+        <div className="mt-12 border-t border-slate-200 pt-8">
+          <p className="mb-4 text-sm text-slate-500">
+            Explore related services:
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/services/fiber"
+              className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+            >
+              Fiber
+            </Link>
+
+            <Link
+              href="/services/wireless"
+              className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+            >
+              Wireless
+            </Link>
+
+            <Link
+              href="/services/towers"
+              className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+            >
+              Towers
+            </Link>
+
+            <Link
+              href="/services/construction"
+              className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+            >
+              Construction
+            </Link>
+          </div>
+        </div>
       </section>
-<div className="mt-12 border-t border-slate-200 pt-8">
-  <p className="mb-4 text-sm text-slate-500">Explore related services:</p>
 
-  <div className="flex flex-wrap gap-3">
-    <Link
-      href="/services/fiber"
-      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
-    >
-      Fiber
-    </Link>
-
-    <Link
-      href="/services/wireless"
-      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
-    >
-      Wireless
-    </Link>
-
-    <Link
-      href="/services/towers"
-      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
-    >
-      Towers
-    </Link>
-
-    <Link
-      href="/services/construction"
-      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
-    >
-      Construction
-    </Link>
-  </div>
-</div>
       <BottomCta
         title="Planning a fiber deployment?"
         description="We support projects from early routing through construction-ready design and coordinated field execution."
       />
     </main>
-  )
+  );
 }
