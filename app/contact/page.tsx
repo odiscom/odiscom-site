@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Odiscom",
+  description:
+    "Contact Odiscom for telecom engineering, fiber deployment, tower upgrades, and infrastructure support. Call, email, or submit a project inquiry.",
+};
 "use client";
 
 import { FormEvent, useState } from "react";

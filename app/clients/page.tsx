@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Telecom Clients and Infrastructure Partners",
+  description:
+    "Odiscom supports carriers, tower companies, contractors, and infrastructure partners across fiber, wireless, and telecom deployment programs.",
+};
 import Image from "next/image"
 import Link from "next/link"
 import BottomCta from "@/components/BottomCta"
