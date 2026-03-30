@@ -12,21 +12,21 @@ const clients = [
   },
   {
     name: "Verizon",
-    logo: "/logos/Verizon.png",
+    logo: "/logos/verizon.png",
     category: "Carrier / Telecom",
     description:
       "Experience supporting wireless and telecom infrastructure work with practical field and delivery coordination.",
   },
   {
     name: "Zayo",
-    logo: "/logos/Zayo.svg",
+    logo: "/logos/zayo.png",
     category: "Fiber / Network Infrastructure",
     description:
       "Support across fiber infrastructure environments requiring field-aware engineering and coordinated execution.",
   },
   {
     name: "TDS Telecommunications",
-    logo: "/logos/TDS.png",
+    logo: "/logos/tds.png",
     category: "Carrier / Telecom",
     description:
       "Telecom support shaped around deployment realities, documentation needs, and infrastructure delivery workflows.",
@@ -54,7 +54,7 @@ const clients = [
   },
   {
     name: "Nextlink",
-    logo: "/logos/nextlink.jpg",
+    logo: "/logos/nextlink.png",
     category: "Broadband / Wireless",
     description:
       "Broadband and infrastructure support with attention to constructability, coordination, and deployment timing.",
@@ -68,7 +68,7 @@ const clients = [
   },
   {
     name: "EBI",
-    logo: "/logos/ebi.jpeg",
+    logo: "/logos/ebi.png",
     category: "Consulting / Infrastructure Support",
     description:
       "Experience supporting infrastructure-related project workflows, documentation, and coordination requirements.",
