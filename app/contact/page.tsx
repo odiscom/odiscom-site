@@ -6,6 +6,7 @@ export default function ContactPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
+  const [contactPerson, setContactPerson] = useState("Jeff");
   const [projectDetails, setProjectDetails] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -27,6 +28,7 @@ export default function ContactPage() {
           name,
           email,
           company,
+          contactPerson,
           projectDetails,
         }),
       });
@@ -43,6 +45,7 @@ export default function ContactPage() {
       setName("");
       setEmail("");
       setCompany("");
+      setContactPerson("Jeff");
       setProjectDetails("");
     } catch (error) {
       setErrorMessage(
@@ -57,7 +60,6 @@ export default function ContactPage() {
 
   return (
     <main className="bg-white text-slate-900">
-      {/* HERO */}
       <section className="border-b border-slate-200 bg-[#f7fbfb]">
         <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
@@ -75,34 +77,22 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* CONTACT OPTIONS */}
       <section className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
-          {/* CALL + TEAMS */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Call</h3>
             <p className="mt-3 text-slate-600">Speak directly with our team</p>
 
-            <div className="mt-6 flex flex-col gap-3 items-center">
+            <div className="mt-6 flex flex-col items-center gap-3">
               <a
                 href="tel:+14695311176"
                 className="text-lg font-semibold text-[#1f8a84]"
               >
                 (469) 531-1176
               </a>
-
-              <a
-                href="https://teams.microsoft.com/l/call/0/0?users=4:14695311176"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-[#1f8a84] px-5 py-2 text-sm font-semibold text-[#1f8a84] hover:bg-[#f0f7f7]"
-              >
-                Call on Teams
-              </a>
             </div>
           </div>
 
-          {/* EMAIL */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Email</h3>
             <p className="mt-3 text-slate-600">
@@ -117,7 +107,6 @@ export default function ContactPage() {
             </a>
           </div>
 
-          {/* SCHEDULER */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Book a Meeting</h3>
             <p className="mt-3 text-slate-600">Schedule directly with our team</p>
@@ -134,7 +123,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* FORM */}
       <section className="mx-auto max-w-3xl px-6 pb-20 lg:px-8">
         <div
           id="project-inquiry"
@@ -189,7 +177,30 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="projectDetails" className="block text-sm font-medium">
+              <label
+                htmlFor="contactPerson"
+                className="block text-sm font-medium"
+              >
+                Who would you like to connect with?
+              </label>
+              <select
+                id="contactPerson"
+                value={contactPerson}
+                onChange={(e) => setContactPerson(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 focus:border-[#1f8a84] focus:outline-none"
+              >
+                <option value="Jeff">Jeff</option>
+                <option value="Jacob">Jacob</option>
+                <option value="Royce">Royce</option>
+                <option value="Carolyn">Carolyn</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="projectDetails"
+                className="block text-sm font-medium"
+              >
                 Project Details
               </label>
               <textarea
@@ -202,22 +213,22 @@ export default function ContactPage() {
               />
             </div>
 
-            {successMessage && (
+            {successMessage ? (
               <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                 {successMessage}
               </div>
-            )}
+            ) : null}
 
-            {errorMessage && (
+            {errorMessage ? (
               <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {errorMessage}
               </div>
-            )}
+            ) : null}
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-full bg-[#1f8a84] px-6 py-4 font-semibold text-white transition hover:bg-[#18716c] disabled:opacity-70"
+              className="w-full rounded-full bg-[#1f8a84] px-6 py-4 font-semibold text-white transition hover:bg-[#18716c] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? "Submitting..." : "Submit Inquiry"}
             </button>
@@ -225,21 +236,20 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-[#1f8a84]">
         <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8">
-          <h2 className="text-3xl font-semibold text-white md:text-5xl">
-            Need support on a telecom project?
+          <h2 className="text-3xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
+            Need support on a fiber, tower, or telecom infrastructure project?
           </h2>
 
-          <p className="mt-6 text-lg text-white/90">
-            Reach out and we’ll help you move forward quickly.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/90">
+            Reach out and we’ll help you move forward quickly and efficiently.
           </p>
 
-          <div className="mt-10 flex justify-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href="#project-inquiry"
-              className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84]"
+              className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
             >
               Request Proposal
             </a>
@@ -248,7 +258,7 @@ export default function ContactPage() {
               href="https://outlook.office.com/book/Odiscom@odiscom.com/"
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-white/30 px-8 py-4 text-white"
+              className="rounded-full border border-white/30 px-8 py-4 font-semibold text-white transition hover:bg-white/10"
             >
               Book a Meeting
             </a>
