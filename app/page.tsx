@@ -20,19 +20,6 @@ const trustedLogos = [
   { name: "Vertical Bridge", logo: "/logos/verticalbridge.png", size: "xlarge" },
 ] as const;
 
-function getLogoSizing(size?: "small" | "normal" | "large" | "xlarge") {
-  switch (size) {
-    case "small":
-      return "max-h-[30px] md:max-h-[34px]";
-    case "large":
-      return "max-h-[44px] md:max-h-[48px]";
-    case "xlarge":
-      return "max-h-[52px] md:max-h-[56px]";
-    default:
-      return "max-h-[36px] md:max-h-[40px]";
-  }
-}
-
 const coreServices = [
   {
     name: "Fiber",
@@ -59,6 +46,19 @@ const coreServices = [
       "Construction-minded planning, documentation, and delivery support aligned with real field conditions.",
   },
 ];
+
+function getLogoSizing(size?: "small" | "normal" | "large" | "xlarge") {
+  switch (size) {
+    case "small":
+      return "max-h-[30px] md:max-h-[34px]";
+    case "large":
+      return "max-h-[44px] md:max-h-[48px]";
+    case "xlarge":
+      return "max-h-[52px] md:max-h-[56px]";
+    default:
+      return "max-h-[36px] md:max-h-[40px]";
+  }
+}
 
 export default function HomePage() {
   const marqueeLogosTop = [...trustedLogos, ...trustedLogos];
@@ -175,6 +175,33 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROJECT EXPERIENCE */}
+      <section className="bg-[#f7fbfb] py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1f8a84]">
+            Project Experience
+          </p>
+
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
+            Real-world telecom project support
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+            See examples of how Odiscom supports fiber, wireless, tower, and
+            construction programs with practical, execution-focused delivery.
+          </p>
+
+          <div className="mt-10">
+            <Link
+              href="/case-studies"
+              className="rounded-full bg-[#1f8a84] px-8 py-4 font-semibold text-white transition hover:bg-[#18716c]"
+            >
+              View Project Experience
+            </Link>
           </div>
         </div>
       </section>

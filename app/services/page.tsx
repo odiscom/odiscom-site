@@ -204,3 +204,11 @@ export default function ServicesPage() {
     </main>
   );
 }
+<div className="mt-16 text-center">
+  <a
+    href="/case-studies"
+    className="rounded-full border border-slate-300 px-8 py-4 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+  >
+    View Project Experience
+  </a>
+</div>
