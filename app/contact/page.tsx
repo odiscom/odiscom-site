@@ -36,11 +36,11 @@ export default function ContactPage() {
       const data = (await res.json()) as { success?: boolean; error?: string };
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to send message.");
+        throw new Error(data.error || "Failed to submit inquiry.");
       }
 
       setSuccessMessage(
-        "Your message was sent successfully. We will get back to you shortly."
+        "Your inquiry was submitted successfully. We will get back to you soon."
       );
       setName("");
       setEmail("");
@@ -51,7 +51,7 @@ export default function ContactPage() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong while sending your message."
+          : "Something went wrong while submitting your inquiry."
       );
     } finally {
       setIsSubmitting(false);
@@ -81,26 +81,22 @@ export default function ContactPage() {
       {/* CONTACT OPTIONS */}
       <section className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
-          {/* CALL */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Call</h3>
             <p className="mt-3 text-slate-600">Speak directly with our team</p>
 
-            <div className="mt-6 flex flex-col items-center gap-3">
-              <a
-                href="tel:+14695311176"
-                className="text-lg font-semibold text-[#1f8a84]"
-              >
-                (469) 531-1176
-              </a>
-            </div>
+            <a
+              href="tel:+14695311176"
+              className="mt-6 inline-block text-lg font-semibold text-[#1f8a84]"
+            >
+              (469) 531-1176
+            </a>
           </div>
 
-          {/* EMAIL */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Email</h3>
             <p className="mt-3 text-slate-600">
-              Send us details or questions
+              Send us project details or questions
             </p>
 
             <a
@@ -111,7 +107,6 @@ export default function ContactPage() {
             </a>
           </div>
 
-          {/* SCHEDULER */}
           <div className="rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
             <h3 className="text-xl font-semibold">Book a Meeting</h3>
             <p className="mt-3 text-slate-600">Schedule directly with our team</p>
@@ -134,10 +129,10 @@ export default function ContactPage() {
           id="project-inquiry"
           className="rounded-2xl border border-slate-200 p-8 shadow-sm"
         >
-          <h2 className="text-2xl font-semibold">Contact Odiscom</h2>
+          <h2 className="text-2xl font-semibold">Project Inquiry</h2>
 
           <p className="mt-3 text-slate-600">
-            Tell us how we can help or who you’d like to connect with.
+            Tell us about your project, timeline, and support needs.
           </p>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -182,9 +177,10 @@ export default function ContactPage() {
               />
             </div>
 
+            {/* 👇 dropdown stays */}
             <div>
               <label htmlFor="contactPerson" className="block text-sm font-medium">
-                Who would you like to connect with?
+                Who should we connect you with?
               </label>
               <select
                 id="contactPerson"
@@ -201,7 +197,7 @@ export default function ContactPage() {
 
             <div>
               <label htmlFor="projectDetails" className="block text-sm font-medium">
-                Message
+                Project Details
               </label>
               <textarea
                 id="projectDetails"
@@ -230,40 +226,9 @@ export default function ContactPage() {
               disabled={isSubmitting}
               className="w-full rounded-full bg-[#1f8a84] px-6 py-4 font-semibold text-white transition hover:bg-[#18716c] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Sending..." : "Send Message"}
+              {isSubmitting ? "Submitting..." : "Submit Inquiry"}
             </button>
           </form>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-[#1f8a84]">
-        <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8">
-          <h2 className="text-3xl font-semibold text-white md:text-5xl">
-            Need support on a telecom project?
-          </h2>
-
-          <p className="mt-6 text-lg text-white/90">
-            Reach out and we’ll help you move forward quickly.
-          </p>
-
-          <div className="mt-10 flex justify-center gap-4">
-            <a
-              href="#project-inquiry"
-              className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84]"
-            >
-              Contact Us
-            </a>
-
-            <a
-              href="https://outlook.office.com/book/Odiscom@odiscom.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-white/30 px-8 py-4 text-white"
-            >
-              Book a Meeting
-            </a>
-          </div>
         </div>
       </section>
     </main>
