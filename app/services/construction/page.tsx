@@ -58,4 +58,55 @@ export default function ConstructionPage() {
           <h2 className="text-2xl font-semibold">Services Include</h2>
 
           <ul className="mt-4 space-y-3 text-slate-600">
-            <li>• Construction-ready documentation</
+            <li>• Construction-ready documentation</li>
+            <li>• Execution-focused planning</li>
+            <li>• Contractor coordination</li>
+            <li>• Field delivery alignment</li>
+            <li>• Support across fiber, wireless, and tower builds</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold">
+            Supporting Active Telecom Construction Programs
+          </h2>
+
+          <p className="mt-4 text-slate-600 leading-8">
+            Odiscom supports telecom construction efforts across Texas and
+            nationwide, helping carriers, contractors, and infrastructure
+            partners keep work moving from design into field execution with
+            practical coordination and delivery discipline.
+          </p>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-[#1f8a84]">
+        <div className="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8">
+          <h2 className="text-3xl font-semibold text-white md:text-5xl">
+            Need support on a telecom construction project?
+          </h2>
+
+          <p className="mt-6 text-lg text-white/90">
+            Reach out to discuss your construction support, field coordination,
+            or telecom infrastructure delivery needs.
+          </p>
+
+          <div className="mt-10">
+            <Link
+              href="/contact"
+              className="rounded-full bg-white px-8 py-4 font-semibold text-[#1f8a84]"
+            >
+              Contact Odiscom
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <BottomCta
+        title="Need support on a construction or telecom infrastructure project?"
+        description="Tell us what you're building, or book time with our team to get started quickly."
+      />
+    </main>
+  );
+}
