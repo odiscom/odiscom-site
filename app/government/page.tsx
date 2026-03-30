@@ -15,26 +15,52 @@ const capabilityPoints = [
   "Execution-minded support for public-sector programs",
 ];
 
-const focusAreas = [
+const readinessItems = [
   {
-    title: "Telecom Infrastructure Support",
+    title: "Procurement Readiness",
     description:
-      "Support for public-sector telecom and communications infrastructure projects requiring practical engineering, coordination, and field-aware delivery.",
+      "Odiscom is positioned to support public-sector procurement environments that require clear scope alignment, professional documentation, responsive communication, and dependable project support.",
   },
   {
-    title: "Fiber Deployment Programs",
+    title: "Vendor Onboarding Support",
     description:
-      "Route development, OSP support, utility coordination, and construction-ready documentation aligned with deployment goals and jurisdictional requirements.",
+      "We understand the importance of onboarding requirements such as insurance documentation, contract compliance, scope clarification, invoicing discipline, and project coordination across agency and contractor stakeholders.",
   },
   {
-    title: "Tower and Wireless Programs",
+    title: "Field-Aware Delivery",
     description:
-      "Support for wireless infrastructure, tower upgrades, site coordination, and project documentation across active government and agency environments.",
+      "Our approach is built around real deployment conditions, helping bridge engineering intent, documentation, and construction execution across active telecom infrastructure programs.",
   },
   {
-    title: "Construction Delivery Support",
+    title: "Scalable Support Model",
     description:
-      "Execution-focused planning, documentation, and coordination that helps bridge engineering intent and real-world field conditions.",
+      "Odiscom supports public-sector work with a practical model that can align engineering, field coordination, and project delivery support across single-site and multi-site programs.",
+  },
+];
+
+const contractReadiness = [
+  "Clear communication and scope-focused coordination",
+  "Construction-ready documentation support",
+  "Execution-minded planning aligned with field conditions",
+  "Support across fiber, wireless, tower, and telecom infrastructure work",
+  "Responsiveness for active public-sector and contractor-led programs",
+];
+
+const publicSectorItems = [
+  {
+    label: "Agency / Municipal Support",
+    text:
+      "Support for municipalities, agencies, and public-sector entities requiring telecom infrastructure planning, engineering coordination, and practical delivery alignment.",
+  },
+  {
+    label: "Prime / Subcontractor Alignment",
+    text:
+      "Support for public-sector project environments where coordination between owners, primes, subcontractors, and field teams must stay clear and organized.",
+  },
+  {
+    label: "Infrastructure Program Delivery",
+    text:
+      "Execution-focused support for programs involving fiber deployment, wireless upgrades, tower work, and associated telecom infrastructure needs.",
   },
 ];
 
@@ -101,11 +127,11 @@ export default function GovernmentPage() {
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
-              What we support
+              Public-sector positioning
             </p>
 
             <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
-              Practical support for agency, municipal, and public infrastructure work
+              Built to support agency, municipal, and public infrastructure work
             </h2>
           </div>
 
@@ -120,10 +146,10 @@ export default function GovernmentPage() {
         </div>
       </section>
 
-      {/* FOCUS AREAS */}
+      {/* READINESS GRID */}
       <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
         <div className="grid gap-6 xl:grid-cols-2">
-          {focusAreas.map((item) => (
+          {readinessItems.map((item) => (
             <article
               key={item.title}
               className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -137,6 +163,119 @@ export default function GovernmentPage() {
               </p>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* CONTRACT READINESS */}
+      <section className="bg-[#f7fbfb] py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+              Contract readiness
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-900 md:text-5xl">
+              Ready to support structured public-sector project environments
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-slate-600">
+              Odiscom is built around the realities of structured project
+              delivery where documentation quality, responsiveness, coordination,
+              and execution discipline matter.
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <ul className="space-y-4 text-slate-700">
+              {contractReadiness.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[#1f8a84]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* CERTIFICATIONS / BUSINESS PROFILE */}
+      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+              Business profile
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-900">
+              Positioned for public-sector engagement
+            </h2>
+
+            <p className="mt-5 leading-8 text-slate-600">
+              Odiscom’s structure and project approach are designed to support
+              serious infrastructure work requiring dependable communication,
+              professional documentation, and practical delivery support.
+            </p>
+
+            <p className="mt-4 leading-8 text-slate-600">
+              As part of our ongoing public-sector positioning, we can discuss
+              procurement pathway alignment, vendor onboarding materials,
+              insurance documentation, and contract support needs directly with
+              agencies, primes, and public-sector stakeholders.
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+              Certifications and registrations
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-900">
+              Ready to discuss procurement and vendor qualifications
+            </h2>
+
+            <p className="mt-5 leading-8 text-slate-600">
+              If your project requires specific procurement documentation,
+              registration details, ownership information, or qualification
+              materials, Odiscom can provide the appropriate information during
+              the engagement process.
+            </p>
+
+            <p className="mt-4 leading-8 text-slate-600">
+              For agency, municipal, utility, or public-sector opportunities,
+              we are prepared to discuss onboarding requirements, contract
+              readiness, and the best path for engagement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* PUBLIC SECTOR FOCUS */}
+      <section className="border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="mb-10 max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1f8a84]">
+              Public-sector focus areas
+            </p>
+
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-900 md:text-5xl">
+              Support across agency, municipal, and infrastructure programs
+            </h2>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-3">
+            {publicSectorItems.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-[2rem] border border-slate-200 bg-[#f7fbfb] p-8"
+              >
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1f8a84]">
+                  {item.label}
+                </p>
+
+                <p className="mt-4 leading-8 text-slate-700">{item.text}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
