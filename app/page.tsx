@@ -17,60 +17,9 @@ const trustedLogos = [
   { name: "SONIC", logo: "/logos/sonic.png" },
 ];
 
-const capabilityPoints = [
-  "Fiber deployment support",
-  "Wireless and tower execution",
-  "Construction-ready coordination",
-  "Nationwide program support",
-];
-
-const serviceCards = [
-  {
-    label: "Fiber",
-    title: "OSP engineering and infrastructure support",
-    description:
-      "Route development, utility coordination, make-ready support, and fielding aligned with deployment schedules.",
-    href: "/services/fiber",
-  },
-  {
-    label: "Towers",
-    title: "Wireless site and tower support",
-    description:
-      "A&E coordination, site documentation, and upgrade support for carrier and infrastructure programs.",
-    href: "/services/wireless",
-  },
-  {
-    label: "Construction",
-    title: "Construction-ready planning and delivery",
-    description:
-      "Documentation and coordination built for field execution, contractor alignment, and project delivery.",
-    href: "/services/construction",
-  },
-];
-
-const projectPreview = [
-  {
-    category: "Fiber Infrastructure",
-    title: "Route development and OSP design support",
-    description:
-      "Support for field verification, utility coordination, and construction-ready documentation across active fiber deployment programs.",
-  },
-  {
-    category: "Wireless / Tower",
-    title: "Site upgrades and delivery coordination",
-    description:
-      "Coordinated support for site documentation, A&E workflows, and execution across multi-site wireless programs.",
-  },
-  {
-    category: "Construction Support",
-    title: "Execution-focused delivery support",
-    description:
-      "Practical coordination, documentation flow, and field support from kickoff through closeout.",
-  },
-];
-
 export default function HomePage() {
-  const marqueeLogos = [...trustedLogos, ...trustedLogos];
+  const marqueeLogosTop = [...trustedLogos, ...trustedLogos];
+  const marqueeLogosBottom = [...trustedLogos.slice().reverse(), ...trustedLogos.slice().reverse()];
 
   return (
     <main className="bg-white text-slate-900">
@@ -150,20 +99,37 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden space-y-6">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
 
-            <div className="logo-marquee flex w-max items-center gap-6">
-              {marqueeLogos.map((client, index) => (
+            {/* TOP ROW */}
+            <div className="logo-marquee flex min-w-[200%] items-center gap-6">
+              {marqueeLogosTop.map((client, index) => (
                 <div
-                  key={`${client.name}-${index}`}
+                  key={`top-${client.name}-${index}`}
                   className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
                 >
                   <img
                     src={client.logo}
                     alt={client.name}
-                    className="max-h-[40px] object-contain opacity-70 transition duration-300 hover:opacity-100"
+                    className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* BOTTOM ROW */}
+            <div className="logo-marquee-reverse flex min-w-[200%] items-center gap-6">
+              {marqueeLogosBottom.map((client, index) => (
+                <div
+                  key={`bottom-${client.name}-${index}`}
+                  className="flex h-20 w-[240px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 shadow-sm"
+                >
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="max-h-[40px] object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100"
                   />
                 </div>
               ))}
@@ -177,22 +143,35 @@ export default function HomePage() {
         description="Tell us what you're building, or book time with our team to get started quickly."
       />
 
-      {/* SAFE SCOPED ANIMATION */}
       <style jsx>{`
         .logo-marquee {
-          animation: scroll 40s linear infinite;
+          animation: scroll-left 45s linear infinite;
         }
 
-        .logo-marquee:hover {
+        .logo-marquee-reverse {
+          animation: scroll-right 45s linear infinite;
+        }
+
+        .logo-marquee:hover,
+        .logo-marquee-reverse:hover {
           animation-play-state: paused;
         }
 
-        @keyframes scroll {
+        @keyframes scroll-left {
           0% {
             transform: translateX(0);
           }
           100% {
             transform: translateX(-50%);
+          }
+        }
+
+        @keyframes scroll-right {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
           }
         }
       `}</style>
