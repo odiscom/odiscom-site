@@ -101,7 +101,39 @@ export default function WirelessPage() {
           </div>
         </div>
       </section>
+<div className="mt-12 border-t border-slate-200 pt-8">
+  <p className="mb-4 text-sm text-slate-500">Explore related services:</p>
 
+  <div className="flex flex-wrap gap-3">
+    <Link
+      href="/services/fiber"
+      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+    >
+      Fiber
+    </Link>
+
+    <Link
+      href="/services/wireless"
+      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+    >
+      Wireless
+    </Link>
+
+    <Link
+      href="/services/towers"
+      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+    >
+      Towers
+    </Link>
+
+    <Link
+      href="/services/construction"
+      className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#1f8a84] transition hover:bg-[#f0f7f7]"
+    >
+      Construction
+    </Link>
+  </div>
+</div>
       <BottomCta
         title="Need support on a wireless or telecom infrastructure project?"
         description="Tell us what you're building, or book time with our team to get started quickly."
