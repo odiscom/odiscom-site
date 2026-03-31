@@ -68,10 +68,10 @@ sql_paths = ["./seed.sql"]
 # Enable management of network restrictions.
 enabled = false
 # List of IPv4 CIDR blocks allowed to connect to the database.
-# Defaults to allow all IPv4 connections. Set empty array to block all IPs.
+# Defaults to allow all IPv4 connections. Set empty array to block all IPv4 connections.
 allowed_cidrs = ["0.0.0.0/0"]
 # List of IPv6 CIDR blocks allowed to connect to the database.
-# Defaults to allow all IPv6 connections. Set empty array to block all IPs.
+# Defaults to allow all IPv6 connections. Set empty array to block all IPv6 connections.
 allowed_cidrs_v6 = ["::/0"]
 
 # Uncomment to reject non-secure connections to the database.
@@ -300,8 +300,8 @@ max_frequency = "5s"
 # verify_enabled = true
 
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
-# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
-# `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
+# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`,
+# `twitch`, `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
 [auth.external.apple]
 enabled = false
 client_id = ""
@@ -337,7 +337,6 @@ enabled = false
 [auth.third_party.aws_cognito]
 enabled = false
 # user_pool_id = "my-user-pool-id"
-# user_pool_region = "us-east-1"
 
 # Use Clerk as a third-party provider alongside Supabase Auth.
 [auth.third_party.clerk]
@@ -397,7 +396,7 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 [functions.ingest-events]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/ingest-events/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
