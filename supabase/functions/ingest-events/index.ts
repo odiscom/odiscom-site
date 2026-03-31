@@ -39,12 +39,6 @@ serve(async () => {
 
   const supabase = createClient(projectUrl, serviceRoleKey);
 
-  const feeds = [
-    "https://www.lightreading.com/rss.xml",
-    "https://www.telecompetitor.com/feed/",
-    "https://www.fiercetelecom.com/rss/xml",
-  ];
-
   let inserted = 0;
   let skipped = 0;
 
