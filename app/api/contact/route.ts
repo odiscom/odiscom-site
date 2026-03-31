@@ -8,6 +8,7 @@ type ContactPayload = {
   details?: string;
   projectDetails?: string;
   contactPerson?: string;
+  website?: string;
 };
 
 function isValidEmail(email: string) {
@@ -34,17 +35,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const resend = new Resend(resendApiKey);
     const body = (await req.json()) as ContactPayload;
 
     const name = body.name?.trim() ?? "";
     const email = body.email?.trim() ?? "";
     const company = body.company?.trim() ?? "";
     const contactPerson = body.contactPerson?.trim() ?? "General Team";
-    const projectDetails =
-      body.details?.trim() ??
-      body.projectDetails?.trim() ??
-      "";
+    const projectDetails = body.details?.trim() ?? body.projectDetails?.trim() ?? "";
+    const website = body.website?.trim() ?? "";
+
+    if (website) {
+      return NextResponse.json({ success: true });
+    }
 
     if (!name || !email || !projectDetails) {
       return NextResponse.json(
@@ -60,7 +62,9 @@ export async function POST(req: Request) {
       );
     }
 
+    const resend = new Resend(resendApiKey);
     const fallbackTo = process.env.CONTACT_TO || "owners@odiscom.com";
+
     const contactMap: Record<string, string> = {
       Jeff: process.env.CONTACT_TO_JEFF || fallbackTo,
       Jacob: process.env.CONTACT_TO_JACOB || fallbackTo,
@@ -99,7 +103,7 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    const { error } = await resend.emails.send({
+    const sendResult = await resend.emails.send({
       from,
       to: [contactTo],
       replyTo: email,
@@ -108,12 +112,42 @@ export async function POST(req: Request) {
       html,
     });
 
-    if (error) {
-      console.error("Resend send error:", error);
+    if (sendResult.error) {
+      console.error("Resend send error:", sendResult.error);
       return NextResponse.json(
         { error: "Something went wrong while sending your inquiry." },
         { status: 500 }
       );
+    }
+
+    const confirmationResult = await resend.emails.send({
+      from,
+      to: [email],
+      subject: "We received your inquiry - Odiscom",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
+          <h2 style="margin-bottom: 16px;">Thank you for contacting Odiscom</h2>
+          <p>Hi ${escapeHtml(name)},</p>
+          <p>We received your inquiry and our team will review it shortly.</p>
+          <p><strong>Requested Contact:</strong> ${escapeHtml(contactPerson)}</p>
+          <p><strong>Submitted Company:</strong> ${escapeHtml(company || "Not provided")}</p>
+          <p style="margin-top: 20px;">Thank you,<br />Odiscom</p>
+        </div>
+      `,
+      text: [
+        `Hi ${name},`,
+        "",
+        "We received your inquiry and our team will review it shortly.",
+        `Requested Contact: ${contactPerson}`,
+        `Submitted Company: ${company || "Not provided"}`,
+        "",
+        "Thank you,",
+        "Odiscom",
+      ].join("\n"),
+    });
+
+    if (confirmationResult.error) {
+      console.error("Resend confirmation send error:", confirmationResult.error);
     }
 
     return NextResponse.json({ success: true });

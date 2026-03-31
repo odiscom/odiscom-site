@@ -2,19 +2,27 @@
 
 import { FormEvent, useState } from "react";
 
+type FormState = {
+  name: string;
+  email: string;
+  company: string;
+  contactPerson: string;
+  details: string;
+  website: string;
+};
+
+const initialForm: FormState = {
+  name: "",
+  email: "",
+  company: "",
+  contactPerson: "Jeff",
+  details: "",
+  website: "",
+};
+
 export default function ContactPage() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    company: "",
-    contactPerson: "Jeff",
-    details: "",
-  });
-
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-
+  const [form, setForm] = useState<FormState>(initialForm);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
   const handleChange = (
@@ -45,14 +53,8 @@ export default function ContactPage() {
       }
 
       setStatus("success");
-      setMessage("Your message has been sent.");
-      setForm({
-        name: "",
-        email: "",
-        company: "",
-        contactPerson: "Jeff",
-        details: "",
-      });
+      setMessage("Your inquiry has been sent. A confirmation email is on the way.");
+      setForm(initialForm);
     } catch (err) {
       setStatus("error");
       setMessage(
@@ -65,14 +67,36 @@ export default function ContactPage() {
     <section className="bg-white py-16">
       <div className="mx-auto max-w-3xl px-6">
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm md:p-10">
-          <h1 className="text-3xl font-semibold text-slate-900">
-            Project Inquiry
-          </h1>
+          <h1 className="text-3xl font-semibold text-slate-900">Project Inquiry</h1>
           <p className="mt-3 text-lg text-slate-600">
             Tell us about your project, timeline, and support needs.
           </p>
 
+          {status === "success" && (
+            <div className="mt-8 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-green-800">
+              <p className="text-base font-semibold">Inquiry sent successfully.</p>
+              <p className="mt-1 text-sm">{message}</p>
+            </div>
+          )}
+
+          {status === "error" && message && (
+            <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
+              <p className="text-sm font-medium">{message}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <input
+              type="text"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              autoComplete="off"
+              tabIndex={-1}
+              className="hidden"
+              aria-hidden="true"
+            />
+
             <div>
               <label htmlFor="name" className="mb-2 block text-sm font-medium text-slate-800">
                 Name
@@ -133,6 +157,8 @@ export default function ContactPage() {
               >
                 <option value="Jeff">Jeff</option>
                 <option value="Jacob">Jacob</option>
+                <option value="Royce">Royce</option>
+                <option value="Carolyn">Carolyn</option>
                 <option value="General Team">General Team</option>
               </select>
             </div>
@@ -155,20 +181,10 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="inline-flex items-center justify-center rounded-full bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center rounded-full bg-teal-600 px-6 py-4 text-base font-semibold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {status === "submitting" ? "Sending..." : "Send Inquiry"}
+              {status === "submitting" ? "Sending..." : "Submit Inquiry"}
             </button>
-
-            {message && (
-              <p
-                className={`text-sm ${
-                  status === "success" ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {message}
-              </p>
-            )}
           </form>
         </div>
       </div>
