@@ -1,25 +1,50 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 type ContactPayload = {
   name?: string;
   email?: string;
   company?: string;
+  details?: string;
   projectDetails?: string;
+  contactPerson?: string;
 };
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function escapeHtml(input: string) {
+  return input
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export async function POST(req: Request) {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY;
+
+    if (!resendApiKey) {
+      return NextResponse.json(
+        { error: "Email service is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
     const body = (await req.json()) as ContactPayload;
 
     const name = body.name?.trim() ?? "";
     const email = body.email?.trim() ?? "";
     const company = body.company?.trim() ?? "";
-    const projectDetails = body.projectDetails?.trim() ?? "";
+    const contactPerson = body.contactPerson?.trim() ?? "General Team";
+    const projectDetails =
+      body.details?.trim() ??
+      body.projectDetails?.trim() ??
+      "";
 
     if (!name || !email || !projectDetails) {
       return NextResponse.json(
@@ -35,34 +60,25 @@ export async function POST(req: Request) {
       );
     }
 
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = Number(process.env.SMTP_PORT || 587);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const contactTo = process.env.CONTACT_TO || "owners@odiscom.com";
+    const fallbackTo = process.env.CONTACT_TO || "owners@odiscom.com";
+    const contactMap: Record<string, string> = {
+      Jeff: process.env.CONTACT_TO_JEFF || fallbackTo,
+      Jacob: process.env.CONTACT_TO_JACOB || fallbackTo,
+      Royce: process.env.CONTACT_TO_ROYCE || fallbackTo,
+      Carolyn: process.env.CONTACT_TO_CAROLYN || fallbackTo,
+      "General Team": fallbackTo,
+    };
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      return NextResponse.json(
-        { error: "Email service is not configured on the server." },
-        { status: 500 }
-      );
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: false,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-
+    const contactTo = contactMap[contactPerson] || fallbackTo;
+    const from = process.env.CONTACT_FROM || "Odiscom Website <admin@odiscom.com>";
     const subject = `New Odiscom Project Inquiry from ${name}`;
+
     const text = [
       `Name: ${name}`,
       `Email: ${email}`,
       `Company: ${company || "Not provided"}`,
+      `Requested Contact: ${contactPerson}`,
+      `Deliver To: ${contactTo}`,
       "",
       "Project Details:",
       projectDetails,
@@ -74,6 +90,8 @@ export async function POST(req: Request) {
         <p><strong>Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Company:</strong> ${escapeHtml(company || "Not provided")}</p>
+        <p><strong>Requested Contact:</strong> ${escapeHtml(contactPerson)}</p>
+        <p><strong>Deliver To:</strong> ${escapeHtml(contactTo)}</p>
         <p><strong>Project Details:</strong></p>
         <div style="white-space: pre-wrap; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; background: #f8fafc;">
           ${escapeHtml(projectDetails)}
@@ -81,14 +99,22 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Odiscom Website" <${smtpUser}>`,
-      to: contactTo,
+    const { error } = await resend.emails.send({
+      from,
+      to: [contactTo],
       replyTo: email,
       subject,
       text,
       html,
     });
+
+    if (error) {
+      console.error("Resend send error:", error);
+      return NextResponse.json(
+        { error: "Something went wrong while sending your inquiry." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -98,13 +124,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-}
-
-function escapeHtml(input: string) {
-  return input
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }
