@@ -4,3 +4,21 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "odiscom.com",
+          },
+        ],
+        destination: "https://www.odiscom.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
+};

@@ -60,3 +60,8 @@ export default function RootLayout({
     </html>
   );
 }
+export const metadata = {
+  title: "Odiscom | Telecom Engineering & Fiber Construction",
+  description:
+    "Odiscom provides telecom engineering, fiber optic construction, and tower services across Texas and nationwide.",
+};

@@ -214,7 +214,7 @@ async function getNateEvents(debug: Record<string, string>) {
 
   // Use official NATE event index pages as the source of truth for links.
   const indexPages = [
-    "https://natehome.com/nate-newsroom/upcoming-events/",
+    "https://natehome.com/events/calendar/",
   ];
 
   for (const pageUrl of indexPages) {
