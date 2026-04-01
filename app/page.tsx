@@ -281,3 +281,15 @@ export default function HomePage() {
     </main>
   );
 }
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Odiscom",
+  url: "https://www.odiscom.com",
+  logo: "https://www.odiscom.com/logo.png",
+  sameAs: [
+    "https://www.linkedin.com/company/odiscom"
+  ],
+})}
+</script>
