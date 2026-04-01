@@ -1,16 +1,9 @@
 export default function sitemap() {
-  const baseUrl = "https://www.odiscom.com";
-
-  const routes = [
-    "",
-    "/services",
-    "/projects",
-    "/clients",
-    "/contact",
+  return [
+    { url: "https://www.odiscom.com/", lastModified: new Date() },
+    { url: "https://www.odiscom.com/services", lastModified: new Date() },
+    { url: "https://www.odiscom.com/clients", lastModified: new Date() },
+    { url: "https://www.odiscom.com/contact", lastModified: new Date() },
+    { url: "https://www.odiscom.com/fiber-construction", lastModified: new Date() },
   ];
-
-  return routes.map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-  }));
 }
